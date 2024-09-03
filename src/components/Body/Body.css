@@ -1,0 +1,13 @@
+/* Body.css */
+.body {
+    flex: 1;
+    padding: 20px;
+    background-color: white;
+  }
+  
+  .sections {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
