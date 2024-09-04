@@ -18,6 +18,12 @@
   overflow: hidden;
   scroll-behavior: smooth;
   width: 800px; /* This width shows only 4 cards */
+  cursor: grab;
+  user-select: none; /* Disable text selection while dragging */
+}
+
+.v-scroll-inner:active {
+  cursor: grabbing;
 }
 
 .restaurant-list-sm {

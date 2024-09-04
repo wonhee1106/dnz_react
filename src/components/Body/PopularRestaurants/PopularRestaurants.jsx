@@ -5,17 +5,29 @@ const PopularRestaurants = () => {
   const scrollRef1 = useRef(null);
   const scrollRef2 = useRef(null);
   const scrollRef3 = useRef(null);
+  const scrollRef4 = useRef(null);
+  const scrollRef5 = useRef(null);
 
-  const scrollLeft = (scrollRef) => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
-    }
+  const handleMouseDown = (e, scrollRef) => {
+    scrollRef.current.isDown = true;
+    scrollRef.current.startX = e.pageX - scrollRef.current.offsetLeft;
+    scrollRef.current.scrollLeftStart = scrollRef.current.scrollLeft;
   };
 
-  const scrollRight = (scrollRef) => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
-    }
+  const handleMouseLeave = (scrollRef) => {
+    scrollRef.current.isDown = false;
+  };
+
+  const handleMouseUp = (scrollRef) => {
+    scrollRef.current.isDown = false;
+  };
+
+  const handleMouseMove = (e, scrollRef) => {
+    if (!scrollRef.current.isDown) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - scrollRef.current.startX); // 기본 속도 설정
+    scrollRef.current.scrollLeft = scrollRef.current.scrollLeftStart - walk;
   };
 
   const restaurants1 = [
@@ -45,61 +57,131 @@ const PopularRestaurants = () => {
     { name: "Restaurant U", description: "Description U" },
   ];
 
+  const restaurants4 = [
+    { name: "Restaurant AA", description: "Description AA" },
+    { name: "Restaurant BB", description: "Description BB" },
+    { name: "Restaurant CC", description: "Description CC" },
+    { name: "Restaurant DD", description: "Description DD" },
+    { name: "Restaurant EE", description: "Description EE" },
+    { name: "Restaurant FF", description: "Description FF" },
+  ];
+
+  const restaurants5 = [
+    { name: "Restaurant AAA", description: "Description AAA" },
+    { name: "Restaurant BBB", description: "Description BBB" },
+    { name: "Restaurant CCC", description: "Description CCC" },
+    { name: "Restaurant DDD", description: "Description DDD" },
+    { name: "Restaurant EEE", description: "Description EEE" },
+    { name: "Restaurant FFF", description: "Description FFF" },
+  ];
+
   return (
     <div>
       <div className="popular-restaurants container gutter-sm">
-        <h2 className="section-header">인기 식당 - 섹션 1</h2>
-        <div className="section-body">
-          <button className="scroll-button left" onClick={() => scrollLeft(scrollRef1)}>{"<"}</button>
-          <div className="v-scroll-inner" ref={scrollRef1}>
-            <div className="restaurant-list restaurant-list-sm">
-              {restaurants1.map((restaurant, index) => (
-                <div key={index} className="restaurant-list-item restaurant-card">
-                  <h3>{restaurant.name}</h3>
-                  <p>{restaurant.description}</p>
-                </div>
-              ))}
-            </div>
+        <h2 className="section-header">인기식당</h2>
+        <div
+          className="v-scroll-inner"
+          ref={scrollRef1}
+          onMouseDown={(e) => handleMouseDown(e, scrollRef1)}
+          onMouseLeave={() => handleMouseLeave(scrollRef1)}
+          onMouseUp={() => handleMouseUp(scrollRef1)}
+          onMouseMove={(e) => handleMouseMove(e, scrollRef1)}
+        >
+          <div className="restaurant-list restaurant-list-sm">
+            {restaurants1.map((restaurant, index) => (
+              <div key={index} className="restaurant-list-item restaurant-card">
+                <h3>{restaurant.name}</h3>
+                <p>{restaurant.description}</p>
+              </div>
+            ))}
           </div>
-          <button className="scroll-button right" onClick={() => scrollRight(scrollRef1)}>{">"}</button>
         </div>
       </div>
 
       <div className="popular-restaurants container gutter-sm">
-        <h2 className="section-header">인기 식당 - 섹션 2</h2>
-        <div className="section-body">
-          <button className="scroll-button left" onClick={() => scrollLeft(scrollRef2)}>{"<"}</button>
-          <div className="v-scroll-inner" ref={scrollRef2}>
-            <div className="restaurant-list restaurant-list-sm">
-              {restaurants2.map((restaurant, index) => (
-                <div key={index} className="restaurant-list-item restaurant-card">
-                  <h3>{restaurant.name}</h3>
-                  <p>{restaurant.description}</p>
-                </div>
-              ))}
-            </div>
+        <h2 className="section-header">한식</h2>
+        <div
+          className="v-scroll-inner"
+          ref={scrollRef2}
+          onMouseDown={(e) => handleMouseDown(e, scrollRef2)}
+          onMouseLeave={() => handleMouseLeave(scrollRef2)}
+          onMouseUp={() => handleMouseUp(scrollRef2)}
+          onMouseMove={(e) => handleMouseMove(e, scrollRef2)}
+        >
+          <div className="restaurant-list restaurant-list-sm">
+            {restaurants2.map((restaurant, index) => (
+              <div key={index} className="restaurant-list-item restaurant-card">
+                <h3>{restaurant.name}</h3>
+                <p>{restaurant.description}</p>
+              </div>
+            ))}
           </div>
-          <button className="scroll-button right" onClick={() => scrollRight(scrollRef2)}>{">"}</button>
         </div>
       </div>
 
       <div className="popular-restaurants container gutter-sm">
-        <h2 className="section-header">인기 식당 - 섹션 3</h2>
-        <div className="section-body">
-          <button className="scroll-button left" onClick={() => scrollLeft(scrollRef3)}>{"<"}</button>
-          <div className="v-scroll-inner" ref={scrollRef3}>
-            <div className="restaurant-list restaurant-list-sm">
-              {restaurants3.map((restaurant, index) => (
-                <div key={index} className="restaurant-list-item restaurant-card">
-                  <h3>{restaurant.name}</h3>
-                  <p>{restaurant.description}</p>
-                </div>
-              ))}
-            </div>
+        <h2 className="section-header">중식</h2>
+        <div
+          className="v-scroll-inner"
+          ref={scrollRef3}
+          onMouseDown={(e) => handleMouseDown(e, scrollRef3)}
+          onMouseLeave={() => handleMouseLeave(scrollRef3)}
+          onMouseUp={() => handleMouseUp(scrollRef3)}
+          onMouseMove={(e) => handleMouseMove(e, scrollRef3)}
+        >
+          <div className="restaurant-list restaurant-list-sm">
+            {restaurants3.map((restaurant, index) => (
+              <div key={index} className="restaurant-list-item restaurant-card">
+                <h3>{restaurant.name}</h3>
+                <p>{restaurant.description}</p>
+              </div>
+            ))}
           </div>
-          <button className="scroll-button right" onClick={() => scrollRight(scrollRef3)}>{">"}</button>
         </div>
       </div>
+
+      <div className="popular-restaurants container gutter-sm">
+        <h2 className="section-header">양식</h2>
+        <div
+          className="v-scroll-inner"
+          ref={scrollRef4}
+          onMouseDown={(e) => handleMouseDown(e, scrollRef4)}
+          onMouseLeave={() => handleMouseLeave(scrollRef4)}
+          onMouseUp={() => handleMouseUp(scrollRef4)}
+          onMouseMove={(e) => handleMouseMove(e, scrollRef4)}
+        >
+          <div className="restaurant-list restaurant-list-sm">
+            {restaurants4.map((restaurant, index) => (
+              <div key={index} className="restaurant-list-item restaurant-card">
+                <h3>{restaurant.name}</h3>
+                <p>{restaurant.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="popular-restaurants container gutter-sm">
+        <h2 className="section-header">일식</h2>
+        <div
+          className="v-scroll-inner"
+          ref={scrollRef5}
+          onMouseDown={(e) => handleMouseDown(e, scrollRef5)}
+          onMouseLeave={() => handleMouseLeave(scrollRef5)}
+          onMouseUp={() => handleMouseUp(scrollRef5)}
+          onMouseMove={(e) => handleMouseMove(e, scrollRef5)}
+        >
+          <div className="restaurant-list restaurant-list-sm">
+            {restaurants5.map((restaurant, index) => (
+              <div key={index} className="restaurant-list-item restaurant-card">
+                <h3>{restaurant.name}</h3>
+                <p>{restaurant.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
