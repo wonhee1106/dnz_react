@@ -5,6 +5,7 @@
   gap: 16px;
   position: relative;
   height: auto; /* 항목이 묻히지 않도록 높이를 자동으로 설정 */
+  width: calc(4 * 180px + 3 * 16px); /* 항목 4개 + 간격을 정확히 맞추기 위해 너비 설정 */
 }
 
 .restaurant-list-sm {
@@ -80,4 +81,31 @@
 .gutter-sm {
   padding-left: 8px;
   padding-right: 8px;
+}
+
+/* Scroll button styles */
+.scroll-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 1.5em;
+  user-select: none;
+  z-index: 10;
+}
+
+.scroll-button.left {
+  left: -10px; /* 버튼을 왼쪽으로 배치 */
+}
+
+.scroll-button.right {
+  right: -10px; /* 버튼을 오른쪽으로 배치 */
+}
+
+.scroll-button:focus {
+  outline: none;
 }
