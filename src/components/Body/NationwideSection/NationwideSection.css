@@ -1,29 +1,55 @@
-/* NationwideSection.css */
 .nationwide-section {
-    width: 48%;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 2px solid #ff6600; /* 주황색 테두리 */
-    border-radius: 8px;
-    color: #333;
-  }
-  
-  .nationwide-section h2 {
-    margin-bottom: 20px;
-  }
-  
-  .local-list {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-  }
-  
-  .local-list button {
-    background-color: #ff6600;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
+  width: 48%;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 2px solid #ff6600; /* 주황색 테두리 */
+  border-radius: 8px;
+  color: #333;
+  height: 250px; /* PopularRestaurants와 동일한 높이 설정 */
+}
+
+.nationwide-section h2 {
+  margin-bottom: 20px;
+  font-size: 1.5em;
+}
+
+.section-body {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.v-scroll {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.v-scroll-inner {
+  display: flex;
+  gap: 16px;
+}
+
+.location-item {
+  display: inline-block;
+  width: 150px;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  border-radius: 8px;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.location-item .label {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  font-size: 0.9em;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 4px;
+  border-radius: 4px;
+}
