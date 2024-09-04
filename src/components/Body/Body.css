@@ -1,13 +1,35 @@
-/* Body.css */
 .body {
-    flex: 1;
-    padding: 20px;
-    background-color: white;
-  }
-  
-  .sections {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-  }
-  
+  flex: 1;
+  padding: 20px;
+  background-color: white;
+}
+
+.sections {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%; /* 부모 컨테이너의 전체 너비를 사용 */
+}
+
+.popular-restaurants {
+  flex: 6; /* 6:4 비율로 지정 */
+  height: 400px; /* 높이를 250px로 고정 */
+  overflow: hidden; /* 넘치는 내용 숨김 */
+  background-color: #f9f9f9;
+  padding: 16px;
+}
+
+.nationwide-section {
+  flex: 4; /* 6:4 비율로 지정 */
+  height: 1365px; /* 높이를 250px로 고정 */
+  overflow: hidden; /* 넘치는 내용 숨김 */
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 2px solid #ff6600;
+  border-radius: 8px;
+}
+
+.v-scroll-inner {
+  display: flex;
+  scroll-behavior: smooth;
+}
