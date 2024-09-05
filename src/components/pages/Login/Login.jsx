@@ -12,7 +12,7 @@ const ServerURL =process.env.REACT_APP_SERVER_URL;
 axios.defaults.withCredentials = true;
 const Login = () => {
 
-    const [user, setUser] = useState({ id: '', pw: '' })
+    const [user, setUser] = useState({ userId: '', userPw: '' })
     const { login } = useAuthStore();
 
     const handleLoginChange = (e) => {
@@ -37,8 +37,8 @@ const Login = () => {
         <div className={styles.LoginContainer}>
 
             <div className={styles.LoginBox}>
-                <input type="text" name="id" onChange={handleLoginChange} placeholder='ID' />
-                <input type="password" name="pw" onChange={handleLoginChange} placeholder='PW' />
+                <input type="text" name="userId" onChange={handleLoginChange} placeholder='ID' />
+                <input type="password" name="userPw" onChange={handleLoginChange} placeholder='PW' />
                 <button className={styles.loginBtn} onClick={handleLogin}>로그인</button>
                 <div className={styles.btn}>
                     <button>회원가입</button>
