@@ -8,13 +8,20 @@ import { faBookmark } from '@fortawesome/free-regular-svg-icons'; // faBookmark 
 const Header = () => {
   const navigate = useNavigate();
 
+  // Navigate to the home page
   const handleLogoClick = () => {
-    navigate('/'); // 로고 클릭 시 메인 페이지로 이동
-  }
+    navigate('/'); 
+  };
 
+  // Navigate to the login page
   const handleLoginClick = () => {
-    navigate('/login'); // 로그인 버튼 클릭 시 로그인 페이지로 이동
-  }
+    navigate('/login');
+  };
+
+  // Navigate to the alarm page when the bell icon is clicked
+  const handleAlarmClick = () => {
+    navigate('/alarm'); 
+  };
 
   return (
     <header className="header">
@@ -32,7 +39,14 @@ const Header = () => {
       </div>
       <div className="header-section icon">
         <FontAwesomeIcon icon={faBookmark} className="faBookmark" />
-        <FontAwesomeIcon icon={faBell} className="faBell" />
+        <FontAwesomeIcon 
+          icon={faBell} 
+          className="faBell" 
+          onClick={handleAlarmClick} // Add onClick handler for the alarm icon
+          role="button" 
+          tabIndex="0"
+          onKeyPress={(e) => e.key === 'Enter' && handleAlarmClick()}
+        />
       </div>
       <div className="header-section login-buttons">
         <button onClick={handleLoginClick}>로그인</button>
