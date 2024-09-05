@@ -27,6 +27,14 @@ function ReserveModal() {
 
     const handleTimeClick = time => {
         setReserveTime(time)
+        // 시간 선택 시 다음 예약 모달로 이동
+        navigate('/confirmReserve', {
+            state: {
+                time: time,
+                guests: numberOfGuests,
+                date: reserveDate,
+            },
+        })
     }
 
     return (
