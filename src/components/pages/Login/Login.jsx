@@ -8,6 +8,8 @@ import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 
 
+const ServerURL =process.env.REACT_APP_SERVER_URL;
+axios.defaults.withCredentials = true;
 const Login = () => {
 
     const [user, setUser] = useState({ id: '', pw: '' })
@@ -19,7 +21,7 @@ const Login = () => {
     }
 
     const handleLogin = () => {
-        api.post(`/auth`, user).then((resp) => {
+         api.post(`${ServerURL}/auth/login`, user).then((resp) => {
             console.log(resp);
             const token = resp.data
             const decoded = jwtDecode(token);
