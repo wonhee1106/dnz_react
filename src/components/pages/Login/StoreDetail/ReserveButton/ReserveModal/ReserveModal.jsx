@@ -31,7 +31,6 @@ function ReserveModal() {
 
     return (
         <div className={styles.reserveModalContainer}>
-            <h1>오늘</h1>
             <Calendar onChange={handleDateChange} value={reserveDate} />
             <div className={styles.guestButtons}>
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(guests => (
@@ -46,7 +45,7 @@ function ReserveModal() {
                     </div>
                 ))}
             </div>
-            <div className={styles.reserveTimeButtons}>
+            <div className={styles.timeButtons}>
                 {[
                     '오후 12:00',
                     '오후 12:30',
@@ -68,7 +67,9 @@ function ReserveModal() {
                     </div>
                 ))}
             </div>
-            <button onClick={closeModal}>닫기</button>
+            <div className={styles.closeButton} onClick={closeModal}>
+                닫기
+            </div>
         </div>
     )
 }
