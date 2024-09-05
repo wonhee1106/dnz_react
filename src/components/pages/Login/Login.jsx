@@ -2,12 +2,18 @@
 import React from 'react'
 import styles from './Login.module.css'
 import { useState } from 'react';
+import { useAuthStore } from '../../store/store';
+import { api } from '../../config/config';
+import axios from 'axios'
+import { jwtDecode } from 'jwt-decode'
 
 
-
+const ServerURL =process.env.REACT_APP_SERVER_URL;
+axios.defaults.withCredentials = true;
 const Login = () => {
 
     const [user, setUser] = useState({ id: '', pw: '' })
+    const { login } = useAuthStore();
 
     const handleLoginChange = (e) => {
         const { name, value } = e.target;
@@ -15,6 +21,16 @@ const Login = () => {
     }
 
     const handleLogin = () => {
+         api.post(`${ServerURL}/auth/login`, user).then((resp) => {
+            console.log(resp);
+            const token = resp.data
+            const decoded = jwtDecode(token);
+            console.log(decoded);
+            sessionStorage.setItem('token', token);
+            login(token); // 로그인 함수 호출
+        }).catch((error) => {
+            console.log(error);
+        })
 
     }
     return (
