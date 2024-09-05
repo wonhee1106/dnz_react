@@ -5,6 +5,7 @@ import Body from './components/Body/Body.jsx'
 import Footer from './components/Footer/Footer.jsx'
 import Login from './components/pages/Login/Login.jsx'
 import StoreDetail from './components/pages/Login/StoreDetail/StoreDetail.jsx'
+import ConfirmReserveModal from './components/pages/Login/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveModal.jsx'
 
 const App = () => {
     return (
@@ -15,6 +16,10 @@ const App = () => {
                     <Route path="/" element={<Body />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/storeDetail" element={<StoreDetail />} />
+                    <Route
+                        path="/confirmReserve"
+                        element={<ConfirmReserveModal />}
+                    />
                 </Routes>
                 <Footer />
             </div>
