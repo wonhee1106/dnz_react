@@ -34,7 +34,7 @@ function ConfirmReserveModal() {
         <div className={styles.confirmReserveModalContainer}>
             <div className={styles.modalHeader}>
                 <h2>{formatDate(date)} 방문이 맞으신가요?</h2>
-                <p>방문 일정을 다시 한번 확인해 주세요..</p>
+                <p>방문 일정을 다시 한번 확인해 주세요.</p>
             </div>
             <div className={styles.reserveContent}>
                 <div className={styles.reserveInfo}>
