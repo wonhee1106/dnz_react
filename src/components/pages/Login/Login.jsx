@@ -2,12 +2,15 @@
 import React from 'react'
 import styles from './Login.module.css'
 import { useState } from 'react';
-
+import { useAuthStore } from '../../store/store';
+import { api } from '../../config/config';
+import axios from 'axios'
 
 
 const Login = () => {
 
     const [user, setUser] = useState({ id: '', pw: '' })
+    const { login } = useAuthStore();
 
     const handleLoginChange = (e) => {
         const { name, value } = e.target;
@@ -15,6 +18,12 @@ const Login = () => {
     }
 
     const handleLogin = () => {
+        api.post(`/auth`, user).then((resp) => {
+            console.log(resp);
+            const token = resp.data
+        }).catch((error) => {
+            console.log(error);
+        })
 
     }
     return (
