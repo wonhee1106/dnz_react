@@ -60,27 +60,3 @@
   border-radius: 4px;
   cursor: pointer;
 }
-.header .logo {
-  font-size: 24px;
-  font-weight: bold;
-  flex-basis: 5%; /* 로고의 크기를 적절히 조절 */
-  cursor: pointer; /* 클릭 가능한 커서 추가 */
-  padding: 8px 16px;
-  background-color: #ff6600;
-  color: white;
-  border-radius: 4px;
-  text-align: center;
-  transition: background-color 0.3s ease; /* 부드러운 배경색 전환 */
-}
-
-.header .logo:hover {
-  background-color: #ff8533; /* 호버 시 배경색 변경 */
-}
-
-.header .logo:active {
-  background-color: #cc5200; /* 클릭 시 배경색 변경 */
-}
-
-.header .logo:focus {
-  outline: 2px solid #ff6600; /* 포커스 시 시각적 피드백 */
-}

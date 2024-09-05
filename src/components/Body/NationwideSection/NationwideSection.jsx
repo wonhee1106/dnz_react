@@ -1,39 +1,27 @@
-import React, { useState } from "react";
-import "./NationwideSection.css";
+import React from 'react';
+import './NationwideSection.css';
 
-// Location data for buttons
 const locations = [
   { name: "압구정 청담", img: "https://image.toast.com/aaaaaqx/md/0706apgujeong.jpg" },
-  //... (rest of the locations as in your example)
+  { name: "부산", img: "https://image.toast.com/aaaaaqx/md/busan_.jpg" },
+  { name: "잠실 송파", img: "https://ugc-images.catchtable.co.kr/admin/marketing/banner/images/29098644e325436a8fc1af53f2e275c1" },
+  { name: "이태원 한남", img: "https://image.toast.com/aaaaaqx/md/0706itaewon.jpg" },
+  { name: "성수", img: "https://image.toast.com/aaaaaqx/md/0706sungsoo.jpg" },
+  { name: "광화문 종로", img: "https://image.toast.com/aaaaaqx/md/0706gwanghwamun.jpg" },
+  { name: "용산 삼각지", img: "https://ugc-images.catchtable.co.kr/admin/marketing/banner/images/7feca8d9587f43bcaf54a224885209aa" },
+  { name: "신사 논현", img: "https://ugc-images.catchtable.co.kr/admin/marketing/banner/images/8b220d879e67458089a06887d3fcb729" },
+  { name: "강남 역삼", img: "https://image.toast.com/aaaaaqx/md/0706gangnam.jpg" },
+  { name: "여의도", img: "https://image.toast.com/aaaaaqx/md/0706yeouido.jpg" },
+  { name: "합정 망원", img: "https://ugc-images.catchtable.co.kr/admin/marketing/banner/images/3765f39b7af84d7ca79b5a4692d91148" },
+  { name: "제주", img: "https://image.toast.com/aaaaaqx/md/jeju_.jpg" },
+  { name: "홍대 신촌", img: "https://image.toast.com/aaaaaqx/md/0706hongdae.jpg" },
+  { name: "대구", img: "https://ugc-images.catchtable.co.kr/admin/marketing/banner/images/bd1d1fafb767426c93ac6d10dd0cf099" },
+  { name: "북촌 삼청", img: "https://image.toast.com/aaaaaqx/md/0706bukchon_0331.jpg" },
+  { name: "금호 옥수", img: "https://ugc-images.catchtable.co.kr/admin/marketing/banner/images/72fab804b63a46d5822bbf0e82e4d764" },
+  { name: "명동 을지로", img: "https://image.toast.com/aaaaaqx/md/0706euljiro_0331.jpg" },
 ];
 
 const NationwideSection = () => {
-  const [nearbyRestaurants, setNearbyRestaurants] = useState([]);
-
-  // Function to handle "Near Me" button click
-  const handleNearMeClick = async () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-        // Fetch restaurants using Naver API
-        try {
-          const response = await fetch(`/v1/search/local.json?query=맛집&x=${longitude}&y=${latitude}`, {
-            headers: {
-              "X-NCP-APIGW-API-KEY-ID": "nwaozwnq5k", // Use your Client ID
-              "X-NCP-APIGW-API-KEY": "wqes18RU8ntvAIbqWKMI0tdh2nmL6UzXY29jWSK", // Use your Client Secret
-            },
-          });
-          const data = await response.json();
-          setNearbyRestaurants(data.items);
-        } catch (error) {
-          console.error("Error fetching nearby restaurants:", error);
-        }
-      });
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
-  };
-
   return (
     <div className="nationwide-section">
       <h2>어디로 가시나요?</h2>
@@ -45,31 +33,16 @@ const NationwideSection = () => {
                 key={index}
                 className="location-item"
                 style={{ backgroundImage: `url(${location.img})` }}
-                aria-label={location.name}
+                aria-label={location.name} // 접근성을 위해 aria-label 추가
               >
                 <span className="label">{location.name}</span>
               </button>
             ))}
-            {/* Add the "Near Me" button */}
-            <button className="location-item nearme-button" onClick={handleNearMeClick}>
-              <span className="label">내 주변</span>
-            </button>
           </div>
         </div>
       </div>
-      <div className="nearby-restaurants">
-        {nearbyRestaurants.length > 0 ? (
-          <ul>
-            {nearbyRestaurants.map((restaurant, index) => (
-              <li key={index}>{restaurant.title} - {restaurant.address}</li>
-            ))}
-          </ul>
-        ) : (
-          <p>내 주변에 맛집을 찾을 수 없습니다.</p>
-        )}
-      </div>
     </div>
   );
-};
+}
 
 export default NationwideSection;
