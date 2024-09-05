@@ -1,0 +1,30 @@
+.reserveModalContainer {
+    padding: 20px;
+}
+
+.guestButtons,
+.timeButtons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.guestButton,
+.timeButton {
+    padding: 10px 15px;
+    border: 1px solid #ff3d00;
+    background-color: #FFD8CC;
+    cursor: pointer;
+}
+
+.guestButton.active,
+.timeButton.active {
+    background-color: antiquewhite;
+    color: white;
+}
+
+.guestButton:hover,
+.timeButton:hover {
+    background-color: antiquewhite;
+    ;
+}
