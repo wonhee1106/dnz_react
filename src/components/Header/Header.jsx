@@ -8,13 +8,25 @@ import { faBookmark } from '@fortawesome/free-regular-svg-icons'; // faBookmark 
 const Header = () => {
   const navigate = useNavigate();
 
+  const handleLogoClick = () => {
+    navigate('/'); // 로고 클릭 시 메인 페이지로 이동
+  }
+
   const handleLoginClick = () => {
-    navigate('/login'); 
+    navigate('/login'); // 로그인 버튼 클릭 시 로그인 페이지로 이동
   }
 
   return (
     <header className="header">
-      <div className="header-section logo">9900</div>
+      <div 
+        className="header-section logo" 
+        onClick={handleLogoClick} 
+        role="button" 
+        tabIndex="0" 
+        onKeyPress={(e) => e.key === 'Enter' && handleLogoClick()}
+      >
+        9900
+      </div> {/* 로고에 클릭 및 키보드 이벤트 추가 */}
       <div className="header-section search-container">
         <input className="search" type="text" placeholder="검색" />
       </div>
