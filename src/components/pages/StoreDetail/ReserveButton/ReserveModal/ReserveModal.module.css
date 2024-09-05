@@ -1,0 +1,69 @@
+* {
+    box-sizing: border-box;
+}
+
+
+.reserveModalContainer {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+}
+
+.guestButtons,
+.timeButtons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.guestButton,
+.timeButton {
+    padding: 10px 15px;
+    border: 1px solid #ff3d00;
+    background-color: #ffff;
+    cursor: pointer;
+}
+
+.guestButton {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    text-align: center;
+    padding-top: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.timeButton {
+    border-radius: 10px;
+    color: #ffff;
+    background-color: #ff3d00;
+}
+
+.guestButton.active,
+.timeButton.active {
+    background-color: #ff3d00;
+    color: white;
+}
+
+.guestButton:hover,
+.timeButton:hover {
+    background-color: antiquewhite;
+}
+
+.closeButton {
+    border: 1px solid #666666b0;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 30px;
+    width: 300px;
+    height: 40px;
+    padding: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
