@@ -53,3 +53,32 @@
   padding: 4px;
   border-radius: 4px;
 }
+
+/* Specific styles for the Near Me button */
+.nearme-button {
+  width: 150px;
+  height: 100px;
+  background-color: #ff6600; /* Same orange color for the Near Me button */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+}
+
+.nearme-button .label {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  font-size: 0.9em;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 4px;
+  border-radius: 4px;
+}
+
+/* Hover effect for all buttons */
+.location-item:hover, .nearme-button:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease-in-out;
+}
