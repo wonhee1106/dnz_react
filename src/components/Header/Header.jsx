@@ -26,7 +26,7 @@ const Header = () => {
         onKeyPress={(e) => e.key === 'Enter' && handleLogoClick()}
       >
         9900
-      </div> {/* 로고에 클릭 및 키보드 이벤트 추가 */}
+      </div>
       <div className="header-section search-container">
         <input className="search" type="text" placeholder="검색" />
       </div>
