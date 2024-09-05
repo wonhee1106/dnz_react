@@ -17,6 +17,14 @@
     cursor: pointer;
 }
 
+.guestButton {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    text-align: center;
+    padding-top: 22px;
+}
+
 .guestButton.active,
 .timeButton.active {
     background-color: antiquewhite;
@@ -26,5 +34,4 @@
 .guestButton:hover,
 .timeButton:hover {
     background-color: antiquewhite;
-    ;
 }

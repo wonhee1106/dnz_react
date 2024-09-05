@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import { useState } from 'react'
+import styles from './ReserveModal.module.css'
 
 function ReserveModal() {
     const navigate = useNavigate()
@@ -28,26 +29,24 @@ function ReserveModal() {
         setReserveTime(time)
     }
 
-    cons
-
     return (
-        <div className={Styles.reserveModalContainer}>
+        <div className={styles.reserveModalContainer}>
             <h1>오늘</h1>
             <Calendar onChange={handleDateChange} value={reserveDate} />
-            <div className={Styles.guestButtons}>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(guests => {
-                    ;<div
+            <div className={styles.guestButtons}>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(guests => (
+                    <div
                         key={guests}
-                        className={`${Styles.guestButton} ${
-                            numberOfGuests === guests ? Styles.active : ''
+                        className={`${styles.guestButton} ${
+                            numberOfGuests === guests ? styles.active : ''
                         }`}
                         onClick={() => handleGuestClick(guests)}
                     >
                         {guests}명
                     </div>
-                })}
+                ))}
             </div>
-            <div className={Styles.reserveTimeButtons}>
+            <div className={styles.reserveTimeButtons}>
                 {[
                     '오후 12:00',
                     '오후 12:30',
@@ -60,8 +59,8 @@ function ReserveModal() {
                 ].map(time => (
                     <div
                         key={time}
-                        className={`${Styles.timeButton} ${
-                            reserveTime === time ? Styles.active : ''
+                        className={`${styles.timeButton} ${
+                            reserveTime === time ? styles.active : ''
                         }`}
                         onClick={() => handleTimeClick(time)}
                     >
