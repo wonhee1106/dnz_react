@@ -1,0 +1,87 @@
+.confirmReserveModalContainer {
+    width: 400px;
+    height: 500px;
+    padding: 50px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.modalHeader {
+    border-bottom: 2px solid #ff3d00;
+    padding-bottom: 15px;
+}
+
+.modalHeader h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #000000;
+}
+
+.modalHeader p {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.reserveInfo {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.reserveInfoItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.icon {
+    margin-top: 50px;
+    font-size: 40px;
+    margin-bottom: 5px;
+}
+
+.reserveInfoItem span {
+    margin-top: 5px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.reservNotice {
+    margin-top: 50px;
+    font-size: 17px;
+    color: #666;
+}
+
+.buttonBox {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.closeButton {
+    width: 100px;
+    height: 40px;
+    padding: 10px;
+    background-color: #ccc;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.nextButton {
+    width: 100px;
+    padding: 40px;
+    padding: 10px;
+    background-color: #ff3d00;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}

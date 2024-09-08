@@ -1,14 +1,14 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import Header from './components/Header/Header.jsx';
-import Body from './components/Body/Body.jsx';
-import Footer from './components/Footer/Footer.jsx';
-import Login from './components/pages/Login/Login.jsx';
-import StoreDetail from './components/pages/StoreDetail/StoreDetail.jsx';
-import Alam from './components/pages/Alampage/Alam.jsx';
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import Header from './components/Header/Header.jsx'
+import Body from './components/Body/Body.jsx'
+import Footer from './components/Footer/Footer.jsx'
+import Login from './components/pages/Login/Login.jsx'
+import Alam from './components/pages/Alampage/Alam.jsx'
+import StoreDetail from './components/pages/StoreDetail/StoreDetail.jsx'
+import ConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveModal.jsx'
 import StoreManagementPage from './components/pages/StoreManagementPage/StoreManagementPage.jsx';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-
 
 const AppContent = () => {
     const location = useLocation(); // 현재 경로 확인
@@ -24,6 +24,10 @@ const AppContent = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/storeDetail" element={<StoreDetail />} />
                 <Route path="/alarm" element={<Alam />} />
+                <Route
+                        path="/confirmReserve"
+                        element={<ConfirmReserveModal />}
+                    />
                 <Route path="/StoreManagementPage" element={<StoreManagementPage />} />
             </Routes>
             {!isStoreManagementPage && <Footer />}
