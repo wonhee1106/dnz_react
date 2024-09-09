@@ -7,8 +7,12 @@ import Login from './components/pages/Login/Login.jsx'
 import Alam from './components/pages/Alampage/Alam.jsx'
 import StoreDetail from './components/pages/StoreDetail/StoreDetail.jsx'
 import ConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveModal.jsx'
+
 import FinalConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal.jsx'
 import ReserveDetail from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
+
+import Signup from './components/pages/Signup/sigunup.jsx'
+
 
 
 const App = () => {
@@ -19,6 +23,7 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<Body />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup/>} />
                     <Route path="/storeDetail" element={<StoreDetail />} />
                     <Route path="/alarm" element={<Alam />} />
                     <Route
