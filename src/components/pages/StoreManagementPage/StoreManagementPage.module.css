@@ -76,6 +76,11 @@
     background-color: #f1f3f5;
 }
 
+.reservationItem.selected {
+    background-color: #f1f3f5; /* hover와 동일한 배경색 */
+    border: 2px solid #34495e; /* 테두리 강조 */
+}
+
 .tableInfo {
     font-size: 18px;
     font-weight: bold;

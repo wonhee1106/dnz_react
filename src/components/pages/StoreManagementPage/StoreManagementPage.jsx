@@ -1,18 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { api } from '../../config/config'; // JWT 토큰을 포함한 Axios 인스턴스
 import styles from './StoreManagementPage.module.css';
 
 const StoreManagementPage = () => {
-    // 예약 리스트 초기 데이터
-    const reservations = [
-        { id: 1, tableNumber: 12, people: 4, time: '19:00', name: '홍길동', phone: '010-1234-5678' },
-        { id: 2, tableNumber: 8, people: 2, time: '18:30', name: '이순신', phone: '010-9876-5432' },
-        { id: 3, tableNumber: 5, people: 3, time: '20:00', name: '김철수', phone: '010-5555-6666' }
-    ];
+    const [reservations, setReservations] = useState([]);
+    const [selectedReservation, setSelectedReservation] = useState(null);
 
-    // 선택된 예약을 관리하는 상태
-    const [selectedReservation, setSelectedReservation] = useState(reservations[0]);
+    // 서버에서 예약 데이터를 가져오는 함수
+    const fetchReservations = async (status) => {
+        try {
+            const response = await api.get(`/reservation`, {
+                params: { status }
+            });
+            setReservations(response.data);
+            if (response.data.length > 0) {
+                setSelectedReservation(response.data[0]); // 첫 번째 예약을 기본 선택
+            }
+        } catch (error) {
+            console.error('예약 데이터를 가져오는데 실패했습니다:', error);
+        }
+    };
 
-    // 예약을 선택했을 때 호출되는 함수
+    useEffect(() => {
+        fetchReservations('pending'); // 예약 상태에 따라 필터링 ('pending', 'confirmed', 'completed')
+    }, []);
+
     const handleReservationClick = (reservation) => {
         setSelectedReservation(reservation);
     };
@@ -53,36 +65,33 @@ const StoreManagementPage = () => {
                 <h3 className={styles.reservationTitle}>예약 대기</h3>
                 {reservations.map(reservation => (
                     <div
-                        key={reservation.id}
-                        className={styles.reservationItem}
+                        key={reservation.reservation_id}
+                        className={`${styles.reservationItem} ${selectedReservation?.reservation_id === reservation.reservation_id ? styles.selected : ''}`}
                         onClick={() => handleReservationClick(reservation)}
                     >
-                        <span className={styles.tableInfo}>테이블 {reservation.tableNumber}번 - {reservation.people}명</span>
-                        <span className={styles.time}>예약 시간: {reservation.time}</span>
+                        <span className={styles.tableInfo}>테이블 {reservation.store_seq}번 - {reservation.num_guests}명</span>
+                        <span className={styles.time}>예약 시간: {new Date(reservation.reservation_time).toLocaleTimeString()}</span>
                     </div>
                 ))}
             </div>
 
             {/* 예약 상세 정보 */}
-            <div className={styles.reservationDetails}>
-                <h3 className={styles.detailsTitle}>예약 상세 정보</h3>
-                <div className={styles.detailInfo}>
-                    <p>테이블 번호: {selectedReservation.tableNumber}번</p>
-                    <p>예약 인원: {selectedReservation.people}명</p>
-                    <p>예약 시간: {selectedReservation.time}</p>
+            {selectedReservation && (
+                <div className={styles.reservationDetails}>
+                    <h3 className={styles.detailsTitle}>예약 상세 정보</h3>
+                    <div className={styles.detailInfo}>
+                        <p>테이블 번호: {selectedReservation.store_seq}번</p>
+                        <p>예약 인원: {selectedReservation.num_guests}명</p>
+                        <p>예약 시간: {new Date(selectedReservation.reservation_time).toLocaleTimeString()}</p>
+                    </div>
+                    <div className={styles.guestInfo}>
+                        <h4>예약자 정보</h4>
+                        <p>예약 상태: {selectedReservation.status}</p>
+                    </div>
                 </div>
-                <div className={styles.guestInfo}>
-                    <h4>예약자 정보</h4>
-                    <p>이름: {selectedReservation.name}</p>
-                    <p>전화번호: {selectedReservation.phone}</p>
-                </div>
-                <div className={styles.buttons}>
-                    <button className={styles.cancelButton}>취소</button>
-                    <button className={styles.completeButton}>완료 처리</button>
-                </div>
-            </div>
+            )}
         </div>
     );
-}
+};
 
 export default StoreManagementPage;
