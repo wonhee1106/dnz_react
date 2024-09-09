@@ -7,7 +7,12 @@ import Login from './components/pages/Login/Login.jsx'
 import Alam from './components/pages/Alampage/Alam.jsx'
 import StoreDetail from './components/pages/StoreDetail/StoreDetail.jsx'
 import ConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveModal.jsx'
+
+import FinalConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal.jsx'
+import ReserveDetail from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
+
 import Signup from './components/pages/Signup/sigunup.jsx'
+
 
 
 const App = () => {
@@ -25,6 +30,11 @@ const App = () => {
                         path="/confirmReserve"
                         element={<ConfirmReserveModal />}
                     />
+                    <Route
+                        path="/finalconfirmReserve"
+                        element={<FinalConfirmReserveModal />}
+                    />
+                    <Route path="/reserveDetail" element={<ReserveDetail />} />
                 </Routes>
                 <Footer />
             </div>

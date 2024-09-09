@@ -1,8 +1,9 @@
+import { useNavigate } from 'react-router-dom'
 import 'react-calendar/dist/Calendar.css'
 import { useState } from 'react'
-import ReserveModal from './ReserveModal/ReserveModal'
+import FinalConfirmReserveModal from './FinalConfirmReserveModal/FinalConfirmReserveModal'
 
-function ReserveButton() {
+function ConfirmReserveButton() {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     const openModal = () => {
@@ -16,8 +17,10 @@ function ReserveButton() {
     return (
         <div>
             <button onClick={openModal}>예약하기</button>
-            {isModalOpen && <ReserveModal closeModal={closeModal} />}
+            {isModalOpen && (
+                <FinalConfirmReserveModal closeModal={closeModal} />
+            )}
         </div>
     )
 }
-export default ReserveButton
+export default ConfirmReserveButton
