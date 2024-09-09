@@ -3,8 +3,9 @@ import styles from './Login.module.css';
 import { useAuthStore } from '../../store/store';
 import { api } from '../../config/config';
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
-import { useNavigate  } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import Modal from './Modal/Modal'
 
 const ServerURL = process.env.REACT_APP_SERVER_URL;
 axios.defaults.withCredentials = true;
@@ -23,7 +24,10 @@ const Index = () => {
     });
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
-    const navigate =useNavigate();
+    const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isPasswordRetrievalOpen, setIsPasswordRetrievalOpen] = useState(false);
+
 
     const handleSignupChange = (e) => {
         const { name, value } = e.target;
@@ -35,6 +39,7 @@ const Index = () => {
         setUser((prev) => ({ ...prev, [name]: value }));
     };
 
+    // 로그인
     const handleLogin = () => {
         api.post(`${ServerURL}/auth/login`, user)
             .then((resp) => {
@@ -52,12 +57,13 @@ const Index = () => {
             });
     };
 
+    // 회원가입
     const handleSignup = () => {
         if (!isEmailVerified) {
             alert("이메일 인증이 완료되지 않았습니다.");
             return;
         }
-    
+
         console.log(signup); // 데이터를 콘솔에 출력
         api.post(`${ServerURL}/auth/registerUser`, signup)
             .then((resp) => {
@@ -80,17 +86,19 @@ const Index = () => {
                 alert("회원가입 실패");
             });
     };
+    // 토글 화면 전환
     const toggleSignup = () => {
         setIsSignup(!isSignup);
     };
 
+    // 이메일 전송
     const requestEmailVerification = () => {
         if (!signup.userEmail) {
             alert("이메일을 입력해 주세요");
             return;
         }
 
-        api.post(`${ServerURL}/auth/requestEmailVerification/`+ signup.userEmail)
+        api.post(`${ServerURL}/auth/requestEmailVerification/` + signup.userEmail)
             .then((resp) => {
                 console.log(resp);
                 alert("이메일이 전송되었습니다. 이메일을 확인해주세요.");
@@ -102,6 +110,7 @@ const Index = () => {
             });
     };
 
+    // 이메일 인증 코드
     const verifyCode = () => {
         if (!verificationCode) {
             alert("인증 코드를 입력해 주세요");
@@ -115,7 +124,7 @@ const Index = () => {
                     alert("이메일 인증이 완료되었습니다.");
                     setIsEmailVerified(true);
                 } else {
-                    alert("인증 코드가 올바르지 않습니다."); 
+                    alert("인증 코드가 올바르지 않습니다.");
                 }
             })
             .catch((error) => {
@@ -123,6 +132,65 @@ const Index = () => {
                 alert("인증 코드 검증 실패, 다시 시도하여 주세요");
             });
     };
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    }
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    }
+
+    const openPasswordRetrievalModal = () => {
+        setIsPasswordRetrievalOpen(true);
+    };
+
+    const closePasswordRetrievalModal = () => {
+        setIsPasswordRetrievalOpen(false);
+    };
+
+// 아이디 재설정
+    const handleFindId = () => {
+        const userEmail = prompt("아이디를 찾기 위해 이메일을 입력해주세요.");
+        const userPhoneNumber = prompt("아이디를 찾기 위해 핸드폰 번호를 입력해주세요.");
+
+        if (!userEmail || !userPhoneNumber) {
+            alert("이메일과 핸드폰 번호를 모두 입력해주세요.");
+            return;
+        }
+
+        api.post(`${ServerURL}/auth/findId`, { userEmail, userPhoneNumber })
+            .then((resp) => {
+                console.log(resp);
+                alert(`아이디는 ${resp.data.userId} 입니다.`);
+            })
+            .catch((error) => {
+                console.log(error);
+                alert("아이디 찾기 실패. 다시 시도해 주세요.");
+            });
+    };
+
+    // 비밀번호 재설정
+    const handlePasswordRetrieval = () => {
+        const userEmail = prompt("이메일 입력.");
+        const userId = prompt("아이디 입력.");
+
+        if (!userEmail || !userId) {
+            alert("이메일과 핸드폰 번호를 모두 입력해주세요.");
+            return;
+        }
+
+        api.post(`${ServerURL}/auth/findPassword`, { userEmail, userId })
+            .then((resp) => {
+                console.log(resp);
+                alert("비밀번호 찾기 요청이 완료되었습니다. 이메일을 확인해주세요.");
+            })
+            .catch((error) => {
+                console.log(error);
+                alert("비밀번호 찾기 실패. 다시 시도해 주세요.");
+            });
+    };
+
 
     return (
         <div className={styles.LoginContainer}>
@@ -134,8 +202,9 @@ const Index = () => {
                         <button className={styles.loginBtn} onClick={handleLogin}>로그인</button>
                         <div className={styles.btn}>
                             <button onClick={toggleSignup}>회원가입</button>
-                            <button>아이디찾기</button>
-                            <button>비밀번호찾기</button>
+                            <button onClick={openModal}>아이디찾기</button>
+                            <button onClick={openPasswordRetrievalModal}>비밀번호 찾기</button>
+
                         </div>
                     </>
                 ) : (
@@ -159,6 +228,24 @@ const Index = () => {
                     </>
                 )}
             </div>
+
+            {/* 모달 컴포넌트 */}
+            <Modal isOpen={isModalOpen} closeModal={closeModal}>
+                <h2>아이디 찾기</h2>
+                이메일 <input type="text" placeholder='이메일' /><br></br>
+                핸드폰 <input type="text" placeholder='핸드폰' /><br></br>
+                <button onClick={handleFindId}>아이디 찾기</button>
+                <button onClick={closeModal}>닫기</button>
+            </Modal>
+
+            <Modal isOpen={isPasswordRetrievalOpen} closeModal={closePasswordRetrievalModal}>
+                <h2>비밀번호 찾기</h2>
+                이메일 <input type="text" placeholder='이메일' /><br />
+                핸드폰 <input type="text" placeholder='핸드폰' /><br />
+                <button onClick={handlePasswordRetrieval}>비밀번호 찾기</button>
+                <button onClick={closePasswordRetrievalModal}>닫기</button>
+            </Modal>
+
         </div>
     );
 };
