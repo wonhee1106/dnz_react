@@ -15,6 +15,7 @@ import Signup from './components/pages/Signup/sigunup.jsx'
 
 import StoreManagementPage from './components/pages/StoreManagementPage/StoreManagementPage.jsx';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import StoreAddPage from './components/pages/StoreAddPage/StoreAddPage.jsx'
 
 const AppContent = () => {
     const location = useLocation(); // 현재 경로 확인
@@ -40,7 +41,8 @@ const AppContent = () => {
                         path="/finalconfirmReserve"
                         element={<FinalConfirmReserveModal />}
                     />
-                    <Route path="/reserveDetail" element={<ReserveDetail />} />
+                <Route path="/reserveDetail" element={<ReserveDetail />} />
+                <Route path="/storeadd" element={<StoreAddPage />} />
             </Routes>
             {!isStoreManagementPage && <Footer />}
         </div>

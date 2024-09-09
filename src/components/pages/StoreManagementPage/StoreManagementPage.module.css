@@ -170,3 +170,17 @@
         justify-content: space-between;
     }
 }
+
+/* 메뉴가 선택되었을 때의 스타일 */
+.selectedMenu {
+    background-color: #34495e;
+    border-radius: 5px;
+    color: white;
+}
+
+.menuItem:hover {
+    background-color: #34495e;
+    border-radius: 5px;
+}
+
+/* 다른 CSS는 그대로 유지 */
