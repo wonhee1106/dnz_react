@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // import useNavigate
 import styles from './Login.module.css';
 import { useAuthStore } from '../../store/store';
 import { api } from '../../config/config';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
+import { useNavigate  } from 'react-router-dom';
 
 const ServerURL = process.env.REACT_APP_SERVER_URL;
 axios.defaults.withCredentials = true;
 
-const Login = () => {
+const Index = () => {
     const [user, setUser] = useState({ userId: '', userPw: '' });
     const { login } = useAuthStore();
     const [isSignup, setIsSignup] = useState(false);
@@ -23,8 +23,7 @@ const Login = () => {
     });
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
-    
-    const navigate = useNavigate(); // initialize useNavigate
+    const navigate =useNavigate();
 
     const handleSignupChange = (e) => {
         const { name, value } = e.target;
@@ -44,8 +43,8 @@ const Login = () => {
                 const decoded = jwtDecode(token);
                 console.log(decoded);
                 sessionStorage.setItem('token', token);
-                login(token); 
-                navigate('/'); 
+                login(token); // 로그인 함수 호출
+                navigate("/");
             })
             .catch((error) => {
                 console.log(error);
@@ -58,7 +57,7 @@ const Login = () => {
             alert("이메일 인증이 완료되지 않았습니다.");
             return;
         }
-
+    
         console.log(signup); // 데이터를 콘솔에 출력
         api.post(`${ServerURL}/auth/registerUser`, signup)
             .then((resp) => {
@@ -81,7 +80,6 @@ const Login = () => {
                 alert("회원가입 실패");
             });
     };
-
     const toggleSignup = () => {
         setIsSignup(!isSignup);
     };
@@ -92,11 +90,11 @@ const Login = () => {
             return;
         }
 
-        api.post(`${ServerURL}/auth/requestEmailVerification/${signup.userEmail}`)
+        api.post(`${ServerURL}/auth/requestEmailVerification/`+ signup.userEmail)
             .then((resp) => {
                 console.log(resp);
                 alert("이메일이 전송되었습니다. 이메일을 확인해주세요.");
-                setIsEmailVerified(false); // 이메일 인증이 완료되지 않은 상태로 설정
+                setIsEmailVerified(true); // 이메일 인증이 완료되지 않은 상태로 설정
             })
             .catch((error) => {
                 console.log(error);
@@ -165,4 +163,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Index;
