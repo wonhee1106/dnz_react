@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import styles from './Login.module.css';
-import { useAuthStore } from '../../store/store';
-import { api } from '../../config/config';
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react'
+import styles from './Login.module.css'
+import { useAuthStore } from '../../store/store'
+import { api } from '../../config/config'
+import axios from 'axios'
+import { jwtDecode } from 'jwt-decode'
+import { useNavigate } from 'react-router-dom'
 import Modal from './Modal/Modal'
 
 const ServerURL = process.env.REACT_APP_SERVER_URL;
 axios.defaults.withCredentials = true;
 
 const Index = () => {
-    const [user, setUser] = useState({ userId: '', userPw: '' });
-    const { login } = useAuthStore();
-    const [isSignup, setIsSignup] = useState(false);
+    const [user, setUser] = useState({ userId: '', userPw: '' })
+    const { login } = useAuthStore()
+    const [isSignup, setIsSignup] = useState(false)
     const [signup, setSignup] = useState({
         userId: '',
         userPw: '',
@@ -43,17 +43,22 @@ const Index = () => {
         setUser((prev) => ({ ...prev, [name]: value }));
     };
 
+    const handleLoginChange = e => {
+        const { name, value } = e.target
+        setUser(prev => ({ ...prev, [name]: value }))
+    }
+
     // 로그인
     const handleLogin = () => {
         api.post(`${ServerURL}/auth/login`, user)
-            .then((resp) => {
-                console.log(resp);
-                const token = resp.data;
-                const decoded = jwtDecode(token);
-                console.log(decoded);
-                sessionStorage.setItem('token', token);
-                login(token); // 로그인 함수 호출
-                navigate("/");
+            .then(resp => {
+                console.log(resp)
+                const token = resp.data
+                const decoded = jwtDecode(token)
+                console.log(decoded)
+                sessionStorage.setItem('token', token)
+                login(token) // 로그인 함수 호출
+                navigate('/')
             })
             .catch((error) => {
                 console.log(error);
@@ -103,11 +108,13 @@ const Index = () => {
             return;
         }
 
-        api.post(`${ServerURL}/auth/requestEmailVerification/` + signup.userEmail)
-            .then((resp) => {
-                console.log(resp);
-                alert("이메일이 전송되었습니다. 이메일을 확인해주세요.");
-                setIsEmailVerified(true); // 이메일 인증이 완료되지 않은 상태로 설정
+        api.post(
+            `${ServerURL}/auth/requestEmailVerification/` + signup.userEmail
+        )
+            .then(resp => {
+                console.log(resp)
+                alert('이메일이 전송되었습니다. 이메일을 확인해주세요.')
+                setIsEmailVerified(true) // 이메일 인증이 완료되지 않은 상태로 설정
             })
             .catch((error) => {
                 console.log(error);
@@ -129,7 +136,7 @@ const Index = () => {
                     alert("이메일 인증이 완료되었습니다.");
                     setIsEmailVerified(true);
                 } else {
-                    alert("인증 코드가 올바르지 않습니다.");
+                    alert('인증 코드가 올바르지 않습니다.')
                 }
             })
             .catch((error) => {
@@ -147,12 +154,12 @@ const Index = () => {
     };
 
     const openPasswordRetrievalModal = () => {
-        setIsPasswordRetrievalOpen(true);
-    };
+        setIsPasswordRetrievalOpen(true)
+    }
 
     const closePasswordRetrievalModal = () => {
-        setIsPasswordRetrievalOpen(false);
-    };
+        setIsPasswordRetrievalOpen(false)
+    }
 
     // 아이디 재설정
     const handleFindId = () => {
@@ -166,11 +173,11 @@ const Index = () => {
                 console.log(resp);
                 alert(`아이디는 ${resp.data.userId} 입니다.`);
             })
-            .catch((error) => {
-                console.log(error);
-                alert("아이디 찾기 실패. 다시 시도해 주세요.");
-            });
-    };
+            .catch(error => {
+                console.log(error)
+                alert('아이디 찾기 실패. 다시 시도해 주세요.')
+            })
+    }
 
     const handlePasswordRetrieval = () => {
         // 이메일과 아이디가 입력되지 않은 경우 처리
@@ -251,17 +258,19 @@ const Index = () => {
                 <button onClick={closeModal}>닫기</button>
             </Modal>
 
-            <Modal isOpen={isPasswordRetrievalOpen} closeModal={closePasswordRetrievalModal}>
+            <Modal
+                isOpen={isPasswordRetrievalOpen}
+                closeModal={closePasswordRetrievalModal}
+            >
                 <h2>비밀번호 찾기</h2>
                 아이디 <input type="text" value={findUserId} onChange={(e) => setFindUserId(e.target.value)} placeholder='아이디' /><br />
                 이메일 <input type="text" value={findEmail} onChange={(e) => setFindEmail(e.target.value)} placeholder='이메일' /><br />
                 <button onClick={handlePasswordRetrieval}>비밀번호 찾기</button>
                 <button onClick={closePasswordRetrievalModal}>닫기</button>
             </Modal>
-
         </div>
     );
 };
 
-export default Index;
+export default Index
 
