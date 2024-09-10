@@ -21,22 +21,8 @@ const NationwideSection = () => {
       <h2>어디로 가시나요?</h2>
       <div className="section-body">
         <div className="v-scroll">
-          <div className="v-scroll-inner">
-            {locations.map((location, index) => (
-              <button
-                key={index}
-                className="location-item"
-                style={{ backgroundImage: `url(${location.img})` }}
-                aria-label={location.name}
-              >
-                <span className="label">{location.name}</span>
-              </button>
-            ))}
-            {/* "Near Me" button now navigates to maps */}
-            <button className="location-item nearme-button" onClick={handleNearMeClick}>
-              <span className="label">내 주변</span>
-            </button>
-          </div>
+        
+        
         </div>
       </div>
     </div>
