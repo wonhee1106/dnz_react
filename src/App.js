@@ -11,7 +11,7 @@ import ConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/Re
 import FinalConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal.jsx'
 import ReserveDetail from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
 
-import Signup from './components/pages/Signup/sigunup.jsx'
+import MyDining from './components/pages/MyDining/MyDining.jsx'
 
 import StoreManagementPage from './components/pages/StoreManagementPage/StoreManagementPage.jsx';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -30,8 +30,6 @@ const AppContent = () => {
                 <Route path="/" element={<Body />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/store/:storeId" element={<StoreDetail />} />
-
-
                 <Route path="/alarm" element={<Alam />} />
                 <Route
                         path="/confirmReserve"
@@ -45,6 +43,7 @@ const AppContent = () => {
                     />
                 <Route path="/reserveDetail" element={<ReserveDetail />} />
                 <Route path="/storeadd" element={<StoreAddPage />} />
+                <Route path="/myDining" element={<MyDining />} />
             </Routes>
             {!isStoreManagementPage && <Footer />}
         </div>

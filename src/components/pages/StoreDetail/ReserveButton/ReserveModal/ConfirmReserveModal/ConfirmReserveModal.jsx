@@ -4,10 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 import { faClock } from '@fortawesome/free-regular-svg-icons'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
+import axios from 'axios'
+import { api } from '../../../../../config/config'
+import { useAuthStore } from '../../../../../store/store'
 
 function ConfirmReserveModal() {
     const navigate = useNavigate()
     const location = useLocation()
+    const { token } = useAuthStore()
 
     // 전달된 시간 데이터 받기
     const { date, time, guests } = location.state
@@ -16,9 +20,27 @@ function ConfirmReserveModal() {
         navigate(-1)
     }
 
-    const nextModal = () => {
-        // FinalConfirmReserveModal로 이동하면서 date, time, guests 데이터를 전달
-        navigate('/finalConfirmReserve', { state: { date, time, guests } })
+    const nextModal = async () => {
+        try {
+            const reservationData = {
+                reservationDate: date.toISOString().split('T')[0],
+                reservationTime: time,
+                numGuests: guests,
+            }
+
+            console.log(token)
+            // const response = await api.post(`/reservation`, reservationData)
+
+            // if (response.status === 200) {
+            console.log('예약 성공!')
+            navigate('/finalConfirmReserve', {
+                state: { date, time, guests },
+            })
+            // }
+            // FinalConfirmReserveModal로 이동하면서 date, time, guests 데이터를 전달
+        } catch (error) {
+            alert('예약 실패ㅠㅠ')
+        }
     }
 
     const formatDate = date => {
