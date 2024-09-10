@@ -8,7 +8,7 @@ function FinalConfirmReserveModal() {
     const { date, time, guests } = location.state
 
     const goToMain = () => {
-        navigate('/main')
+        navigate('/')
     }
 
     const checkReservation = () => {
