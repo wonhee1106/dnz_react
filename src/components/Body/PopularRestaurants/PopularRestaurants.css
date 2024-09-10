@@ -112,3 +112,37 @@
 .scroll-button:focus {
   outline: none;
 }
+
+
+.btn-bookmark {
+  background: none; /* 배경 없음 */
+  border: none; /* 테두리 없음 */
+  cursor: pointer; /* 커서 모양을 포인터로 */
+  padding: 0; /* 패딩 제거 */
+  margin: 0; /* 마진 제거 */
+}
+
+.faBookmark1 {
+  color: rgb(255, 153, 0); /* 아이콘 색상 (원하는 색상으로 변경 가능) */
+  font-size: 24px; /* 아이콘 크기 (원하는 크기로 조정 가능) */
+}
+
+
+.section-header-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-more {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-more:hover {
+  background-color: #e65c00;
+}
