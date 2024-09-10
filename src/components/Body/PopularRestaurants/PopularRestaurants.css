@@ -6,6 +6,8 @@
   position: relative;
   height: auto; /* 항목이 묻히지 않도록 높이를 자동으로 설정 */
   width: calc(5 * 220px + 4 * 16px); /* 항목 5개 + 간격을 정확히 맞추기 위해 너비 설정 */
+  border-radius: 8px;
+  border: 2px solid #ff6600;
 }
 
 .restaurant-list-sm {
@@ -13,6 +15,7 @@
   flex-wrap: nowrap; /* 항목들이 가로로 나열되도록 설정 */
   gap: 16px;
   height: auto; /* 항목이 묻히지 않도록 높이를 자동으로 설정 */
+  
 }
 
 .restaurant-list-item {
