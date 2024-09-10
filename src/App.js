@@ -11,8 +11,8 @@ import ConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/Re
 import FinalConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal.jsx'
 import ReserveDetail from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
 
-import Signup from './components/pages/Signup/sigunup.jsx'
-
+// import Signup from './components/pages/Signup/sigunup.jsx'
+// import PopularRestaurants from './components/Body/PopularRestaurants/PopularRestaurants.jsx' // 올바른 경로로 수정
 
 
 const App = () => {
@@ -23,7 +23,7 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<Body />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<Signup/>} />
+                    {/* <Route path="/signup" element={<Signup/>} /> */}
                     <Route path="/storeDetail" element={<StoreDetail />} />
                     <Route path="/alarm" element={<Alam />} />
                     <Route

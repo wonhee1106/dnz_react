@@ -1,5 +1,4 @@
 import React from 'react';
-import Header from '../../Header/Header.jsx'; // Import the Header
 import './Alam.css'; // Assuming you have specific styles for this page
 
 function Alam() {
