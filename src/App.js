@@ -12,8 +12,6 @@ import FinalConfirmReserveModal from './components/pages/StoreDetail/ReserveButt
 import ReserveDetail from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
 
 
-
-
 const App = () => {
     return (
         <Router>
