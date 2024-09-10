@@ -12,7 +12,6 @@ import FinalConfirmReserveModal from './components/pages/StoreDetail/ReserveButt
 import ReserveDetail from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
 import MyDining from './components/pages/MyDining/MyDining.jsx'
 
-// import Signup from './components/pages/Signup/signup.jsx'
 
 const App = () => {
     return (
@@ -22,7 +21,6 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<Body />} />
                     <Route path="/login" element={<Login />} />
-                    {/* <Route path="/signup" element={<Signup />} /> */}
                     <Route path="/storeDetail" element={<StoreDetail />} />
                     <Route path="/alarm" element={<Alam />} />
                     <Route
