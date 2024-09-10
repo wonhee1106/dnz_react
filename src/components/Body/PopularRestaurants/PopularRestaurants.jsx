@@ -21,23 +21,31 @@ const PopularRestaurants = () => {
   const scrollRef4 = useRef(null);
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
-  const token = localStorage.getItem('jwtToken'); // 로컬 스토리지에서 JWT 토큰 가져오기
 
   const fetchRestaurantPhotos = (storeSeq) => {
     return fetch(`${serverURL}/photos/${storeSeq}`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     }).then((response) => response.json());
+  };
+
+  // 중복된 식당 이름을 필터링하는 함수
+  const removeDuplicateNames = (restaurants) => {
+    const uniqueRestaurants = [];
+    const namesSet = new Set();
+
+    restaurants.forEach((restaurant) => {
+      if (!namesSet.has(restaurant.name)) {
+        uniqueRestaurants.push(restaurant);
+        namesSet.add(restaurant.name);
+      }
+    });
+
+    return uniqueRestaurants;
   };
 
   const fetchRestaurants = (category, setRestaurants, page = 1) => {
     fetch(`${serverURL}/stores/category/${category}?page=${page}`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`, // JWT 토큰을 포함한 Authorization 헤더 추가
-      },
     })
       .then((response) => {
         if (!response.ok) throw new Error('Network response was not ok');
@@ -50,7 +58,13 @@ const PopularRestaurants = () => {
             return { ...restaurant, photos, isBookmarked: false }; // 북마크 상태 추가
           })
         );
-        setRestaurants((prevRestaurants) => [...prevRestaurants, ...updatedData.slice(0, 15)]); // 목록에 추가
+
+        const filteredData = removeDuplicateNames(updatedData); // 중복된 이름을 필터링
+
+        setRestaurants((prevRestaurants) => {
+          const combined = [...prevRestaurants, ...filteredData];
+          return removeDuplicateNames(combined); // 전체 목록 중복 필터링
+        }); // 목록에 추가
       })
       .catch((error) => console.error(`Error fetching ${category}:`, error));
   };
@@ -60,7 +74,7 @@ const PopularRestaurants = () => {
     fetchRestaurants('중식', setChineseRestaurants);
     fetchRestaurants('양식', setWesternRestaurants);
     fetchRestaurants('일식', setJapaneseRestaurants);
-  }, [serverURL, token]);
+  }, [serverURL]);
 
   const loadMoreRestaurants = (category, setRestaurants, page, setPage) => {
     const nextPage = page + 1;
@@ -97,7 +111,7 @@ const PopularRestaurants = () => {
 
   const renderRestaurantCard = (restaurant, restaurants, setRestaurants) => (
     <div
-      key={restaurant.name}
+      key={restaurant.storeSeq} // storeSeq를 key로 사용 (고유값)
       className="restaurant-list-item restaurant-card"
       role="button"
       tabIndex={0}
