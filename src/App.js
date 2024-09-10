@@ -10,6 +10,7 @@ import ConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/Re
 
 import FinalConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal.jsx'
 import ReserveDetail from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
+import MyDining from './components/pages/MyDining/MyDining.jsx'
 
 // import Signup from './components/pages/Signup/signup.jsx'
 
@@ -33,6 +34,7 @@ const App = () => {
                         element={<FinalConfirmReserveModal />}
                     />
                     <Route path="/reserveDetail" element={<ReserveDetail />} />
+                    <Route path="/myDining" element={<MyDining />} />
                 </Routes>
                 <Footer />
             </div>
