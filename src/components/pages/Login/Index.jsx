@@ -24,10 +24,14 @@ const Index = () => {
     });
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
-    const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isPasswordRetrievalOpen, setIsPasswordRetrievalOpen] = useState(false);
+    
+    // 추가된 state
+    const [findUserId, setFindUserId] = useState('');
+    const [findEmail, setFindEmail] = useState('');
 
+    const navigate = useNavigate();
 
     const handleSignupChange = (e) => {
         const { name, value } = e.target;
@@ -86,6 +90,7 @@ const Index = () => {
                 alert("회원가입 실패");
             });
     };
+
     // 토글 화면 전환
     const toggleSignup = () => {
         setIsSignup(!isSignup)
@@ -130,19 +135,21 @@ const Index = () => {
                     alert("인증 코드가 올바르지 않습니다.");
                 }
             })
+
             .catch(error => {
                 console.log(error)
                 alert('인증 코드 검증 실패, 다시 시도하여 주세요')
             })
     }
 
+
     const openModal = () => {
         setIsModalOpen(true);
-    }
+    };
 
     const closeModal = () => {
         setIsModalOpen(false);
-    }
+    };
 
     const openPasswordRetrievalModal = () => {
         setIsPasswordRetrievalOpen(true);
@@ -152,17 +159,14 @@ const Index = () => {
         setIsPasswordRetrievalOpen(false);
     };
 
-// 아이디 재설정
+    // 아이디 재설정
     const handleFindId = () => {
-        const userEmail = prompt("아이디를 찾기 위해 이메일을 입력해주세요.");
-        const userPhoneNumber = prompt("아이디를 찾기 위해 핸드폰 번호를 입력해주세요.");
-
-        if (!userEmail || !userPhoneNumber) {
-            alert("이메일과 핸드폰 번호를 모두 입력해주세요.");
+        if (!findEmail || !findUserId) {
+            alert("이메일과 아이디를 모두 입력해주세요.");
             return;
         }
 
-        api.post(`${ServerURL}/auth/findId`, { userEmail, userPhoneNumber })
+        api.post(`${ServerURL}/auth/findId`, { userEmail: findEmail, userPhoneNumber: findUserId })
             .then((resp) => {
                 console.log(resp);
                 alert(`아이디는 ${resp.data.userId} 입니다.`);
@@ -173,27 +177,39 @@ const Index = () => {
             });
     };
 
-    // 비밀번호 재설정
     const handlePasswordRetrieval = () => {
-        const userEmail = prompt("이메일 입력.");
-        const userId = prompt("아이디 입력.");
-
-        if (!userEmail || !userId) {
-            alert("이메일과 핸드폰 번호를 모두 입력해주세요.");
+        // 이메일과 아이디가 입력되지 않은 경우 처리
+        if (!findUserId ||!findEmail ) {
+            alert("이메일과 아이디를 모두 입력해 주세요.");
             return;
         }
-
-        api.post(`${ServerURL}/auth/findPassword`, { userEmail, userId })
+    
+        // API 요청
+        api.post(`${ServerURL}/auth/findPassword`, { userId: findUserId ,userEmail: findEmail})
             .then((resp) => {
                 console.log(resp);
                 alert("비밀번호 찾기 요청이 완료되었습니다. 이메일을 확인해주세요.");
             })
             .catch((error) => {
-                console.log(error);
-                alert("비밀번호 찾기 실패. 다시 시도해 주세요.");
+                // 서버에서 반환된 응답 처리
+                if (error.response) {
+                    if (error.response.status === 404) {
+                        alert("사용자를 찾을 수 없습니다. 이메일과 아이디를 확인해주세요.");
+                    } else if (error.response.status === 400) {
+                        alert("이메일과 아이디는 필수 입력 항목입니다.");
+                    } else if (error.response.status === 500) {
+                        alert("서버 오류가 발생했습니다. 나중에 다시 시도해주세요.");
+                    } else {
+                        alert("알 수 없는 오류가 발생했습니다. 다시 시도해주세요.");
+                    }
+                } else {
+                    // 서버 자체에 연결되지 않은 경우
+                    alert("서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요.");
+                }
+                console.log(error); // 에러 디버깅을 위한 로그 출력
             });
     };
-
+    
 
     return (
         <div className={styles.LoginContainer}>
@@ -222,7 +238,6 @@ const Index = () => {
                             <button onClick={toggleSignup}>회원가입</button>
                             <button onClick={openModal}>아이디찾기</button>
                             <button onClick={openPasswordRetrievalModal}>비밀번호 찾기</button>
-
                         </div>
                     </>
                 ) : (
@@ -293,16 +308,16 @@ const Index = () => {
             {/* 모달 컴포넌트 */}
             <Modal isOpen={isModalOpen} closeModal={closeModal}>
                 <h2>아이디 찾기</h2>
-                이메일 <input type="text" placeholder='이메일' /><br></br>
-                핸드폰 <input type="text" placeholder='핸드폰' /><br></br>
+                이메일 <input type="text" value={findEmail} onChange={(e) => setFindEmail(e.target.value)} placeholder='이메일' /><br />
+                핸드폰 <input type="text" value={findUserId} onChange={(e) => setFindUserId(e.target.value)} placeholder='핸드폰번호' /><br />
                 <button onClick={handleFindId}>아이디 찾기</button>
                 <button onClick={closeModal}>닫기</button>
             </Modal>
 
             <Modal isOpen={isPasswordRetrievalOpen} closeModal={closePasswordRetrievalModal}>
                 <h2>비밀번호 찾기</h2>
-                이메일 <input type="text" placeholder='이메일' /><br />
-                핸드폰 <input type="text" placeholder='핸드폰' /><br />
+                아이디 <input type="text" value={findUserId} onChange={(e) => setFindUserId(e.target.value)} placeholder='아이디' /><br />
+                이메일 <input type="text" value={findEmail} onChange={(e) => setFindEmail(e.target.value)} placeholder='이메일' /><br />
                 <button onClick={handlePasswordRetrieval}>비밀번호 찾기</button>
                 <button onClick={closePasswordRetrievalModal}>닫기</button>
             </Modal>
@@ -312,3 +327,4 @@ const Index = () => {
 }
 
 export default Index;
+
