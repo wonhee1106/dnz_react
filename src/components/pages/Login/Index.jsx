@@ -172,6 +172,7 @@ const Index = () => {
             });
     };
 
+    // 비밀번호 재설정
     const handlePasswordRetrieval = () => {
         // 이메일과 아이디가 입력되지 않은 경우 처리
         if (!findUserId ||!findEmail ) {
@@ -179,7 +180,7 @@ const Index = () => {
             return;
         }
     
-        // API 요청
+        
         api.post(`${ServerURL}/auth/findPassword`, { userId: findUserId ,userEmail: findEmail})
             .then((resp) => {
                 console.log(resp);
