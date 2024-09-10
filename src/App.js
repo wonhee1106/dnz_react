@@ -29,7 +29,9 @@ const AppContent = () => {
             <Routes>
                 <Route path="/" element={<Body />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/storeDetail" element={<StoreDetail />} />
+                <Route path="/store/:storeId" element={<StoreDetail />} />
+
+
                 <Route path="/alarm" element={<Alam />} />
                 <Route
                         path="/confirmReserve"
