@@ -13,21 +13,23 @@ api.interceptors.request.use(
         }
         return config;
     },
-    (error) => Promise.reject(error) // 요청 에러 핸들링
+    (error) => Promise.reject(error)
 );
 
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response) { // error.response가 존재할 때만 처리
+        if (error.response) {
             switch (error.response.status) {
                 case 401:
                     sessionStorage.removeItem("token");
                     useAuthStore.getState().logout();
                     break;
-                // 추가적인 에러 핸들링을 여기에 추가할 수 있습니다.
+                default:
+                    // 다른 에러 처리
+                    break;
             }
         }
-        return Promise.reject(error); // 에러를 다시 던져서 호출 측에서 처리할 수 있도록 함
+        return Promise.reject(error);
     }
 );
