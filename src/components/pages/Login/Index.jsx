@@ -9,7 +9,7 @@ import Modal from './Modal/Modal'
 
 const ServerURL = process.env.REACT_APP_SERVER_URL;
 axios.defaults.withCredentials = true;
-
+// 10:01 push
 const Index = () => {
     const [user, setUser] = useState({ userId: '', userPw: '' });
     const { login } = useAuthStore();
@@ -30,6 +30,7 @@ const Index = () => {
     // 추가된 state
     const [findUserId, setFindUserId] = useState('');
     const [findEmail, setFindEmail] = useState('');
+    const [findPhoneNumber, setFindPhoneNumber] = useState('');
 
     const navigate = useNavigate();
 
@@ -46,20 +47,18 @@ const Index = () => {
     const handleLogin = () => {
         api.post(`${ServerURL}/auth/login`, user)
             .then((resp) => {
-                // 여기서 resp.data가 실제로 JWT 토큰인지 확인
                 if (resp.data && resp.data.token) {
                     const token = resp.data.token;
                     const decoded = jwtDecode(token);
-                    console.log(decoded);
-                    sessionStorage.setItem('token', token);
+                    sessionStorage.setItem('token', token); // 토큰을 세션에 저장
                     login(token); // 로그인 함수 호출
-                    navigate("/");
+                    navigate('/');
                 } else {
-                    alert("로그인 실패: 서버로부터 올바른 응답을 받지 못했습니다.");
+                    alert("로그인 실패");
                 }
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
                 alert("로그인 실패");
             });
     };
@@ -160,24 +159,32 @@ const Index = () => {
 
     // 아이디 재설정
     const handleFindId = () => {
-        if (!findEmail || !findUserId) {
-            alert("이메일과 아이디를 모두 입력해주세요.");
+        if (!findEmail || !findPhoneNumber) {
+            alert("이메일과 핸드폰번호 모두 입력해주세요.");
             return;
         }
-
-        api.post(`${ServerURL}/auth/findId`, { userEmail: findEmail, userPhoneNumber: findUserId })
+    
+        api.post(`${ServerURL}/auth/findId`, { userEmail: findEmail, userPhoneNumber: findPhoneNumber })
             .then((resp) => {
-                console.log(resp);
-                alert(`아이디는 ${resp.data.userId} 입니다.`);
+                // 성공적으로 ID를 찾은 경우
+                if (resp.status === 200) {
+                    alert("사용자 ID가 이메일로 전송되었습니다.");
+                    // 추가적인 처리 (예: 폼 리셋, 상태 초기화 등)
+                }
             })
-            .catch((error) => {
-                console.log(error);
-                alert("아이디 찾기 실패. 다시 시도해 주세요.");
+            .catch(error => {
+                // 오류가 발생한 경우
+                if (error.response && error.response.status === 404) {
+                    alert("해당 정보를 가진 사용자를 찾을 수 없습니다.");
+                } else {
+                    alert("서버에 문제가 발생했습니다. 나중에 다시 시도해 주세요.");
+                }
             });
-    };
+    }
+    
 
+    // 비밀번호 재설정
     const handlePasswordRetrieval = () => {
-        // 이메일과 아이디가 입력되지 않은 경우 처리
         if (!findUserId || !findEmail) {
             alert("이메일과 아이디를 모두 입력해 주세요.");
             return;
@@ -250,7 +257,7 @@ const Index = () => {
             <Modal isOpen={isModalOpen} closeModal={closeModal}>
                 <h2>아이디 찾기</h2>
                 이메일 <input type="text" value={findEmail} onChange={(e) => setFindEmail(e.target.value)} placeholder='이메일' /><br />
-                핸드폰 <input type="text" value={findUserId} onChange={(e) => setFindUserId(e.target.value)} placeholder='핸드폰번호' /><br />
+                핸드폰 <input type="text" value={findPhoneNumber} onChange={(e) => setFindPhoneNumber(e.target.value)} placeholder='핸드폰번호' /><br />
                 <button onClick={handleFindId}>아이디 찾기</button>
                 <button onClick={closeModal}>닫기</button>
             </Modal>
