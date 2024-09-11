@@ -6,9 +6,10 @@ import { useParams } from 'react-router-dom';
 function StoreDetail() {
     const { storeId } = useParams(); // URL 파라미터에서 storeId를 받아옴
     const [store, setStore] = useState(null);
+    const [menus, setMenus] = useState([]); // 메뉴 상태 추가
 
+    // 가게 상세 정보를 가져오는 함수
     useEffect(() => {
-        // 가게 상세 정보를 서버로부터 가져오는 함수
         const fetchStoreDetails = async () => {
             try {
                 console.log("가게 정보 불러오는 중");
@@ -22,6 +23,23 @@ function StoreDetail() {
 
         if (storeId) {
             fetchStoreDetails(); // storeId가 존재할 경우만 데이터를 불러옴
+        }
+    }, [storeId]);
+
+    // 메뉴 정보를 가져오는 함수
+    useEffect(() => {
+        const fetchMenus = async () => {
+            try {
+                const response = await api.get(`/menu/store/${storeId}`);
+                setMenus(response.data); // 메뉴 데이터 설정
+                console.log("Menus:", response.data); // 메뉴 데이터 로그 확인
+            } catch (error) {
+                console.error('메뉴 정보를 불러오는 중 오류 발생:', error);
+            }
+        };
+
+        if (storeId) {
+            fetchMenus(); // storeId가 존재할 경우만 데이터를 불러옴
         }
     }, [storeId]);
 
@@ -94,6 +112,24 @@ function StoreDetail() {
                     <p>{store.description}</p>
                     <p>{store.address1} {store.address2}</p> {/* 주소 출력 */}
                 </div>
+            )}
+
+            {/* 메뉴 리스트 출력 */}
+            {menus.length > 0 ? (
+                <div>
+                    <h3>메뉴 목록</h3>
+                    <ul>
+                        {menus.map((menu) => (
+                            <li key={menu.menuSeq}>
+                                <p>메뉴 이름: {menu.name}</p>
+                                <p>가격: {menu.price}</p>
+                                <p>설명: {menu.description || '설명 없음'}</p>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ) : (
+                <div>메뉴 정보가 없습니다.</div>
             )}
 
             <div>
