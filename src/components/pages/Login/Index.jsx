@@ -26,7 +26,7 @@ const Index = () => {
     const [verificationCode, setVerificationCode] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isPasswordRetrievalOpen, setIsPasswordRetrievalOpen] = useState(false);
-    
+
     // 추가된 state
     const [findUserId, setFindUserId] = useState('');
     const [findEmail, setFindEmail] = useState('');
@@ -43,28 +43,27 @@ const Index = () => {
         setUser((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleLoginChange = e => {
-        const { name, value } = e.target
-        setUser(prev => ({ ...prev, [name]: value }))
-    }
-
-    // 로그인
     const handleLogin = () => {
         api.post(`${ServerURL}/auth/login`, user)
-            .then(resp => {
-                console.log(resp)
-                const token = resp.data
-                const decoded = jwtDecode(token)
-                console.log(decoded)
-                sessionStorage.setItem('token', token)
-                login(token) // 로그인 함수 호출
-                navigate('/')
+            .then((resp) => {
+                // 여기서 resp.data가 실제로 JWT 토큰인지 확인
+                if (resp.data && resp.data.token) {
+                    const token = resp.data.token;
+                    const decoded = jwtDecode(token);
+                    console.log(decoded);
+                    sessionStorage.setItem('token', token);
+                    login(token); // 로그인 함수 호출
+                    navigate("/");
+                } else {
+                    alert("로그인 실패: 서버로부터 올바른 응답을 받지 못했습니다.");
+                }
             })
             .catch((error) => {
                 console.log(error);
                 alert("로그인 실패");
             });
     };
+
 
     // 회원가입
     const handleSignup = () => {
@@ -181,13 +180,13 @@ const Index = () => {
 
     const handlePasswordRetrieval = () => {
         // 이메일과 아이디가 입력되지 않은 경우 처리
-        if (!findUserId ||!findEmail ) {
+        if (!findUserId || !findEmail) {
             alert("이메일과 아이디를 모두 입력해 주세요.");
             return;
         }
-    
+
         // API 요청
-        api.post(`${ServerURL}/auth/findPassword`, { userId: findUserId ,userEmail: findEmail})
+        api.post(`${ServerURL}/auth/findPassword`, { userId: findUserId, userEmail: findEmail })
             .then((resp) => {
                 console.log(resp);
                 alert("비밀번호 찾기 요청이 완료되었습니다. 이메일을 확인해주세요.");
@@ -211,7 +210,7 @@ const Index = () => {
                 console.log(error); // 에러 디버깅을 위한 로그 출력
             });
     };
-    
+
 
     return (
         <div className={styles.LoginContainer}>
@@ -271,6 +270,6 @@ const Index = () => {
         </div>
     );
 };
-
-export default Index
+// 현재시간 3:37
+export default Index;
 
