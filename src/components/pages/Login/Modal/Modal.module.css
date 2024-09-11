@@ -1,22 +1,23 @@
+@import '../common.module.css';
+
 .modalOverlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Overlay color */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
 }
 
 .modalContent {
-    background: white;
+    background-color: #fff;
     padding: 20px;
     border-radius: 8px;
-    position: relative;
     width: 400px;
+    max-width: 90%;
 }
 
 .closeButton {
@@ -25,6 +26,6 @@
     right: 10px;
     background: none;
     border: none;
-    font-size: 1.2rem;
+    font-size: 18px;
     cursor: pointer;
 }
