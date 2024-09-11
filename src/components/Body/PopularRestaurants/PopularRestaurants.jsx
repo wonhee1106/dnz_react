@@ -44,7 +44,7 @@ const PopularRestaurants = () => {
   };
 
   const fetchRestaurants = (category, setRestaurants, page = 1) => {
-    fetch(`${serverURL}/stores/category/${category}?page=${page}`, {
+    fetch(`${serverURL}/store/category/${category}?page=${page}`, {
       method: 'GET',
     })
       .then((response) => {
