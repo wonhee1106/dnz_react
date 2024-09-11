@@ -12,7 +12,6 @@ import FinalConfirmReserveModal from './components/pages/StoreDetail/ReserveButt
 import ReserveDetail from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
 import MyDining from './components/pages/MyDining/MyDining.jsx'
 
-
 const App = () => {
     return (
         <Router>
@@ -21,7 +20,10 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<Body />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/storeDetail" element={<StoreDetail />} />
+                    <Route
+                        path="/storeDetail/:storeId"
+                        element={<StoreDetail />}
+                    />
                     <Route path="/alarm" element={<Alam />} />
                     <Route
                         path="/confirmReserve"
