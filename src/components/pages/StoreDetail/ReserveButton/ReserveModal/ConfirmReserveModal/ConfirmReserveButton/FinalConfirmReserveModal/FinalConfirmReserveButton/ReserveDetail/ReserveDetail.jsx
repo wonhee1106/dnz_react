@@ -47,6 +47,6 @@ function ReserveDetail() {
             </div>
         </div>
     )
-}
+} //test
 
 export default ReserveDetail

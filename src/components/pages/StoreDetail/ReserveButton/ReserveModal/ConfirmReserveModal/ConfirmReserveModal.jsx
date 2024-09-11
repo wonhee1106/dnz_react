@@ -29,7 +29,7 @@ function ConfirmReserveModal() {
             }
 
             console.log(token)
-            // const response = await api.post(`/reservation`, reservationData)
+            const response = await api.post(`/reservation`, reservationData)
 
             // if (response.status === 200) {
             console.log('예약 성공!')
