@@ -265,6 +265,6 @@ const Index = () => {
         </div>
     );
 };
-// 현재시간 3:37
+
 export default Index;
 

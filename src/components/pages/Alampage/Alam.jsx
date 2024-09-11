@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import './Alam.css'; // 스타일 파일
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -97,6 +98,7 @@ const Alam = () => {
         (currentActivityPage - 1) * ITEMS_PER_PAGE,
         currentActivityPage * ITEMS_PER_PAGE
     );
+
 
     return (
         <div>        
