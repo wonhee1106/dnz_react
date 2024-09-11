@@ -4,7 +4,7 @@ import 'react-calendar/dist/Calendar.css'
 import { useState } from 'react'
 import styles from './ReserveModal.module.css'
 
-function ReserveModal() {
+function ReserveModal({ storeSeq }) {
     const navigate = useNavigate()
 
     const closeModal = () => {
@@ -34,9 +34,13 @@ function ReserveModal() {
 
     const handleTimeClick = time => {
         setReserveTime(time)
+        console.log('예약한 시간:', time) // 시간 값 확인
+        console.log('예약 날짜:', reserveDate) // 날짜 값 확인
+        console.log('인원 수:', numberOfGuests) // 인원 수 확인
         // 시간 선택 시 다음 예약 모달로 이동
         navigate('/confirmReserve', {
             state: {
+                storeSeq: storeSeq,
                 time: time,
                 guests: numberOfGuests,
                 date: reserveDate,
@@ -78,14 +82,14 @@ function ReserveModal() {
 
     // 현재 페이지에 따라 표시될 시간 버튼 목록
     const visibleTimes = [
-        '오후 12:00',
-        '오후 12:30',
-        '오후 1:00',
-        '오후 1:30',
-        '오후 2:00',
-        '오후 2:30',
-        '오후 3:00',
-        '오후 3:30',
+        '12:00',
+        '12:30',
+        '13:00',
+        '13:30',
+        '14:00',
+        '14:30',
+        '15:00',
+        '15:30',
     ].slice(timePage * timesPerPage, (timePage + 1) * timesPerPage)
 
     return (

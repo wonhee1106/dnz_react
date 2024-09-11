@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // useNavigate 추가
 import './PopularRestaurants.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
@@ -22,13 +23,14 @@ const PopularRestaurants = () => {
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
 
+  const navigate = useNavigate(); // useNavigate 훅 추가
+
   const fetchRestaurantPhotos = (storeSeq) => {
     return fetch(`${serverURL}/photos/${storeSeq}`, {
       method: 'GET',
     }).then((response) => response.json());
   };
 
-  // 중복된 식당 이름을 필터링하는 함수
   const removeDuplicateNames = (restaurants) => {
     const uniqueRestaurants = [];
     const namesSet = new Set();
@@ -94,8 +96,9 @@ const PopularRestaurants = () => {
     }
   };
 
-  const handleCardClick = (url) => {
-    window.location.href = url;
+  const handleCardClick = (storeSeq) => {
+    // storeSeq를 포함하여 StoreDetail로 이동
+    navigate(`/store/${storeSeq}`);
   };
 
   // 북마크 토글
@@ -115,9 +118,9 @@ const PopularRestaurants = () => {
       className="restaurant-list-item restaurant-card"
       role="button"
       tabIndex={0}
-      onClick={() => handleCardClick(restaurant.url)} // 클릭 시 URL로 이동
+      onClick={() => handleCardClick(restaurant.storeSeq)} // 클릭 시 storeSeq를 URL로 넘겨서 페이지 이동
       onKeyPress={(e) => {
-        if (e.key === 'Enter') handleCardClick(restaurant.url);
+        if (e.key === 'Enter') handleCardClick(restaurant.storeSeq);
       }}
       style={{ cursor: 'pointer' }}
     >
