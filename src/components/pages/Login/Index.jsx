@@ -9,7 +9,7 @@ import Modal from './Modal/Modal'
 
 const ServerURL = process.env.REACT_APP_SERVER_URL;
 axios.defaults.withCredentials = true;
-
+// 10:01 push
 const Index = () => {
     const [user, setUser] = useState({ userId: '', userPw: '' });
     const { login } = useAuthStore();
