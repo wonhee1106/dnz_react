@@ -30,6 +30,7 @@ const Index = () => {
     // 추가된 state
     const [findUserId, setFindUserId] = useState('');
     const [findEmail, setFindEmail] = useState('');
+    const [findPhone, setFindPhone] = useState('');
 
     const navigate = useNavigate();
 
@@ -44,22 +45,20 @@ const Index = () => {
     };
 
     const handleLogin = () => {
-        api.post(`${ServerURL}/auth/login`, user)
+        api.post(`/auth/login`, user)
             .then((resp) => {
-                // 여기서 resp.data가 실제로 JWT 토큰인지 확인
                 if (resp.data && resp.data.token) {
                     const token = resp.data.token;
                     const decoded = jwtDecode(token);
-                    console.log(decoded);
-                    sessionStorage.setItem('token', token);
+                    sessionStorage.setItem('token', token); // 토큰을 세션에 저장
                     login(token); // 로그인 함수 호출
-                    navigate("/");
+                    navigate('/');
                 } else {
-                    alert("로그인 실패: 서버로부터 올바른 응답을 받지 못했습니다.");
+                    alert("로그인 실패");
                 }
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
                 alert("로그인 실패");
             });
     };
@@ -165,7 +164,7 @@ const Index = () => {
             return;
         }
 
-        api.post(`${ServerURL}/auth/findId`, { userEmail: findEmail, userPhoneNumber: findUserId })
+        api.post(`${ServerURL}/auth/findId`, { userEmail: findEmail, userPhoneNumber: findPhone })
             .then((resp) => {
                 console.log(resp);
                 alert(`아이디는 ${resp.data.userId} 입니다.`);
@@ -176,8 +175,8 @@ const Index = () => {
             });
     };
 
+    // 비밀번호 재설정
     const handlePasswordRetrieval = () => {
-        // 이메일과 아이디가 입력되지 않은 경우 처리
         if (!findUserId || !findEmail) {
             alert("이메일과 아이디를 모두 입력해 주세요.");
             return;
@@ -250,7 +249,7 @@ const Index = () => {
             <Modal isOpen={isModalOpen} closeModal={closeModal}>
                 <h2>아이디 찾기</h2>
                 이메일 <input type="text" value={findEmail} onChange={(e) => setFindEmail(e.target.value)} placeholder='이메일' /><br />
-                핸드폰 <input type="text" value={findUserId} onChange={(e) => setFindUserId(e.target.value)} placeholder='핸드폰번호' /><br />
+                핸드폰 <input type="text" value={findPhone} onChange={(e) => setFindPhone(e.target.value)} placeholder='핸드폰번호' /><br />
                 <button onClick={handleFindId}>아이디 찾기</button>
                 <button onClick={closeModal}>닫기</button>
             </Modal>
