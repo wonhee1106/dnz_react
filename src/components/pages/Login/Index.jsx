@@ -30,7 +30,7 @@ const Index = () => {
     // 추가된 state
     const [findUserId, setFindUserId] = useState('');
     const [findEmail, setFindEmail] = useState('');
-    const [findPhone, setFindPhone] = useState('');
+    const [findPhoneNumber, setFindPhoneNumber] = useState('');
 
     const navigate = useNavigate();
 
@@ -161,21 +161,29 @@ const Index = () => {
 
     // 아이디 재설정
     const handleFindId = () => {
-        if (!findEmail || !findUserId) {
-            alert("이메일과 아이디를 모두 입력해주세요.");
+        if (!findEmail || !findPhoneNumber) {
+            alert("이메일과 핸드폰번호 모두 입력해주세요.");
             return;
         }
-
-        api.post(`${ServerURL}/auth/findId`, { userEmail: findEmail, userPhoneNumber: findPhone })
+    
+        api.post(`${ServerURL}/auth/findId`, { userEmail: findEmail, userPhoneNumber: findPhoneNumber })
             .then((resp) => {
-                console.log(resp);
-                alert(`아이디는 ${resp.data.userId} 입니다.`);
+                // 성공적으로 ID를 찾은 경우
+                if (resp.status === 200) {
+                    alert("사용자 ID가 이메일로 전송되었습니다.");
+                    // 추가적인 처리 (예: 폼 리셋, 상태 초기화 등)
+                }
             })
             .catch(error => {
-                console.log(error)
-                alert('아이디 찾기 실패. 다시 시도해 주세요.')
-            })
+                // 오류가 발생한 경우
+                if (error.response && error.response.status === 404) {
+                    alert("해당 정보를 가진 사용자를 찾을 수 없습니다.");
+                } else {
+                    alert("서버에 문제가 발생했습니다. 나중에 다시 시도해 주세요.");
+                }
+            });
     }
+    
 
     // 비밀번호 재설정
     const handlePasswordRetrieval = () => {
@@ -251,7 +259,7 @@ const Index = () => {
             <Modal isOpen={isModalOpen} closeModal={closeModal}>
                 <h2>아이디 찾기</h2>
                 이메일 <input type="text" value={findEmail} onChange={(e) => setFindEmail(e.target.value)} placeholder='이메일' /><br />
-                핸드폰 <input type="text" value={findPhone} onChange={(e) => setFindPhone(e.target.value)} placeholder='핸드폰번호' /><br />
+                핸드폰 <input type="text" value={findPhoneNumber} onChange={(e) => setFindPhoneNumber(e.target.value)} placeholder='핸드폰번호' /><br />
                 <button onClick={handleFindId}>아이디 찾기</button>
                 <button onClick={closeModal}>닫기</button>
             </Modal>
