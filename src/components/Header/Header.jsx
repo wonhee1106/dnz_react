@@ -27,7 +27,7 @@ const Header = () => {
         console.log("WebSocket을 연결 중...");
 
         // WebSocket 연결 설정
-        ws = new WebSocket(`ws://192.168.1.10/alarm?token=${encodeURIComponent(jwtToken)}`);
+        ws = new WebSocket(`ws://192.168.1.11/alarm?token=${encodeURIComponent(jwtToken)}`);
 
         ws.onopen = () => {
             console.log("WebSocket 연결 성공");
