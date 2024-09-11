@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../../../config/config';
 import commonStyles from '../common.module.css';
-import styles from './FindPassword.module.css';
+import styles from './Find.module.css';
 
 const FindPassword = ({ closeModal }) => {  // Add closeModal prop
     const [findUserId, setFindUserId] = useState('');
