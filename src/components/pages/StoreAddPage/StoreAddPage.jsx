@@ -86,13 +86,18 @@ const StoreAddPage = () => {
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="category">카테고리</label>
-                    <input
-                        type="text"
+                    <select
                         id="category"
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
                         required
-                    />
+                    >
+                        <option value="" disabled hidden>카테고리를 선택하세요</option>
+                        <option value="일식">일식</option>
+                        <option value="중식">중식</option>
+                        <option value="한식">한식</option>
+                        <option value="양식">양식</option>
+                    </select>
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="description">가게 설명</label>
