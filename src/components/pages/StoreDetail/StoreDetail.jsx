@@ -89,7 +89,7 @@ function StoreDetail() {
             });
         };
 
-        if (store && store.address1 && store.address2) {
+        if (store && store.address1) {
             loadKakaoMapScript().then((kakao) => {
                 kakao.maps.load(() => {
                     const mapContainer = document.getElementById('map');
