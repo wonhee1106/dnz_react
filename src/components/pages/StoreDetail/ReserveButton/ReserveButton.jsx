@@ -15,10 +15,9 @@ function ReserveButton({ storeSeq }) {
 
     return (
         <div>
-            <button onClick={openModal}>예약하기</button>
-            {isModalOpen && (
-                <ReserveModal storeSeq={storeSeq} closeModal={closeModal} />
-            )}
+
+             <button onClick={openModal} className="reserve-button">예약하기</button>
+            {isModalOpen && <ReserveModal closeModal={closeModal} />}
         </div>
     )
 }
