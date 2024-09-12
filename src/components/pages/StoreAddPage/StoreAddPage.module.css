@@ -55,7 +55,8 @@
 
 /* 입력 필드 스타일 */
 .formGroup input,
-.formGroup textarea {
+.formGroup textarea,
+.formGroup select {
     width: 100%;
     padding: 10px;
     margin: 5px 0;
@@ -84,4 +85,11 @@
 
 .submitButton:hover {
     background-color: #2980b9;
+}
+
+
+
+.formGroup select:focus {
+    border-color: #3498db;
+    outline: none;
 }
