@@ -28,17 +28,8 @@ function ConfirmReserveModal() {
                 reservationTime: time,
                 numGuests: guests,
             }
-            const headers = {
-                Authorization: `Bearer ${token}`, // 토큰을 헤더에 포함
-            }
             console.log(token)
-            const response = await api.post(
-                `/api/reservation`,
-                reservationData,
-                {
-                    headers,
-                }
-            )
+            const response = await api.post(`/reservation`, reservationData)
 
             if (response.status === 200) {
                 console.log('예약 성공!')
