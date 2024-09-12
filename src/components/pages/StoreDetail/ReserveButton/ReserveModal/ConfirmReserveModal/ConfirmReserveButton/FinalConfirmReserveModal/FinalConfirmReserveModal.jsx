@@ -7,7 +7,7 @@ function FinalConfirmReserveModal() {
     const navigate = useNavigate()
     const location = useLocation()
 
-    const { date, time, guests, storeSeq } = location.state
+    const { date, time, guests, storeSeq, name } = location.state
 
     const [storeName, setStoreName] = useState('') // 음식점 이름 저장
 
@@ -54,7 +54,7 @@ function FinalConfirmReserveModal() {
                 <div className={styles.reserveContent}>
                     <div className={styles.reserveInfoRow}>
                         <span>음식점</span>
-                        <span>{storeName}</span>{' '}
+                        <span>{name}</span>{' '}
                     </div>
                     <div className={styles.reserveInfoRow}>
                         <span>예약일시</span>
