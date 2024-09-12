@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { api } from '../../../config/config';
-import commonStyles from '../common.module.css';
 import styles from './Find.module.css';
 
 const FindId = ({ closeModal }) => {  // Add closeModal prop
@@ -19,21 +18,21 @@ const FindId = ({ closeModal }) => {  // Add closeModal prop
     };
 
     return (
-        <div className={commonStyles.container}>
-            <div className={commonStyles.box}>
+        <div className={styles.container}>
+            <div className={styles.box}>
                 이메일 
                 <input 
                     type="text" 
                     value={findEmail} 
                     onChange={(e) => setFindEmail(e.target.value)} 
-                    className={commonStyles.input} 
+                    className={styles.input} 
                 />
                 핸드폰 
                 <input 
                     type="text" 
                     value={findPhoneNumber} 
                     onChange={(e) => setFindPhoneNumber(e.target.value)} 
-                    className={commonStyles.input} 
+                    className={styles.input} 
                 />
                 <button 
                     onClick={handleFindId} 
@@ -43,7 +42,7 @@ const FindId = ({ closeModal }) => {  // Add closeModal prop
                 </button>
                 <button 
                     onClick={closeModal}  // Add closeModal button
-                    className={commonStyles.toggleButton}
+                    className={styles.toggleButton}
                 >
                     뒤로가기
                 </button>
