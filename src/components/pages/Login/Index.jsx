@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import Login from './LoginForm/Login';
 import Signup from './Signup/Signup';
-import FindId from './FindId/FindId';
-import FindPassword from './FindPassword/FindPassword';
+import FindId from './FindAccount/FindId';
+import FindPassword from './FindAccount/FindPassword';
 import Modal from './Modal/Modal';
 import commonStyles from './common.module.css';
+import {Link} from 'react-router-dom';
 
 const Index = () => {
     const [isSignup, setIsSignup] = useState(false);
@@ -42,18 +43,11 @@ const Index = () => {
                             >
                                 비밀번호 찾기
                             </button>
+                            <Link to="/mypage">마이페이지</Link>
                         </div>
                     </>
                 ) : (
-                    <>
-                        <Signup />
-                        <button
-                            onClick={toggleSignup}
-                            className={commonStyles.toggleButton}
-                        >
-                            뒤로가기
-                        </button>
-                    </>
+                    <Signup toggleSignup={toggleSignup} />
                 )}
             </div>
 

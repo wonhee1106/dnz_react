@@ -12,6 +12,7 @@ import Login from './components/pages/Login/Index.jsx'
 import Alam from './components/pages/Alampage/Alam.jsx'
 import StoreDetail from './components/pages/StoreDetail/StoreDetail.jsx'
 import ConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveModal.jsx'
+import Mypage from './components/pages/Mypages/Mypage.jsx'
 
 import FinalConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal.jsx'
 import ReserveDetail from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
@@ -33,6 +34,7 @@ const AppContent = () => {
             <Routes>
                 <Route path="/" element={<Body />} />
                 <Route path="/login" element={<Login />} />
+                <Route path='/mypage' element={<Mypage />} />
                 <Route path="/store/:storeId" element={<StoreDetail />} />
                 <Route path="/alarm" element={<Alam />} />
                 <Route

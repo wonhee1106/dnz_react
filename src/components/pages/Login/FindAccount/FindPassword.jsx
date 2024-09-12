@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { api } from '../../../config/config';
-import commonStyles from '../common.module.css';
-import styles from './FindPassword.module.css';
+import styles from './Find.module.css';
 
-const FindPassword = ({ closeModal }) => {  // Add closeModal prop
+const FindPassword = ({ closeModal }) => {
     const [findUserId, setFindUserId] = useState('');
     const [findEmail, setFindEmail] = useState('');
 
@@ -19,31 +18,31 @@ const FindPassword = ({ closeModal }) => {  // Add closeModal prop
     };
 
     return (
-        <div className={commonStyles.container}>
-            <div className={commonStyles.box}>
+        <div className={styles.container}>
+            <div className={styles.box}>
                 아이디 
                 <input 
                     type="text" 
                     value={findUserId} 
                     onChange={(e) => setFindUserId(e.target.value)} 
-                    className={commonStyles.input} 
+                    className={styles.input} 
                 />
                 이메일 
                 <input 
                     type="text" 
                     value={findEmail} 
                     onChange={(e) => setFindEmail(e.target.value)} 
-                    className={commonStyles.input} 
+                    className={styles.input} 
                 />
                 <button 
                     onClick={handlePasswordRetrieval} 
-                    className={styles.findPasswordBtn}
+                    className={styles.findIdBtn}
                 >
                     비밀번호 찾기
                 </button>
                 <button 
-                    onClick={closeModal}  // Add closeModal button
-                    className={commonStyles.toggleButton}
+                    onClick={closeModal} 
+                    className={styles.toggleButton}
                 >
                     뒤로가기
                 </button>

@@ -18,7 +18,7 @@ const NationwideSection = () => {
 
   return (
     <div className="nationwide-section">
-      <h2>어디로 가시나요?</h2>
+      <h2>광고좀 주세요 ! . !</h2>
       <div className="section-body">
         <div className="v-scroll">
         
