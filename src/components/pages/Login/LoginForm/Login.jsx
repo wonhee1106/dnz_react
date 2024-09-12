@@ -9,6 +9,8 @@ const Login = () => {
     const [user, setUser] = useState({ userId: '', userPw: '' });
     const { login } = useAuthStore();
     const navigate = useNavigate(); // useNavigate 훅 사용
+    const [notificationCount, setNotificationCount] = useState(0); // 알림 카운트 상태
+    const [unreadNotifications, setUnreadNotifications] = useState(false);
 
     const handleLoginChange = (e) => {
         const { name, value } = e.target;
@@ -16,7 +18,7 @@ const Login = () => {
     };
 
     const handleLogin = () => {
-        api.post(`${ServerURL}/auth/login`, user)
+        api.post(`/auth/login`, user)
             .then((resp) => {
                 if (resp.data && resp.data.token) {
                     const token = resp.data.token;
@@ -25,7 +27,7 @@ const Login = () => {
                     navigate("/"); // 로그인 후 메인 페이지로 이동
     
                     // 읽음 상태 업데이트는 여기서 하지 않고, 알림을 불러오기만 함
-                    api.get(`${ServerURL}/api/activities/unread`, {
+                    api.get(`/api/activities/unread`, {
                         headers: { Authorization: `Bearer ${token}` }
                     })
                     .then((response) => {
@@ -53,7 +55,7 @@ const Login = () => {
     
     const markAsRead = (userSeq) => {
         const token = sessionStorage.getItem('token'); // JWT 토큰을 세션에서 가져오기
-        api.post(`${ServerURL}/api/activities/markAsRead`, { userSeq }, {
+        api.post(`/api/activities/markAsRead`, { userSeq }, {
             headers: { Authorization: `Bearer ${token}` } // JWT 토큰을 헤더에 추가
         })
         .then(() => {
