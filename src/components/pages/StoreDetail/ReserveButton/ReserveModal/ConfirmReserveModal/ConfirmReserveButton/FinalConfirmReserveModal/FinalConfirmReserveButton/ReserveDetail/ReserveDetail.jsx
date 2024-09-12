@@ -75,8 +75,8 @@ function ReserveDetail() {
                                     지역 · 음식종류
                                 </p>
                                 <p className={styles.dateInfo}>
-                                    {formatDate(reservation.reservationDate)},{' '}
-                                    {reservation.reservationTime},{' '}
+                                    {formatDate(reservation.reservationDate)}{' '}
+                                    {reservation.reservationTime}{' '}
                                     {reservation.numGuests}명
                                 </p>
                             </div>
