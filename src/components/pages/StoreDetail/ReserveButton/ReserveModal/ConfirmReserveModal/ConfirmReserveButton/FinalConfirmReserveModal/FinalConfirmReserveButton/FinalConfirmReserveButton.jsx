@@ -27,6 +27,8 @@ function FinalConfirmReserveButton() {
             {isModalOpen && (
                 <ReserveDetail
                     closeModal={closeModal}
+                    storeSeq={storeSeq}
+                    name={name}
                     reservationInfo={reservationInfo} // 예약 정보를 모달로 전달
                 />
             )}

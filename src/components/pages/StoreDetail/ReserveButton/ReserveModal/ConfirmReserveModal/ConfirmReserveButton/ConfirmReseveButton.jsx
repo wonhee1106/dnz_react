@@ -3,7 +3,7 @@ import 'react-calendar/dist/Calendar.css'
 import { useState } from 'react'
 import FinalConfirmReserveModal from './FinalConfirmReserveModal/FinalConfirmReserveModal'
 
-function ConfirmReserveButton() {
+function ConfirmReserveButton({ storeSeq, name }) {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     const openModal = () => {
@@ -18,7 +18,11 @@ function ConfirmReserveButton() {
         <div>
             <button onClick={openModal}>예약하기</button>
             {isModalOpen && (
-                <FinalConfirmReserveModal closeModal={closeModal} />
+                <FinalConfirmReserveModal
+                    storeSeq={storeSeq}
+                    name={name}
+                    closeModal={closeModal}
+                />
             )}
         </div>
     )

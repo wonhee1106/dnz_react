@@ -4,7 +4,7 @@ import 'react-calendar/dist/Calendar.css'
 import { useState } from 'react'
 import styles from './ReserveModal.module.css'
 
-function ReserveModal({ storeSeq }) {
+function ReserveModal({ storeSeq, name }) {
     const navigate = useNavigate()
 
     const closeModal = () => {
@@ -44,6 +44,7 @@ function ReserveModal({ storeSeq }) {
                 time: time,
                 guests: numberOfGuests,
                 date: reserveDate,
+                name: name,
             },
         })
     }
