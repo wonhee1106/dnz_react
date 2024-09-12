@@ -14,7 +14,7 @@ function ConfirmReserveModal() {
     const { token } = useAuthStore()
 
     // 전달된 시간 데이터 받기
-    const { date, time, guests, storeSeq } = location.state
+    const { date, time, guests, storeSeq, name } = location.state
 
     const cancelModal = () => {
         navigate(-1)
@@ -24,26 +24,22 @@ function ConfirmReserveModal() {
         try {
             const reservationData = {
                 storeSeq: storeSeq,
-                reservationDate: date.toISOString().split('T')[0],
+                reservationDate: new Date(
+                    date.getTime() - date.getTimezoneOffset() * 60000
+                )
+                    .toISOString()
+                    .split('T')[0],
                 reservationTime: time,
                 numGuests: guests,
-            }
-            const headers = {
-                Authorization: `Bearer ${token}`, // 토큰을 헤더에 포함
+                name: name,
             }
             console.log(token)
-            const response = await api.post(
-                `/api/reservation`,
-                reservationData,
-                {
-                    headers,
-                }
-            )
+            const response = await api.post(`/reservation`, reservationData)
 
             if (response.status === 200) {
                 console.log('예약 성공!')
                 navigate('/finalConfirmReserve', {
-                    state: { date, time, guests, storeSeq },
+                    state: { date, time, guests, storeSeq, name },
                 })
             }
             // FinalConfirmReserveModal로 이동하면서 date, time, guests 데이터를 전달
