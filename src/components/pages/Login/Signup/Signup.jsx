@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { api } from '../../../config/config';
 import styles from './Signup.module.css';
 
-const Signup = () => {
+const Signup = ({ toggleSignup }) => {
     const [signup, setSignup] = useState({
         userId: '',
         userPw: '',
@@ -70,75 +70,80 @@ const Signup = () => {
 
     return (
         <div className={styles.signupForm}>
-        <div className={styles.signupContainer}>
-
-            <input 
-                type="text" 
-                name="userId" 
-                onChange={handleSignupChange} 
-                placeholder="아이디" 
-                className={styles.inputField}
-            />
-            <input 
-                type="password" 
-                name="userPw" 
-                onChange={handleSignupChange} 
-                placeholder="비밀번호" 
-                className={styles.inputField}
-            />
-            <input 
-                type="text" 
-                name="userName" 
-                onChange={handleSignupChange} 
-                placeholder="닉네임" 
-                className={styles.inputField}
-            />
-            <input 
-                type="text" 
-                name="userBirthDate" 
-                onChange={handleSignupChange} 
-                placeholder="생년월일" 
-                className={styles.inputField}
-            />
-            <input 
-                type="text" 
-                name="userPhoneNumber" 
-                onChange={handleSignupChange} 
-                placeholder="핸드폰번호" 
-                className={styles.inputField}
-            />
-            <input 
-                type="email" 
-                name="userEmail" 
-                onChange={handleSignupChange} 
-                placeholder="이메일" 
-                className={styles.inputField}
-            />
-            <button 
-                onClick={requestEmailVerification} 
-                className={styles.actionButton}
-            >
-                이메일 인증 요청
-            </button>
-            <input 
-                type="text" 
-                value={verificationCode} 
-                onChange={(e) => setVerificationCode(e.target.value)} 
-                placeholder="인증 코드" 
-                className={styles.inputField}
-            />
-            <button 
-                onClick={verifyCode} 
-                className={styles.actionButton}
-            >
-                인증 코드 확인
-            </button>
-            <button 
-                onClick={handleSignup} 
-                className={styles.actionButton}
-            >
-                회원가입
-            </button>
+            <div className={styles.signupContainer}>
+                <input 
+                    type="text" 
+                    name="userId" 
+                    onChange={handleSignupChange} 
+                    placeholder="아이디" 
+                    className={styles.inputField}
+                />
+                <input 
+                    type="password" 
+                    name="userPw" 
+                    onChange={handleSignupChange} 
+                    placeholder="비밀번호" 
+                    className={styles.inputField}
+                />
+                <input 
+                    type="text" 
+                    name="userName" 
+                    onChange={handleSignupChange} 
+                    placeholder="닉네임" 
+                    className={styles.inputField}
+                />
+                <input 
+                    type="text" 
+                    name="userBirthDate" 
+                    onChange={handleSignupChange} 
+                    placeholder="생년월일" 
+                    className={styles.inputField}
+                />
+                <input 
+                    type="text" 
+                    name="userPhoneNumber" 
+                    onChange={handleSignupChange} 
+                    placeholder="핸드폰번호" 
+                    className={styles.inputField}
+                />
+                <input 
+                    type="email" 
+                    name="userEmail" 
+                    onChange={handleSignupChange} 
+                    placeholder="이메일" 
+                    className={styles.inputField}
+                />
+                <button 
+                    onClick={requestEmailVerification} 
+                    className={styles.actionButton}
+                >
+                    이메일 인증 요청
+                </button>
+                <input 
+                    type="text" 
+                    value={verificationCode} 
+                    onChange={(e) => setVerificationCode(e.target.value)} 
+                    placeholder="인증 코드" 
+                    className={styles.inputField}
+                />
+                <button 
+                    onClick={verifyCode} 
+                    className={styles.actionButton}
+                >
+                    인증 코드 확인
+                </button>
+                <button 
+                    onClick={handleSignup} 
+                    className={styles.actionButton}
+                >
+                    회원가입
+                </button>
+                <button 
+                    onClick={toggleSignup} 
+                    className={styles.actionButton}
+                >
+                    뒤로가기
+                </button>
             </div>
         </div>
     );

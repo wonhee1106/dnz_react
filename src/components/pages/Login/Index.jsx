@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Login from './LoginForm/Login';
 import Signup from './Signup/Signup';
-import FindId from './FindId/FindId';
-import FindPassword from './FindPassword/FindPassword';
+import FindId from './FindAccount/FindId';
+import FindPassword from './FindAccount/FindPassword';
 import Modal from './Modal/Modal';
 import commonStyles from './common.module.css';
 
@@ -45,15 +45,7 @@ const Index = () => {
                         </div>
                     </>
                 ) : (
-                    <>
-                        <Signup />
-                        <button
-                            onClick={toggleSignup}
-                            className={commonStyles.toggleButton}
-                        >
-                            뒤로가기
-                        </button>
-                    </>
+                    <Signup toggleSignup={toggleSignup} />
                 )}
             </div>
 

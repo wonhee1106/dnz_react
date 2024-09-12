@@ -2,7 +2,7 @@ import 'react-calendar/dist/Calendar.css'
 import { useState } from 'react'
 import ReserveModal from './ReserveModal/ReserveModal'
 
-function ReserveButton() {
+function ReserveButton({ storeSeq }) {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     const openModal = () => {
@@ -15,6 +15,7 @@ function ReserveButton() {
 
     return (
         <div>
+
              <button onClick={openModal} className="reserve-button">예약하기</button>
             {isModalOpen && <ReserveModal closeModal={closeModal} />}
         </div>
