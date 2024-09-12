@@ -22,13 +22,23 @@ const PopularRestaurants = () => {
   const scrollRef4 = useRef(null);
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
-
   const navigate = useNavigate(); // useNavigate 훅 추가
 
+  // 수정된 fetchRestaurantPhotos 함수
   const fetchRestaurantPhotos = (storeSeq) => {
-    return fetch(`${serverURL}/photos/${storeSeq}`, {
+    return fetch(`${serverURL}/photos/store/${storeSeq}`, {
       method: 'GET',
-    }).then((response) => response.json());
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error fetching photos');
+        }
+        return response.json();
+      })
+      .catch((error) => {
+        console.error('Error fetching photos:', error);
+        return []; // 에러가 발생한 경우 빈 배열 반환
+      });
   };
 
   const removeDuplicateNames = (restaurants) => {
@@ -56,8 +66,8 @@ const PopularRestaurants = () => {
       .then(async (data) => {
         const updatedData = await Promise.all(
           data.map(async (restaurant) => {
-            const photos = await fetchRestaurantPhotos(restaurant.storeSeq);
-            return { ...restaurant, photos, isBookmarked: false }; // 북마크 상태 추가
+            const photos = await fetchRestaurantPhotos(restaurant.storeSeq); // 사진 데이터 가져오기
+            return { ...restaurant, photos, isBookmarked: false }; // 사진을 레스토랑 데이터에 추가
           })
         );
 
@@ -66,7 +76,7 @@ const PopularRestaurants = () => {
         setRestaurants((prevRestaurants) => {
           const combined = [...prevRestaurants, ...filteredData];
           return removeDuplicateNames(combined); // 전체 목록 중복 필터링
-        }); // 목록에 추가
+        });
       })
       .catch((error) => console.error(`Error fetching ${category}:`, error));
   };
