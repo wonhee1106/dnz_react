@@ -32,7 +32,9 @@ function FinalConfirmReserveModal() {
     }
 
     const checkReservation = () => {
-        navigate('/reserveDetail')
+        navigate('/reserveDetail', {
+            state: { date, time, guests, storeSeq, name },
+        })
     }
 
     const formatDate = date => {
