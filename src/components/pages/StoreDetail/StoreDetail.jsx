@@ -123,10 +123,10 @@ function StoreDetail() {
 
     return (
         <div className="store-detail-container">
-            <div id="map"></div>
+           
             
             <div className="store-info">
-                <h2>{store.name}</h2>
+                
 
                 {/* 사진을 가게 이름 아래에 표시하는 부분 */}
                 <div className="photos-container">
@@ -139,7 +139,7 @@ function StoreDetail() {
                                     backgroundImage: `url(${photo.imageUrl || 'defaultImageUrl.jpg'})`, // 사진이 없는 경우 기본 이미지 표시
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
-                                    width: '1500px', // 사진 크기 지정
+                                    width: '1200px', // 사진 크기 지정
                                     height: '700px',
                                 }}
                             ></div>
@@ -150,9 +150,10 @@ function StoreDetail() {
                 </div>
 
                 <p>{store.address1} {store.address2}</p>
+                <div id="map"></div>
                 <p>{store.description}</p>
             </div>
-        
+            <h2>{store.name}</h2>
             <div className="menu-list">
                 <h3>메뉴</h3>
                 {menus.length > 0 ? (
