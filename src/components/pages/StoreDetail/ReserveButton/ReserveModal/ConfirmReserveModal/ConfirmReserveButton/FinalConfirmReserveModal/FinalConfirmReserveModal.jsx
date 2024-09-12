@@ -61,7 +61,7 @@ function FinalConfirmReserveModal() {
                     <div className={styles.reserveInfoRow}>
                         <span>예약일시</span>
                         <span>
-                            {formatDate(date)}, {time} {guests}명
+                            {formatDate(date)} {time} {guests}명
                         </span>
                     </div>
                 </div>
