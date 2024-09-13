@@ -70,7 +70,10 @@ function ReserveModal({ storeSeq, name }) {
     const changeTimePage = direction => {
         if (direction === 'left' && timePage > 0) {
             setTimePage(timePage - 1)
-        } else if (direction === 'right' && (timePage + 1) * timesPerPage < 8) {
+        } else if (
+            direction === 'right' &&
+            (timePage + 1) * timesPerPage < filteredTimes.length
+        ) {
             setTimePage(timePage + 1)
         }
     }
@@ -81,8 +84,8 @@ function ReserveModal({ storeSeq, name }) {
         (guestPage + 1) * guestsPerPage
     )
 
-    // 현재 페이지에 따라 표시될 시간 버튼 목록
-    const visibleTimes = [
+    // 시간 목록
+    const availableTimes = [
         '12:00',
         '12:30',
         '13:00',
@@ -91,13 +94,48 @@ function ReserveModal({ storeSeq, name }) {
         '14:30',
         '15:00',
         '15:30',
-    ].slice(timePage * timesPerPage, (timePage + 1) * timesPerPage)
+        '16:00',
+        '16:30',
+        '17:00',
+        '17:30',
+        '18:00',
+        '18:30',
+        '19:00',
+        '19:30',
+        '20:00',
+        '20:30',
+        '21:00',
+        '21:30',
+        '22:00',
+    ]
+
+    // 오늘 날짜인지 확인
+    const isToday = reserveDate.toDateString() === new Date().toDateString()
+
+    // 오늘 날짜인 경우 현재 시간 이후의 시간만 표시
+    const currentHour = new Date().getHours()
+    const currentMinute = new Date().getMinutes()
+
+    const filteredTimes = availableTimes.filter(time => {
+        if (isToday) {
+            const [hour, minute] = time.split(':').map(Number)
+            return (
+                hour > currentHour ||
+                (hour === currentHour && minute > currentMinute)
+            )
+        }
+        return true
+    })
+
+    // 현재 페이지에 따라 표시될 시간 버튼 목록
+    const visibleTimes = filteredTimes.slice(
+        timePage * timesPerPage,
+        (timePage + 1) * timesPerPage
+    )
 
     return (
         <div className={styles.modalOverlay}>
-            {' '}
             <div className={styles.reserveModalContainer}>
-                {' '}
                 <Calendar
                     onChange={handleDateChange}
                     value={reserveDate}
@@ -108,6 +146,15 @@ function ReserveModal({ storeSeq, name }) {
                     minDetail="year"
                     prev2Label={null}
                     next2Label={null}
+                    minDate={new Date(new Date().setHours(0, 0, 0, 0))} // 오늘 날짜까지 활성화 (시간을 0으로 설정)
+                    tileDisabled={({ date }) =>
+                        date < new Date(new Date().setHours(0, 0, 0, 0))
+                    } // 오늘 이전 날짜만 비활성화
+                    tileClassName={({ date }) =>
+                        date < new Date(new Date().setHours(0, 0, 0, 0))
+                            ? styles.disabledTile
+                            : ''
+                    }
                 />
                 {/* 인원 선택 버튼 */}
                 <div className={styles.guestListWrapper}>
@@ -166,7 +213,10 @@ function ReserveModal({ storeSeq, name }) {
                     <button
                         className={styles.scrollButton.right}
                         onClick={() => changeTimePage('right')}
-                        disabled={(timePage + 1) * timesPerPage >= 8} // 마지막 페이지일 때 비활성화
+                        disabled={
+                            (timePage + 1) * timesPerPage >=
+                            filteredTimes.length
+                        } // 마지막 페이지일 때 비활성화
                     >
                         {'>'}
                     </button>

@@ -75,6 +75,7 @@
     border: 1px solid #ff3d00;
     background-color: #ffffff;
     cursor: pointer;
+    cursor: all
 }
 
 .guestButton {
@@ -142,4 +143,31 @@
 
 :global(.react-calendar) {
     border-radius: 18px;
+}
+
+.disabledTile {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+:global(.react-calendar__navigation__arrow:hover) {
+    background-color: transparent !important;
+}
+
+:global(.react-calendar__navigation__arrow:focus) {
+    background-color: transparent !important;
+}
+
+:global(.react-calendar__navigation__prev-button:hover),
+:global(.react-calendar__navigation__next-button:hover),
+:global(.react-calendar__navigation__label:hover) {
+    background: none !important;
+    /* 배경 제거 */
+    color: #666666;
+}
+
+:global(.react-calendar__navigation__prev-button),
+:global(.react-calendar__navigation__next-button) {
+    background: none !important;
+    /* 배경 제거 */
 }
