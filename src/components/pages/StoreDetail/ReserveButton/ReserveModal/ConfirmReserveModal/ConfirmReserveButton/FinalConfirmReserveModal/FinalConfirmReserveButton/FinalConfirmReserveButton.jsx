@@ -3,15 +3,8 @@ import 'react-calendar/dist/Calendar.css'
 import { useState } from 'react'
 import ReserveDetail from './ReserveDetail/ReserveDetail'
 
-function FinalConfirmReserveButton() {
+function FinalConfirmReserveButton({ date, time, guests, storeSeq, name }) {
     const [isModalOpen, setIsModalOpen] = useState(false)
-
-    // 예약할 정보를 상태로 저장
-    const [reservationInfo, setReservationInfo] = useState({
-        date: new Date(),
-        time: '오후 7:00',
-        guests: 3,
-    })
 
     const openModal = () => {
         setIsModalOpen(true)
@@ -27,7 +20,9 @@ function FinalConfirmReserveButton() {
             {isModalOpen && (
                 <ReserveDetail
                     closeModal={closeModal}
-                    reservationInfo={reservationInfo} // 예약 정보를 모달로 전달
+                    storeSeq={storeSeq}
+                    name={name}
+                    reservationInfo={{ date, time, guests }} // 예약 정보를 모달로 전달
                 />
             )}
         </div>
