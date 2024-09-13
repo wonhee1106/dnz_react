@@ -5,8 +5,9 @@ import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 import { faClock } from '@fortawesome/free-regular-svg-icons'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import axios from 'axios'
-import { api } from '../../../../../config/config'
-import { useAuthStore } from '../../../../../store/store'
+import { useAuthStore } from '/components/store/store'
+
+import { api } from "config/config"
 
 function ConfirmReserveModal() {
     const navigate = useNavigate()
