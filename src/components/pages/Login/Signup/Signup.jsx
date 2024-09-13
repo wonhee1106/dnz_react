@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { api } from '../../../config/config';
 import styles from './Signup.module.css';
 
@@ -15,7 +15,10 @@ const Signup = ({ toggleSignup }) => {
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
     const [isVerificationRequestSent, setIsVerificationRequestSent] = useState(false);
+    
+    const userIdRef = useRef(null);
 
+    
     const handleSignupChange = (e) => {
         const { name, value } = e.target;
         setSignup((prev) => {
@@ -69,7 +72,7 @@ const Signup = ({ toggleSignup }) => {
     };
 
     const requestEmailVerification = () => {
-        if (!validateSignupInputs()) {
+        if (!validateSignupInputs()) { 
             return;
         }
 
@@ -134,6 +137,28 @@ const Signup = ({ toggleSignup }) => {
             .catch(() => alert("회원가입 실패"));
     };
 
+    const checkIdExist = (id) => {
+        const idRegex = /^[a-zA-Z0-9]{6,20}$/;
+
+        if (!idRegex.test(signup.userId)) {
+            userIdRef.current.style.backgroundColor = "#ffe1ca";
+            userIdRef.current.style.borderColor = "#ffeedf";
+
+            return;
+        }
+        
+        api.post(`/auth/existId`, { userId: id })
+        .then(resp => {
+            userIdRef.current.style.backgroundColor = "white";
+            userIdRef.current.style.borderColor = "#DDD";
+        })
+        .catch(error => {
+            userIdRef.current.style.backgroundColor = "#ffe1ca";
+            userIdRef.current.style.borderColor = "#ffeedf";
+        }
+    )
+    }
+
     return (
         <div className={styles.signupForm}>
             <div className={styles.signupContainer}>
@@ -145,6 +170,8 @@ const Signup = ({ toggleSignup }) => {
                     onChange={handleSignupChange}
                     placeholder="6~20자리 아이디를 입력해 주세요"
                     className={styles.inputField}
+                    onKeyUp={(e)=>{checkIdExist(e.target.value)}}
+                    ref={userIdRef}
                 />
                 <p>Password</p>
                 <input
