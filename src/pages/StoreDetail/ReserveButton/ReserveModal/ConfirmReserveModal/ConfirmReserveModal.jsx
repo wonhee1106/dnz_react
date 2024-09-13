@@ -5,7 +5,7 @@ import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 import { faClock } from '@fortawesome/free-regular-svg-icons'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import axios from 'axios'
-import { useAuthStore } from '/components/store/store'
+import { useAuthStore } from 'utils/store'
 
 import { api } from "config/config"
 

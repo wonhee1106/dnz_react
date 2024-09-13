@@ -149,8 +149,8 @@ const Signup = ({ toggleSignup }) => {
         
         api.post(`/auth/existId`, { userId: id })
         .then(resp => {
-            userIdRef.current.style.backgroundColor = "white";
-            userIdRef.current.style.borderColor = "#DDD";
+            userIdRef.current.style.backgroundColor = "#e7ffef";
+            userIdRef.current.style.borderColor = "rgb(124 213 119)";
         })
         .catch(error => {
             userIdRef.current.style.backgroundColor = "#ffe1ca";

@@ -5,8 +5,9 @@ import {
     Route,
     useLocation,
 } from 'react-router-dom'
-import Body from 'pages/Body/Body.jsx'
-import Footer from 'pages/Footer/Footer.jsx'
+import Header from 'components/Header/Header.jsx'
+import Body from 'components/Body/Body.jsx'
+import Footer from 'components/Footer/Footer.jsx'
 import Login from 'pages/Login/Index.jsx'
 import Alam from 'pages/Alampage/Alam.jsx'
 import StoreDetail from 'pages/StoreDetail/StoreDetail.jsx'
@@ -17,9 +18,9 @@ import FinalConfirmReserveModal from 'pages/StoreDetail/ReserveButton/ReserveMod
 import ReserveDetail from 'pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
 import MyDining from 'pages/MyDining/MyDining.jsx'
 
-import StoreManagementPage from './components/pages/StoreManagementPage/StoreManagementPage.jsx'
+import StoreManagementPage from 'pages/StoreManagementPage/StoreManagementPage.jsx'
 import '@fortawesome/fontawesome-free/css/all.min.css'
-import StoreAddPage from './components/pages/StoreAddPage/StoreAddPage.jsx'
+import StoreAddPage from 'pages/StoreAddPage/StoreAddPage.jsx'
 
 const AppContent = () => {
     const location = useLocation() // 현재 경로 확인
