@@ -139,8 +139,8 @@ function StoreDetail() {
                                     backgroundImage: `url(${photo.imageUrl || 'defaultImageUrl.jpg'})`, // 사진이 없는 경우 기본 이미지 표시
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
-                                    width: '1200px', // 사진 크기 지정
-                                    height: '700px',
+                                    width: '900px', // 사진 크기 지정
+                                    height: '400px',
                                 }}
                             ></div>
                         ))
