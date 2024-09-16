@@ -27,6 +27,7 @@ const Header = () => {
         if (isAuth && jwtToken && serverUrl) {
             console.log('WebSocket을 연결 중...')
 
+
             // WebSocket 연결 설정
             ws = new WebSocket(
                 `ws://192.168.1.19/alarm?token=${encodeURIComponent(jwtToken)}`
