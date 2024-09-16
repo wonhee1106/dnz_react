@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell } from '@fortawesome/free-regular-svg-icons'
 import { faBookmark } from '@fortawesome/free-regular-svg-icons'
 
+
 const Header = () => {
     const navigate = useNavigate()
     const isAuth = useAuthStore(state => state.isAuth) // Zustand에서 인증 상태 가져오기
@@ -119,11 +120,14 @@ const Header = () => {
                             {notificationCount}
                         </span>
                     )}
+                    
                 </div>
             </div>
             <div className="header-section login-buttons">
                 {isAuth ? (
+                    
                     <button onClick={handleLogout}>로그아웃</button>
+                    
                 ) : (
                     <button onClick={handleLoginClick}>로그인</button>
                 )}
