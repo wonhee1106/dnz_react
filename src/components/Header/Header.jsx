@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import './Header.css'
 import { useNavigate } from 'react-router-dom'
-import { useAuthStore } from '../store/store'
+import { useAuthStore } from 'utils/store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell } from '@fortawesome/free-regular-svg-icons'
 import { faBookmark } from '@fortawesome/free-regular-svg-icons'
+
 
 const Header = () => {
     const navigate = useNavigate()
@@ -119,11 +120,14 @@ const Header = () => {
                             {notificationCount}
                         </span>
                     )}
+                    
                 </div>
             </div>
             <div className="header-section login-buttons">
                 {isAuth ? (
+                    
                     <button onClick={handleLogout}>로그아웃</button>
+                    
                 ) : (
                     <button onClick={handleLoginClick}>로그인</button>
                 )}

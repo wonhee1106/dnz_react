@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 임포트
-import { useAuthStore } from '../../../store/store';
-import { api } from '../../../config/config';
+import { useAuthStore } from 'utils/store';
+import { api } from 'config/config';
 import {jwtDecode} from 'jwt-decode'; // jwtDecode 임포트
 import styles from './Login.module.css'; // CSS 모듈 임포트
 

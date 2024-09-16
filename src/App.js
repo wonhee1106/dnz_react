@@ -5,22 +5,22 @@ import {
     Route,
     useLocation,
 } from 'react-router-dom'
-import Header from './components/Header/Header.jsx'
-import Body from './components/Body/Body.jsx'
-import Footer from './components/Footer/Footer.jsx'
-import Login from './components/pages/Login/Index.jsx'
-import Alam from './components/pages/Alampage/Alam.jsx'
-import StoreDetail from './components/pages/StoreDetail/StoreDetail.jsx'
-import ConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveModal.jsx'
-import Mypage from './components/pages/Mypages/Mypage.jsx'
+import Header from 'components/Header/Header.jsx'
+import Body from 'components/Body/Body.jsx'
+import Footer from 'components/Footer/Footer.jsx'
+import Login from 'pages/Login/Index.jsx'
+import Alam from 'pages/Alampage/Alam.jsx'
+import StoreDetail from 'pages/StoreDetail/StoreDetail.jsx'
+import ConfirmReserveModal from 'pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveModal.jsx'
+import Mypage from 'pages/Mypages/Mypage.jsx'
 
-import FinalConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal.jsx'
-import ReserveDetail from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
-import MyDining from './components/pages/MyDining/MyDining.jsx'
+import FinalConfirmReserveModal from 'pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal.jsx'
+import ReserveDetail from 'pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
+import MyDining from 'pages/MyDining/MyDining.jsx'
 
-import StoreManagementPage from './components/pages/StoreManagementPage/StoreManagementPage.jsx'
+import StoreManagementPage from 'pages/StoreManagementPage/StoreManagementPage.jsx'
 import '@fortawesome/fontawesome-free/css/all.min.css'
-import StoreAddPage from './components/pages/StoreAddPage/StoreAddPage.jsx'
+import StoreAddPage from 'pages/StoreAddPage/StoreAddPage.jsx'
 
 const AppContent = () => {
     const location = useLocation() // 현재 경로 확인
