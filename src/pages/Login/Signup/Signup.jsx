@@ -8,7 +8,7 @@ const Signup = ({ toggleSignup }) => {
         userPw: '',
         userPwConfirm: '',
         userName: '',
-        userBirthDate: '',  // 변경된 부분
+        userBirthDate: '',  
         userPhoneNumber: '',
         userEmail: ''
     });
@@ -142,6 +142,8 @@ const Signup = ({ toggleSignup }) => {
             return;
         }
 
+
+        
         api.post(`/auth/registerUser`, signup)
             .then(() => {
                 alert("회원가입 완료");
