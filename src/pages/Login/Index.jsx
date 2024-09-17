@@ -5,7 +5,6 @@ import FindId from './FindAccount/FindId';
 import FindPassword from './FindAccount/FindPassword';
 import Modal from './Modal/Modal';
 import commonStyles from './common.module.css';
-import {Link} from 'react-router-dom';
 
 const Index = () => {
     const [isSignup, setIsSignup] = useState(false);
@@ -43,7 +42,6 @@ const Index = () => {
                             >
                                 비밀번호 찾기
                             </button>
-                            <Link to="/mypage">마이페이지</Link>
                         </div>
                     </>
                 ) : (
