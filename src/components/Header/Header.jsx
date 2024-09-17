@@ -99,6 +99,8 @@ const Header = () => {
                         onClick={handleUserClick} // 유저 아이콘 클릭 이벤트
                     />
                 )}
+
+                
                 <FontAwesomeIcon icon={faBookmark} className="faBookmark" />
                 <div className="notification-wrapper" onClick={handleAlarmClick}>
                     <FontAwesomeIcon
