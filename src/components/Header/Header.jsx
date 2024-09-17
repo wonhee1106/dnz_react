@@ -1,9 +1,11 @@
+
 import React, { useEffect, useState } from 'react';
 import './Header.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from 'utils/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faBookmark, faUser } from '@fortawesome/free-regular-svg-icons';
+
 
 const Header = () => {
     const navigate = useNavigate();
@@ -14,8 +16,10 @@ const Header = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL;
 
     useEffect(() => {
-        let ws;
-        const jwtToken = sessionStorage.getItem('token');
+
+        let ws // WebSocket 변수
+        const jwtToken = sessionStorage.getItem('token') // sessionStorage에서 JWT 토큰 가져오기
+
 
         if (isAuth && jwtToken && serverUrl) {
             ws = new WebSocket(
@@ -28,12 +32,15 @@ const Header = () => {
 
             ws.onmessage = (event) => {
                 try {
+
                     const message = JSON.parse(event.data);
                     setNotificationCount((prevCount) => prevCount + 1);
                     setUnreadNotifications(true);
                 } catch (error) {
                     setNotificationCount((prevCount) => prevCount + 1);
                     setUnreadNotifications(true);
+
+
                 }
             };
 
@@ -48,34 +55,40 @@ const Header = () => {
 
         return () => {
             if (ws) {
-                ws.close();
+
+                ws.close()
             }
-        };
-    }, [isAuth, serverUrl]);
+        }
+    }, [isAuth, serverUrl])
 
     const handleLogoClick = () => {
-        navigate('/');
-    };
+        navigate('/')
+    }
 
     const handleLoginClick = () => {
-        navigate('/login');
-    };
+        navigate('/login')
+    }
 
     const handleAlarmClick = () => {
-        setUnreadNotifications(false);
-        setNotificationCount(0);
-        navigate('/alarm', { state: { defaultTab: '활동' } });
-    };
+        setUnreadNotifications(false)
+        setNotificationCount(0)
+        navigate('/alarm', { state: { defaultTab: '활동' } })
+    }
 
     const handleLogout = () => {
-        logout();
-        sessionStorage.removeItem('token');
-        navigate('/login');
-    };
+        logout()
+        sessionStorage.removeItem('token')
+        navigate('/login')
+    }
 
-    const handleUserClick = () => {
-        navigate('/mypage');
-    };
+    const handleMypageClick = () => {
+        if (isAuth) {
+            navigate('/mypage')
+        } else {
+            navigate('/login') // 로그인되지 않은 경우 로그인 페이지로 리디렉션
+        }
+    }
+
 
     return (
         <header className="header">
@@ -102,7 +115,9 @@ const Header = () => {
 
                 
                 <FontAwesomeIcon icon={faBookmark} className="faBookmark" />
+
                 <div className="notification-wrapper" onClick={handleAlarmClick}>
+
                     <FontAwesomeIcon
                         icon={faBell}
                         className={`faBell ${unreadNotifications ? 'active' : ''}`}
@@ -114,7 +129,11 @@ const Header = () => {
             </div>
             <div className="header-section login-buttons">
                 {isAuth ? (
-                    <button onClick={handleLogout}>로그아웃</button>
+                    <>
+                        <button onClick={handleMypageClick}>마이페이지</button>
+                        <button onClick={handleLogout}>로그아웃</button>
+                    </>
+
                 ) : (
                     <button onClick={handleLoginClick}>로그인</button>
                 )}
