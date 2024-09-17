@@ -1,57 +1,61 @@
-// Header.js
-import React, { useEffect, useState } from 'react'
-import './Header.css'
-import { useNavigate } from 'react-router-dom'
-import { useAuthStore } from 'utils/store'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBell } from '@fortawesome/free-regular-svg-icons'
-import { faBookmark } from '@fortawesome/free-regular-svg-icons'
+
+import React, { useEffect, useState } from 'react';
+import './Header.css';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from 'utils/store';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBell, faBookmark, faUser } from '@fortawesome/free-regular-svg-icons';
+
 
 const Header = () => {
-    const navigate = useNavigate()
-    const isAuth = useAuthStore(state => state.isAuth) // Zustand에서 인증 상태 가져오기
-    const logout = useAuthStore(state => state.logout) // 로그아웃 함수
-    const [notificationCount, setNotificationCount] = useState(0) // 알림 카운트
-    const [unreadNotifications, setUnreadNotifications] = useState(false) // 읽지 않은 알림 여부
-    const serverUrl = process.env.REACT_APP_SERVER_URL // 환경 변수에서 서버 URL 가져오기
+    const navigate = useNavigate();
+    const isAuth = useAuthStore((state) => state.isAuth);
+    const logout = useAuthStore((state) => state.logout);
+    const [notificationCount, setNotificationCount] = useState(0);
+    const [unreadNotifications, setUnreadNotifications] = useState(false);
+    const serverUrl = process.env.REACT_APP_SERVER_URL;
 
     useEffect(() => {
+
         let ws // WebSocket 변수
         const jwtToken = sessionStorage.getItem('token') // sessionStorage에서 JWT 토큰 가져오기
+
 
         if (isAuth && jwtToken && serverUrl) {
             ws = new WebSocket(
                 `ws://192.168.1.19/alarm?token=${encodeURIComponent(jwtToken)}`
-            )
+            );
 
             ws.onopen = () => {
-                console.log('WebSocket 연결 성공')
-            }
+                console.log('WebSocket 연결 성공');
+            };
 
-            ws.onmessage = event => {
+            ws.onmessage = (event) => {
                 try {
-                    const message = JSON.parse(event.data)
-                    setNotificationCount(prevCount => prevCount + 1)
-                    setUnreadNotifications(true)
+
+                    const message = JSON.parse(event.data);
+                    setNotificationCount((prevCount) => prevCount + 1);
+                    setUnreadNotifications(true);
                 } catch (error) {
-                    setNotificationCount(prevCount => prevCount + 1)
-                    setUnreadNotifications(true)
+                    setNotificationCount((prevCount) => prevCount + 1);
+                    setUnreadNotifications(true);
+
+
                 }
-            }
+            };
 
             ws.onclose = () => {
-                console.log('WebSocket 연결이 닫혔습니다.')
-            }
+                console.log('WebSocket 연결이 닫혔습니다.');
+            };
 
-            ws.onerror = error => {
-                console.error('WebSocket 오류:', error)
-            }
-        } else {
-            console.log('WebSocket 연결 조건이 충족되지 않음.')
+            ws.onerror = (error) => {
+                console.error('WebSocket 오류:', error);
+            };
         }
 
         return () => {
             if (ws) {
+
                 ws.close()
             }
         }
@@ -85,6 +89,7 @@ const Header = () => {
         }
     }
 
+
     return (
         <header className="header">
             <div
@@ -92,7 +97,7 @@ const Header = () => {
                 onClick={handleLogoClick}
                 role="button"
                 tabIndex="0"
-                onKeyPress={e => e.key === 'Enter' && handleLogoClick()}
+                onKeyPress={(e) => e.key === 'Enter' && handleLogoClick()}
             >
                 9900
             </div>
@@ -100,19 +105,23 @@ const Header = () => {
                 <input className="search" type="text" placeholder="검색" />
             </div>
             <div className="header-section icon">
+                {isAuth && (
+                    <FontAwesomeIcon
+                        icon={faUser}
+                        className="faUser"
+                        onClick={handleUserClick} // 유저 아이콘 클릭 이벤트
+                    />
+                )}
                 <FontAwesomeIcon icon={faBookmark} className="faBookmark" />
-                <div
-                    className="notification-wrapper"
-                    onClick={handleAlarmClick}
-                >
+
+                <div className="notification-wrapper" onClick={handleAlarmClick}>
+
                     <FontAwesomeIcon
                         icon={faBell}
                         className={`faBell ${unreadNotifications ? 'active' : ''}`}
                     />
                     {notificationCount > 0 && (
-                        <span className="notification-count">
-                            {notificationCount}
-                        </span>
+                        <span className="notification-count">{notificationCount}</span>
                     )}
                 </div>
             </div>
@@ -122,12 +131,13 @@ const Header = () => {
                         <button onClick={handleMypageClick}>마이페이지</button>
                         <button onClick={handleLogout}>로그아웃</button>
                     </>
+
                 ) : (
                     <button onClick={handleLoginClick}>로그인</button>
                 )}
             </div>
         </header>
-    )
-}
+    );
+};
 
-export default Header
+export default Header;

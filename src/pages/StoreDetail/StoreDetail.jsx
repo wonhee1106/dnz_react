@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import ReserveButton from './ReserveButton/ReserveButton';
-
 import { api } from '../../config/config';
 import { useParams } from 'react-router-dom';
 import './StoreDetail.css'; // CSS 파일 추가
@@ -10,6 +9,7 @@ function StoreDetail() {
     const [store, setStore] = useState(null);
     const [menus, setMenus] = useState([]);
     const [photos, setPhotos] = useState([]); // 사진 데이터를 관리하는 상태
+    const [visibleMenus, setVisibleMenus] = useState(5); // 처음에 표시할 메뉴 개수
 
     // 가게 상세 정보를 서버로부터 가져오는 함수
     useEffect(() => {
@@ -118,16 +118,17 @@ function StoreDetail() {
         }
     }, [store]);
 
+    // "더보기" 버튼 클릭 시 더 많은 메뉴를 표시
+    const handleLoadMore = () => {
+        setVisibleMenus((prevVisibleMenus) => prevVisibleMenus + 5); // 5개씩 더 로드
+    };
+
     // 가게 정보가 없을 경우 로딩 메시지 표시
     if (!store) return <div className="loading">가게 정보를 불러오는 중입니다...</div>;
 
     return (
         <div className="store-detail-container">
-           
-            
             <div className="store-info">
-                
-
                 {/* 사진을 가게 이름 아래에 표시하는 부분 */}
                 <div className="photos-container">
                     {photos.length > 0 ? (
@@ -149,30 +150,39 @@ function StoreDetail() {
                     )}
                 </div>
 
-                <p>{store.address1} {store.address2}</p>
+                <p>{store.address1}</p>
                 <div id="map"></div>
                 <p>{store.description}</p>
             </div>
-            <h2>{store.name}</h2>
+
+            {/* 예약하기 버튼은 왼쪽, 가게 이름은 가운데 배치 */}
+            <div className="store-header">
+                <div className="reserve-button-container">
+                    <ReserveButton />
+                </div>
+                <h2 className="store-name">{store.name}</h2>
+            </div>
+
             <div className="menu-list">
                 <h3>메뉴</h3>
                 {menus.length > 0 ? (
                     <div>
-                        {menus.map((menu) => (
+                        {menus.slice(0, visibleMenus).map((menu) => (
                             <div key={menu.menuSeq} className="menu-item">
                                 <strong>{menu.name}</strong>
                                 <div>{menu.price ? menu.price + '원' : '가격 정보 없음'}</div>
                                 {menu.description && <p>{menu.description}</p>}
                             </div>
                         ))}
+                        {visibleMenus < menus.length && (
+                            <button className="load-more" onClick={handleLoadMore}>
+                                더보기
+                            </button>
+                        )}
                     </div>
                 ) : (
                     <p>메뉴가 없습니다.</p>
                 )}
-            </div>
-
-            <div className="reserve-button-container">
-                <ReserveButton />
             </div>
         </div>
     );

@@ -11,11 +11,6 @@ const PopularRestaurants = () => {
   const [westernRestaurants, setWesternRestaurants] = useState([]);
   const [japaneseRestaurants, setJapaneseRestaurants] = useState([]);
 
-  const [koreanPage, setKoreanPage] = useState(1);
-  const [chinesePage, setChinesePage] = useState(1);
-  const [westernPage, setWesternPage] = useState(1);
-  const [japanesePage, setJapanesePage] = useState(1);
-
   const scrollRef1 = useRef(null);
   const scrollRef2 = useRef(null);
   const scrollRef3 = useRef(null);
@@ -24,7 +19,6 @@ const PopularRestaurants = () => {
   const serverURL = process.env.REACT_APP_SERVER_URL;
   const navigate = useNavigate(); // useNavigate 훅 추가
 
-  // 수정된 fetchRestaurantPhotos 함수
   const fetchRestaurantPhotos = (storeSeq) => {
     return fetch(`${serverURL}/photos/store/${storeSeq}`, {
       method: 'GET',
@@ -55,8 +49,8 @@ const PopularRestaurants = () => {
     return uniqueRestaurants;
   };
 
-  const fetchRestaurants = (category, setRestaurants, page = 1) => {
-    fetch(`${serverURL}/store/category/${category}?page=${page}`, {
+  const fetchRestaurants = (category, setRestaurants) => {
+    fetch(`${serverURL}/store/category/${category}`, {
       method: 'GET',
     })
       .then((response) => {
@@ -72,11 +66,7 @@ const PopularRestaurants = () => {
         );
 
         const filteredData = removeDuplicateNames(updatedData); // 중복된 이름을 필터링
-
-        setRestaurants((prevRestaurants) => {
-          const combined = [...prevRestaurants, ...filteredData];
-          return removeDuplicateNames(combined); // 전체 목록 중복 필터링
-        });
+        setRestaurants(filteredData); // 상태에 설정
       })
       .catch((error) => console.error(`Error fetching ${category}:`, error));
   };
@@ -87,12 +77,6 @@ const PopularRestaurants = () => {
     fetchRestaurants('양식', setWesternRestaurants);
     fetchRestaurants('일식', setJapaneseRestaurants);
   }, [serverURL]);
-
-  const loadMoreRestaurants = (category, setRestaurants, page, setPage) => {
-    const nextPage = page + 1;
-    fetchRestaurants(category, setRestaurants, nextPage);
-    setPage(nextPage);
-  };
 
   const scrollLeft = (scrollRef) => {
     if (scrollRef && scrollRef.current) {
@@ -107,8 +91,7 @@ const PopularRestaurants = () => {
   };
 
   const handleCardClick = (storeSeq) => {
-    // storeSeq를 포함하여 StoreDetail로 이동
-    navigate(`/store/${storeSeq}`);
+    navigate(`/store/${storeSeq}`); // storeSeq를 포함하여 StoreDetail로 이동
   };
 
   // 북마크 토글
@@ -124,11 +107,11 @@ const PopularRestaurants = () => {
 
   const renderRestaurantCard = (restaurant, restaurants, setRestaurants) => (
     <div
-      key={restaurant.storeSeq} // storeSeq를 key로 사용 (고유값)
+      key={restaurant.storeSeq}
       className="restaurant-list-item restaurant-card"
       role="button"
       tabIndex={0}
-      onClick={() => handleCardClick(restaurant.storeSeq)} // 클릭 시 storeSeq를 URL로 넘겨서 페이지 이동
+      onClick={() => handleCardClick(restaurant.storeSeq)}
       onKeyPress={(e) => {
         if (e.key === 'Enter') handleCardClick(restaurant.storeSeq);
       }}
@@ -138,7 +121,7 @@ const PopularRestaurants = () => {
         <div
           className="img"
           style={{
-            backgroundImage: `url(${restaurant.photos && restaurant.photos.length > 0 ? restaurant.photos[0].imageUrl : 'defaultImageUrl'})`, // 이미지 표시
+            backgroundImage: `url(${restaurant.photos && restaurant.photos.length > 0 ? restaurant.photos[0].imageUrl : 'defaultImageUrl'})`,
           }}
         ></div>
       </div>
@@ -163,16 +146,17 @@ const PopularRestaurants = () => {
     </div>
   );
 
+  const handleMoreClick = (category) => {
+    navigate(`/storeList/${category}`); // 카테고리를 URL에 포함하여 페이지로 이동
+  };
+
   return (
     <div>
       {/* 한식 섹션 */}
       <div className="popular-restaurants container gutter-sm">
         <div className="section-header-wrap">
           <h2 className="section-header">한식</h2>
-          <button
-            className="btn-more"
-            onClick={() => loadMoreRestaurants('한식', setKoreanRestaurants, koreanPage, setKoreanPage)}
-          >
+          <button className="btn-more" onClick={() => handleMoreClick('한식')}>
             더보기
           </button>
         </div>
@@ -197,10 +181,7 @@ const PopularRestaurants = () => {
       <div className="popular-restaurants container gutter-sm">
         <div className="section-header-wrap">
           <h2 className="section-header">중식</h2>
-          <button
-            className="btn-more"
-            onClick={() => loadMoreRestaurants('중식', setChineseRestaurants, chinesePage, setChinesePage)}
-          >
+          <button className="btn-more" onClick={() => handleMoreClick('중식')}>
             더보기
           </button>
         </div>
@@ -225,10 +206,7 @@ const PopularRestaurants = () => {
       <div className="popular-restaurants container gutter-sm">
         <div className="section-header-wrap">
           <h2 className="section-header">양식</h2>
-          <button
-            className="btn-more"
-            onClick={() => loadMoreRestaurants('양식', setWesternRestaurants, westernPage, setWesternPage)}
-          >
+          <button className="btn-more" onClick={() => handleMoreClick('양식')}>
             더보기
           </button>
         </div>
@@ -253,10 +231,7 @@ const PopularRestaurants = () => {
       <div className="popular-restaurants container gutter-sm">
         <div className="section-header-wrap">
           <h2 className="section-header">일식</h2>
-          <button
-            className="btn-more"
-            onClick={() => loadMoreRestaurants('일식', setJapaneseRestaurants, japanesePage, setJapanesePage)}
-          >
+          <button className="btn-more" onClick={() => handleMoreClick('일식')}>
             더보기
           </button>
         </div>
