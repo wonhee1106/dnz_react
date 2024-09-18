@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { api } from '../../../config/config';
 import styles from './Signup.module.css';
+import AddStoreOwner from './AddStoreOwner/AddStoreOwner';
 
 const Signup = ({ toggleSignup }) => {
     const [signup, setSignup] = useState({
@@ -15,12 +16,14 @@ const Signup = ({ toggleSignup }) => {
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
     const [isVerificationRequestSent, setIsVerificationRequestSent] = useState(false);
+    const [isStoreOwner , setIsStoreOwner] = useState(false);
 
     const userIdRef = useRef(null);
     const userEmailRef = useRef(null);
     const userPhoneRef = useRef(null);
     const userNameRef = useRef(null);
     const userPwConfirmRef = useRef(null);
+    const userPwRef = useRef();
 
 
     const handleSignupChange = (e) => {
@@ -158,6 +161,7 @@ const Signup = ({ toggleSignup }) => {
                 });
                 setIsEmailVerified(false);
                 setIsVerificationRequestSent(false);
+                setIsStoreOwner(false)
             })
             .catch(() => alert("회원가입 실패"));
     };
@@ -251,6 +255,10 @@ const Signup = ({ toggleSignup }) => {
             }
             )
     }
+
+    const handleStoreOwnerChange = (e) => {
+        setIsStoreOwner(e.target.checked);
+    };
 
     
 
@@ -365,6 +373,21 @@ const Signup = ({ toggleSignup }) => {
                         </button>
                     </>
                 )}
+
+                   {/* 점주 여부에 따른 추가 폼 표시 */}
+                   <div className={styles.storeOwnerContainer}>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={isStoreOwner}
+                            onChange={handleStoreOwnerChange}
+                        />
+                        점주 등록
+                    </label>
+                    {isStoreOwner && <AddStoreOwner />} {/* 점주 관련 추가 폼 컴포넌트 */}
+                </div>
+
+
                 {isEmailVerified && (
                     <button
                         onClick={handleSignup}
