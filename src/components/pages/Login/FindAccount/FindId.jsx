@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { api } from 'config/config';
+import { api } from '../../../config/config';
 import styles from './Find.module.css';
 
 const FindId = ({ closeModal }) => {  // Add closeModal prop
@@ -46,7 +46,7 @@ const FindId = ({ closeModal }) => {  // Add closeModal prop
                 >
                     뒤로가기
                 </button>
-          </div>
+            </div>
         </div>
     );
 };

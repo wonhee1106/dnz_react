@@ -1,7 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { api } from '../../../config/config';
 import styles from './Signup.module.css';
-import AddStoreOwner from './AddStoreOwner/AddStoreOwner';
 
 const Signup = ({ toggleSignup }) => {
     const [signup, setSignup] = useState({
@@ -9,22 +8,13 @@ const Signup = ({ toggleSignup }) => {
         userPw: '',
         userPwConfirm: '',
         userName: '',
-        userBirthDate: '',  
+        userBirthDate: '',  // 변경된 부분
         userPhoneNumber: '',
         userEmail: ''
     });
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
     const [isVerificationRequestSent, setIsVerificationRequestSent] = useState(false);
-    const [isStoreOwner , setIsStoreOwner] = useState(false);
-
-    const userIdRef = useRef(null);
-    const userEmailRef = useRef(null);
-    const userPhoneRef = useRef(null);
-    const userNameRef = useRef(null);
-    const userPwConfirmRef = useRef(null);
-    const userPwRef = useRef();
-
 
     const handleSignupChange = (e) => {
         const { name, value } = e.target;
@@ -36,18 +26,14 @@ const Signup = ({ toggleSignup }) => {
             }
             return updatedSignup;
         });
-
-       
     };
 
     const validateSignupInputs = () => {
         const idRegex = /^[a-zA-Z0-9]{6,20}$/;
         const nameRegex = /^[a-zA-Z0-9가-힣]{2,15}$/;
         const phoneRegex = /^\d{10,11}$/;
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2}$/;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const pwRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,12}$/;
-
-        const emailAddressArr = ['naver.com', 'gmail.com'];
 
         if (!idRegex.test(signup.userId)) {
             alert("아이디는 6자 이상 20자 이하의 알파벳과 숫자로만 구성되어야 합니다.");
@@ -64,10 +50,10 @@ const Signup = ({ toggleSignup }) => {
             return false;
         }
 
-        // if (!emailRegex.test(signup.userEmail)) {
-        //     alert("유효한 이메일 주소를 입력해 주세요.");
-        //     return false;
-        // }
+        if (!emailRegex.test(signup.userEmail)) {
+            alert("유효한 이메일 주소를 입력해 주세요.");
+            return false;
+        }
 
         if (!pwRegex.test(signup.userPw)) {
             alert("비밀번호는 대소문자, 숫자, 특수문자를 포함하여 8~12자리로 입력해 주세요.");
@@ -78,21 +64,6 @@ const Signup = ({ toggleSignup }) => {
             alert("비밀번호가 일치하지 않습니다.");
             return false;
         }
-
-        if(signup.userEmail.indexOf("@") != -1) {
-            const emailAddress = signup.userEmail.substring(signup.userEmail.indexOf("@") + 1, signup.userEmail.length);
-            if(emailAddressArr.filter((x) => x === emailAddress).length == 0) {
-                alert("유효한 이메일 형식이 아닙니다.");
-                return false;
-            }
-        }
-        else {
-            alert("유효한 이메일 형식이 아닙니다.");
-            return false;
-        }
-
-
-
 
         return true;
     };
@@ -145,8 +116,6 @@ const Signup = ({ toggleSignup }) => {
             return;
         }
 
-
-        
         api.post(`/auth/registerUser`, signup)
             .then(() => {
                 alert("회원가입 완료");
@@ -161,106 +130,9 @@ const Signup = ({ toggleSignup }) => {
                 });
                 setIsEmailVerified(false);
                 setIsVerificationRequestSent(false);
-                setIsStoreOwner(false)
             })
             .catch(() => alert("회원가입 실패"));
     };
-
-    const checkIdExist = (id) => {
-        const idRegex = /^[a-zA-Z0-9]{6,20}$/;
-
-        if (!idRegex.test(signup.userId)) {
-            userIdRef.current.style.backgroundColor = "#ffe1ca";
-            userIdRef.current.style.borderColor = "#ffeedf";
-
-            return;
-        }
-
-        api.post(`/auth/existId`, { userId: id })
-            .then(resp => {
-                userIdRef.current.style.backgroundColor = "#e7ffef";
-                userIdRef.current.style.borderColor = "rgb(124 213 119)";
-            })
-            .catch(error => {
-                userIdRef.current.style.backgroundColor = "#ffe1ca";
-                userIdRef.current.style.borderColor = "#ffeedf";
-            }
-            )
-    }
-
-    const checkNameExist = (name) => {
-        const nameRegex = /^[a-zA-Z0-9가-힣]{2,15}$/;
-
-        if (!nameRegex.test(signup.userName)) {
-            userNameRef.current.style.backgroundColor = "#ffe1ca";
-            userNameRef.current.style.borderColor = "#ffeedf";
-
-            return;
-        }
-
-        api.post(`/auth/existName`, { userName: name })
-            .then(resp => {
-                userNameRef.current.style.backgroundColor = "#ffe1ca";
-                userNameRef.current.style.borderColor = "#ffeedf";
-            })
-            .catch(error => {
-                userNameRef.current.style.borderColor = "rgb(124 213 119)";
-                userNameRef.current.style.backgroundColor = "#e7ffef";
-            }
-            )
-    }
-
-    const checkEmailExist = (email) => {
-        const emailAddressArr = ['naver.com', 'gmail.com'];
-
-        const emailAddress = email.substring(email.indexOf("@") + 1, email.length);
-        if(emailAddressArr.filter((x) => x === emailAddress).length == 0) {
-            userEmailRef.current.style.backgroundColor = "#ffe1ca";
-            userEmailRef.current.style.borderColor = "#ffeedf";
-
-            return;
-        }
-
-
-        api.post(`/auth/existEmail`, { userEmail: email })
-            .then(resp => {
-                userEmailRef.current.style.backgroundColor = "#ffe1ca";
-                userEmailRef.current.style.borderColor = "#ffeedf";
-            })
-            .catch(error => {
-                userEmailRef.current.style.backgroundColor = "#e7ffef";
-                userEmailRef.current.style.borderColor = "rgb(124 213 119)";
-            }
-            )
-    }
-
-    const checkPhoneExist = (phone) => {
-        const phoneRegex = /^01[016789]\d{4}\d{4}$/;
-
-        if (!phoneRegex.test(signup.userPhoneNumber)) {
-            userPhoneRef.current.style.backgroundColor = "#ffe1ca";
-            userPhoneRef.current.style.borderColor = "#ffeedf";
-
-            return;
-        }
-
-        api.post(`/auth/existPhoneNumber`, { userPhoneNumber: phone })
-            .then(resp => {
-                userPhoneRef.current.style.backgroundColor = "#e7ffef";
-                userPhoneRef.current.style.borderColor = "rgb(124 213 119)";
-            })
-            .catch(error => {
-                userPhoneRef.current.style.backgroundColor = "#ffe1ca";
-                userPhoneRef.current.style.borderColor = "#ffeedf";
-            }
-            )
-    }
-
-    const handleStoreOwnerChange = (e) => {
-        setIsStoreOwner(e.target.checked);
-    };
-
-    
 
     return (
         <div className={styles.signupForm}>
@@ -273,8 +145,6 @@ const Signup = ({ toggleSignup }) => {
                     onChange={handleSignupChange}
                     placeholder="6~20자리 아이디를 입력해 주세요"
                     className={styles.inputField}
-                    onKeyUp={(e) => { checkIdExist(e.target.value) }}
-                    ref={userIdRef}
                 />
                 <p>Password</p>
                 <input
@@ -292,7 +162,6 @@ const Signup = ({ toggleSignup }) => {
                     onChange={handleSignupChange}
                     placeholder="비밀번호를 한 번 더 입력해 주세요"
                     className={styles.inputField}
-                    ref={userPwConfirmRef}
                 />
                 <p>닉네임</p>
                 <input
@@ -302,8 +171,6 @@ const Signup = ({ toggleSignup }) => {
                     onChange={handleSignupChange}
                     placeholder="2~15자리 닉네임을 입력해 주세요"
                     className={styles.inputField}
-                    onKeyUp={(e) => { checkNameExist(e.target.value) }}
-                    ref={userNameRef}
                 />
                 <p>주민번호</p>
                 <div className={styles.birthDateContainer}>
@@ -336,8 +203,6 @@ const Signup = ({ toggleSignup }) => {
                     onChange={handleSignupChange}
                     placeholder="핸드폰 번호를 입력해 주세요 (숫자 10~11자리)"
                     className={styles.inputField}
-                    onKeyUp={(e) => { checkPhoneExist(e.target.value) }}
-                    ref={userPhoneRef}
                 />
                 <p>이메일</p>
                 <input
@@ -347,8 +212,6 @@ const Signup = ({ toggleSignup }) => {
                     onChange={handleSignupChange}
                     placeholder="이메일을 입력해 주세요"
                     className={styles.inputField}
-                    onKeyUp={(e) => { checkEmailExist(e.target.value) }}
-                    ref={userEmailRef}
                 />
                 <button
                     onClick={requestEmailVerification}
@@ -373,21 +236,6 @@ const Signup = ({ toggleSignup }) => {
                         </button>
                     </>
                 )}
-
-                   {/* 점주 여부에 따른 추가 폼 표시 */}
-                   <div className={styles.storeOwnerContainer}>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={isStoreOwner}
-                            onChange={handleStoreOwnerChange}
-                        />
-                        점주 등록
-                    </label>
-                    {isStoreOwner && <AddStoreOwner />} {/* 점주 관련 추가 폼 컴포넌트 */}
-                </div>
-
-
                 {isEmailVerified && (
                     <button
                         onClick={handleSignup}

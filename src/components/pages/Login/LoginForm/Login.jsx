@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 임포트
-import { useAuthStore } from 'utils/store';
-import { api } from 'config/config';
+import { useAuthStore } from '../../../store/store';
+import { api } from '../../../config/config';
 import {jwtDecode} from 'jwt-decode'; // jwtDecode 임포트
 import styles from './Login.module.css'; // CSS 모듈 임포트
 
@@ -22,13 +22,9 @@ const Login = () => {
             .then((resp) => {
                 if (resp.data && resp.data.token) {
                     const token = resp.data.token;
-                    const decodedToken = jwtDecode(token);
-                    console.log("디코딩된 토큰:", decodedToken);
-                    const userId = decodedToken.userId;
-                    console.log("디코딩된 userId:", userId);
-                    sessionStorage.setItem('token', token); 
-                    login(token, userId); 
-                    navigate("/"); 
+                    sessionStorage.setItem('token', token); // JWT 토큰을 sessionStorage에 저장
+                    login(token); // Zustand나 다른 상태 관리 툴로 로그인 상태 업데이트
+                    navigate("/"); // 로그인 후 메인 페이지로 이동
     
                     // 읽음 상태 업데이트는 여기서 하지 않고, 알림을 불러오기만 함
                     api.get(`/api/activities/unread`, {

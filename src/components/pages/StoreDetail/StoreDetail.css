@@ -23,15 +23,10 @@
 
 /* 지도 스타일 */
 #map {
-    width: 80%; /* 지도의 넓이를 80%로 줄임 */
-    max-width: 600px; /* 최대 넓이를 600px로 제한 */
-    height: 300px; /* 지도의 높이를 300px로 줄임 */
-    margin: 20px auto; /* 수평 중앙 정렬 */
-    border: 2px solid #ddd; /* 테두리 추가 (옵션) */
-    border-radius: 8px; /* 테두리 둥글게 처리 (옵션) */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
+    width: 100%;
+    height: 400px;
+    margin: 20px 0;
 }
-
 
 /* 사진 컨테이너 */
 .photos-container {
@@ -42,7 +37,7 @@
 }
 
 .store-photo {
-    width: 100%;
+    width: 150%;
     height: 150px;
     object-fit: cover;
     /* 이미지 비율을 유지하면서 영역에 맞추기 */
@@ -109,39 +104,8 @@
 
 /* 예약하기 버튼 컨테이너 */
 .reserve-button-container {
-    margin-bottom: 30px;
+    margin-top: 30px;
     display: flex;
-    margin-left:500px;
+    justify-content: center;
+    /* 버튼을 중앙에 배치 */
 }
-
-/* 가게 이름과 예약하기 버튼을 배치 */
-.store-header {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* 가운데 정렬 */
-    position: relative;
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-.store-name {
-    flex-grow: 1;
-    text-align: center; /* 가게 이름을 가운데 정렬 */
-}
-
-.reserve-button-container {
-    position: absolute;
-   margin-left: 630px;
-}
-
-.load-more{
-    padding: 12px 24px;
-    font-size: 1.2em;
-    color: white;
-    background-color: #ff6b00; /* 주황색 배경 */
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-

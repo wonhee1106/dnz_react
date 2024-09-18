@@ -4,7 +4,7 @@
     align-items: center;
     width: 400px;
     margin: 0 auto;
-    padding: 10px;
+    padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #f9f9f9;
@@ -26,16 +26,15 @@
 .inputField {
     width: 100%;
     padding: 10px;
-    margin: 5px 0;
+    margin: 10px 0;
     border: 1px solid #ddd;
     border-radius: 5px;
-    transition: all 200ms ease-in;
 }
 
 .actionButton {
     width: 100%;
     padding: 10px;
-    margin: 5px 0;
+    margin: 10px 0;
     border: none;
     border-radius: 5px;
     background-color: #000; /* 기본 색상: 검정색 */
