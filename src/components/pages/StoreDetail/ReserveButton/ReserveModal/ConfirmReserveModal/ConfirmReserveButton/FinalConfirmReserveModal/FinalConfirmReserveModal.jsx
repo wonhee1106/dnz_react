@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom' // 페이지 이동을 위한 useNavigate
 import { api } from '../../../../../../../config/config'
 import styles from './FinalConfirmReserveModal.module.css'
 
-function FinalConfirmReserveModal() {
-    const navigate = useNavigate()
-    const location = useLocation()
-
-    const { date, time, guests, storeSeq, name } = location.state
-
+function FinalConfirmReserveModal({
+    date,
+    time,
+    guests,
+    storeSeq,
+    name,
+    onClose,
+}) {
     const [storeName, setStoreName] = useState('') // 음식점 이름 저장
+    const navigate = useNavigate() // 페이지 이동을 위한 useNavigate
 
     useEffect(() => {
         // storeSeq로 음식점 이름을 서버에서 가져오는 함수
@@ -27,16 +30,6 @@ function FinalConfirmReserveModal() {
         }
     }, [storeSeq])
 
-    const goToMain = () => {
-        navigate('/')
-    }
-
-    const checkReservation = () => {
-        navigate('/reserveDetail', {
-            state: { date, time, guests, storeSeq, name },
-        })
-    }
-
     const formatDate = date => {
         const dateString = date.toLocaleDateString('ko-KR', {
             month: 'numeric',
@@ -44,7 +37,11 @@ function FinalConfirmReserveModal() {
             weekday: 'short',
         })
         const parts = dateString.split(' ')
-        return `${parts[0]} ${parts[1].replace('.', '')} ${parts[2]}`
+        return `${parts[0]} ${parts[1].replace('.', '')} ${parts[2]}` // day의 . 제거
+    }
+
+    const handleCheckReservation = () => {
+        navigate('/reserveDetail') // 예약 내역 확인 페이지로 이동
     }
 
     return (
@@ -66,15 +63,12 @@ function FinalConfirmReserveModal() {
                     </div>
                 </div>
                 <div className={styles.buttonBox}>
-                    <button
-                        className={styles.goToMainButton}
-                        onClick={goToMain}
-                    >
+                    <button className={styles.goToMainButton} onClick={onClose}>
                         메인으로 가기
                     </button>
                     <button
                         className={styles.checkReservationButton}
-                        onClick={checkReservation}
+                        onClick={handleCheckReservation}
                     >
                         예약내역 확인
                     </button>

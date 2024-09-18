@@ -1,26 +1,26 @@
-import { useLocation, useNavigate } from 'react-router-dom'
 import styles from './ConfirmReserveModal.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 import { faClock } from '@fortawesome/free-regular-svg-icons'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
-import axios from 'axios'
 import { api } from '../../../../../config/config'
 import { useAuthStore } from '../../../../../store/store'
+import { useState } from 'react'
 
-function ConfirmReserveModal() {
-    const navigate = useNavigate()
-    const location = useLocation()
+function ConfirmReserveModal({
+    date,
+    time,
+    guests,
+    storeSeq,
+    name,
+    onClose,
+    onNext,
+}) {
     const { token } = useAuthStore()
-
-    // 전달된 시간 데이터 받기
-    const { date, time, guests, storeSeq, name } = location.state
-
-    const cancelModal = () => {
-        navigate(-1)
-    }
+    const [isLoading, setIsLoading] = useState(false) // 로딩 상태
 
     const nextModal = async () => {
+        setIsLoading(true) // 예약 요청을 보내는 동안 로딩 상태로 전환
         try {
             const reservationData = {
                 storeSeq: storeSeq,
@@ -28,24 +28,26 @@ function ConfirmReserveModal() {
                     date.getTime() - date.getTimezoneOffset() * 60000
                 )
                     .toISOString()
-                    .split('T')[0],
+                    .split('T')[0], // 예약 날짜 포맷
                 reservationTime: time,
                 numGuests: guests,
                 name: name,
             }
-            console.log(token)
-            const response = await api.post(`/reservation`, reservationData)
+
+            const response = await api.post(`/reservation`, reservationData, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
 
             if (response.status === 200) {
                 console.log('예약 성공!')
-                navigate('/finalConfirmReserve', {
-                    state: { date, time, guests, storeSeq, name },
-                })
+                onNext() // 부모 컴포넌트에서 최종 모달로 전환
+            } else {
+                alert('예약 실패! 다시 시도해 주세요.')
             }
-            // FinalConfirmReserveModal로 이동하면서 date, time, guests 데이터를 전달
         } catch (error) {
-            console.log(token)
-            alert('예약 실패ㅠㅠ')
+            alert('예약 실패! 서버와의 통신 중 문제가 발생했습니다.')
+        } finally {
+            setIsLoading(false) // 요청이 완료되면 로딩 상태 해제
         }
     }
 
@@ -55,7 +57,7 @@ function ConfirmReserveModal() {
             day: 'numeric',
             weekday: 'short',
         })
-        const parts = dateString.split(' ') // 공백으로 분리
+        const parts = dateString.split(' ')
         return `${parts[0]} ${parts[1].replace('.', '')} ${parts[2]}` // day의 . 제거
     }
 
@@ -96,11 +98,11 @@ function ConfirmReserveModal() {
                     </p>
                 </div>
                 <div className={styles.buttonBox}>
-                    <div className={styles.closeButton} onClick={cancelModal}>
+                    <div className={styles.closeButton} onClick={onClose}>
                         취소
                     </div>
                     <div className={styles.nextButton} onClick={nextModal}>
-                        예약 확정
+                        {isLoading ? '예약 중...' : '예약 확정'}
                     </div>
                 </div>
             </div>

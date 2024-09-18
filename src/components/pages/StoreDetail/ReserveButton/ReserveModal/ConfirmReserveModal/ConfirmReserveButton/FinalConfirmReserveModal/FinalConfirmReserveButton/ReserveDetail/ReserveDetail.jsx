@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import styles from './ReserveDetail.module.css'
 import { api } from '../../../../../../../../../config/config' // API 경로에 맞게 설정
+import styles from './ReserveDetail.module.css'
 
 function ReserveDetail() {
     const [reservations, setReservations] = useState([])
-    const navigate = useNavigate()
 
     useEffect(() => {
         // 로그인한 사용자의 예약 내역을 API로부터 가져오는 함수
@@ -25,22 +23,18 @@ function ReserveDetail() {
         fetchReservations()
     }, [])
 
-    // 예약 날짜와 시간이 현재 시간보다 이전인지 체크하는 함수
     const isPastReservation = (reservationDate, reservationTime) => {
         const now = new Date()
-
-        // 예약 날짜와 시간을 합쳐서 비교할 수 있는 Date 객체로 변환
         const [hour, minute] = reservationTime.split(':')
         const reservationDateTime = new Date(reservationDate)
         reservationDateTime.setHours(hour)
         reservationDateTime.setMinutes(minute)
-
         return reservationDateTime < now
     }
 
     const isSameDay = reservationDate => {
-        const today = new Date().setHours(0, 0, 0, 0) // 오늘 날짜 (시간은 0으로 초기화)
-        const resDate = new Date(reservationDate).setHours(0, 0, 0, 0) // 예약 날짜 (시간은 0으로 초기화)
+        const today = new Date().setHours(0, 0, 0, 0)
+        const resDate = new Date(reservationDate).setHours(0, 0, 0, 0)
         return today === resDate
     }
 
@@ -55,17 +49,14 @@ function ReserveDetail() {
     }
 
     const handleCancelReservation = async (reservationId, reservationDate) => {
-        // 당일 예약인지 확인
         if (isSameDay(reservationDate)) {
-            // 당일 예약이면 노쇼 메시지와 함께 confirm
             const confirmed = window.confirm(
                 '당일 예약 취소 시 노쇼로 인해 3일간 예약이 제한됩니다. 정말 취소하시겠습니까?'
             )
-            if (!confirmed) return // 취소하지 않으면 종료
+            if (!confirmed) return
         } else {
-            // 당일 예약이 아닐 경우 confirm으로 취소 여부 확인
             const confirmed = window.confirm('정말 예약을 취소하시겠습니까?')
-            if (!confirmed) return // 취소하지 않으면 종료
+            if (!confirmed) return
         }
 
         try {
@@ -76,7 +67,7 @@ function ReserveDetail() {
                     reservations.filter(
                         res => res.reservationId !== reservationId
                     )
-                ) // 삭제 후 상태 업데이트
+                ) // 상태 업데이트
             } else {
                 alert('예약 취소 실패ㅠㅠ')
             }
@@ -114,7 +105,6 @@ function ReserveDetail() {
                             </div>
                         </div>
                         <div className={styles.reservationActions}>
-                            {/* 예약 시간이 지났는지 여부에 따라 버튼을 조건부로 렌더링 */}
                             {isPastReservation(
                                 reservation.reservationDate,
                                 reservation.reservationTime

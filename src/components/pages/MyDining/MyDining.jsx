@@ -86,6 +86,13 @@ function MyDining() {
         }
     }
 
+    // 리뷰 작성 버튼 클릭 시 리뷰 페이지로 이동
+    const handleGoToReview = reservation => {
+        navigate('/review', {
+            state: { reservation }, // 예약 정보를 전달
+        })
+    }
+
     return (
         <div className={styles.reservationContainer}>
             <h2 className={styles.title}>나의 예약 내역</h2>
@@ -119,7 +126,12 @@ function MyDining() {
                                 reservation.reservationDate,
                                 reservation.reservationTime
                             ) ? (
-                                <button className={styles.goToReview}>
+                                <button
+                                    className={styles.goToReview}
+                                    onClick={() =>
+                                        handleGoToReview(reservation)
+                                    }
+                                >
                                     리뷰 작성
                                 </button>
                             ) : (

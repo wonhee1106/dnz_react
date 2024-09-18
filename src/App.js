@@ -11,16 +11,14 @@ import Footer from './components/Footer/Footer.jsx'
 import Login from './components/pages/Login/Index.jsx'
 import Alam from './components/pages/Alampage/Alam.jsx'
 import StoreDetail from './components/pages/StoreDetail/StoreDetail.jsx'
-import ConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveModal.jsx'
 import Mypage from './components/pages/Mypages/Mypage.jsx'
-
-import FinalConfirmReserveModal from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal.jsx'
 import ReserveDetail from './components/pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
 import MyDining from './components/pages/MyDining/MyDining.jsx'
 
 import StoreManagementPage from './components/pages/StoreManagementPage/StoreManagementPage.jsx'
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import StoreAddPage from './components/pages/StoreAddPage/StoreAddPage.jsx'
+import Review from './components/pages/MyDining/Review/Review.jsx'
 
 const AppContent = () => {
     const location = useLocation() // 현재 경로 확인
@@ -34,25 +32,17 @@ const AppContent = () => {
             <Routes>
                 <Route path="/" element={<Body />} />
                 <Route path="/login" element={<Login />} />
-                <Route path='/mypage' element={<Mypage />} />
+                <Route path="/mypage" element={<Mypage />} />
                 <Route path="/store/:storeId" element={<StoreDetail />} />
                 <Route path="/alarm" element={<Alam />} />
-                <Route
-                    path="/confirmReserve"
-                    element={<ConfirmReserveModal />}
-                />
                 <Route
                     path="/StoreManagementPage"
                     element={<StoreManagementPage />}
                 />
-
-                <Route
-                    path="/finalconfirmReserve"
-                    element={<FinalConfirmReserveModal />}
-                />
                 <Route path="/reserveDetail" element={<ReserveDetail />} />
                 <Route path="/storeadd" element={<StoreAddPage />} />
                 <Route path="/myDining" element={<MyDining />} />
+                <Route path="/review" element={<Review />} />
             </Routes>
             {!isStoreManagementPage && <Footer />}
         </div>

@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import ReserveButton from './ReserveButton/ReserveButton'
-
+import ReserveModal from './ReserveButton/ReserveModal/ReserveModal'
 import { api } from '../../config/config'
 import { useParams } from 'react-router-dom'
 import './StoreDetail.css' // CSS 파일 추가
+import ConfirmReserveModal from './ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveModal'
+import FinalConfirmReserveModal from './ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal'
 
 function StoreDetail() {
     const { storeId } = useParams() // storeId는 메뉴 요청에 사용
     const [store, setStore] = useState(null)
     const [menus, setMenus] = useState([])
     const [photos, setPhotos] = useState([]) // 사진 데이터를 관리하는 상태
+
+    const [isReserveModalOpen, setIsReserveModalOpen] = useState(false)
+    const [isConfirmReserveModalOpen, setIsConfirmReserveModalOpen] =
+        useState(false)
+    const [isFinalConfirmModalOpen, setIsFinalConfirmModalOpen] =
+        useState(false)
+    const [reserveDetails, setReserveDetails] = useState(null) // 예약 정보를 저장하는 상태
 
     // 가게 상세 정보를 서버로부터 가져오는 함수
     useEffect(() => {
@@ -130,6 +138,21 @@ function StoreDetail() {
         }
     }, [store])
 
+    // 모달 관련 함수
+    const openReserveModal = () => setIsReserveModalOpen(true)
+    const closeReserveModal = () => setIsReserveModalOpen(false)
+
+    const handleNextToConfirmModal = details => {
+        setReserveDetails(details)
+        setIsReserveModalOpen(false)
+        setIsConfirmReserveModalOpen(true)
+    }
+
+    const handleNextToFinalModal = () => {
+        setIsConfirmReserveModalOpen(false)
+        setIsFinalConfirmModalOpen(true)
+    }
+
     // 가게 정보가 없을 경우 로딩 메시지 표시
     if (!store)
         return <div className="loading">가게 정보를 불러오는 중입니다...</div>
@@ -191,9 +214,47 @@ function StoreDetail() {
                 )}
             </div>
 
+            {/* 예약하기 버튼 */}
             <div className="reserve-button-container">
-                <ReserveButton storeSeq={storeId} name={store.name} />
+                <button onClick={openReserveModal} className="reserve-button">
+                    예약하기
+                </button>
             </div>
+
+            {/* Reserve Modal */}
+            {isReserveModalOpen && (
+                <ReserveModal
+                    storeSeq={storeId}
+                    name={store.name}
+                    onClose={closeReserveModal}
+                    onNext={handleNextToConfirmModal}
+                />
+            )}
+
+            {/* Confirm Reserve Modal */}
+            {isConfirmReserveModalOpen && (
+                <ConfirmReserveModal
+                    date={reserveDetails?.date}
+                    time={reserveDetails?.time}
+                    guests={reserveDetails?.guests}
+                    storeSeq={storeId}
+                    name={store.name}
+                    onClose={() => setIsConfirmReserveModalOpen(false)}
+                    onNext={handleNextToFinalModal}
+                />
+            )}
+
+            {/* Final Confirm Reserve Modal */}
+            {isFinalConfirmModalOpen && (
+                <FinalConfirmReserveModal
+                    date={reserveDetails?.date}
+                    time={reserveDetails?.time}
+                    guests={reserveDetails?.guests}
+                    storeSeq={storeId}
+                    name={store.name}
+                    onClose={() => setIsFinalConfirmModalOpen(false)}
+                />
+            )}
         </div>
     )
 }
