@@ -41,7 +41,7 @@ function FinalConfirmReserveModal({
     }
 
     const handleCheckReservation = () => {
-        navigate('/reserveDetail') // 예약 내역 확인 페이지로 이동
+        navigate('/myDining') // 예약 내역 확인 페이지로 이동
     }
 
     return (

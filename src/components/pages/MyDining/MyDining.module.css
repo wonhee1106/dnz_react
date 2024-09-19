@@ -68,6 +68,14 @@
     gap: 10px;
 }
 
+.viewReviewButton {
+    background-color: #ccc;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 .goToReview {
     background-color: #ccc;
     border: none;

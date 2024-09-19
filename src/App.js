@@ -19,6 +19,7 @@ import StoreManagementPage from './components/pages/StoreManagementPage/StoreMan
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import StoreAddPage from './components/pages/StoreAddPage/StoreAddPage.jsx'
 import Review from './components/pages/MyDining/Review/Review.jsx'
+import ReviewConfirm from 'components/pages/MyDining/ReviewConfirm/ReviewConfirm.jsx'
 
 const AppContent = () => {
     const location = useLocation() // 현재 경로 확인
@@ -43,6 +44,7 @@ const AppContent = () => {
                 <Route path="/storeadd" element={<StoreAddPage />} />
                 <Route path="/myDining" element={<MyDining />} />
                 <Route path="/review" element={<Review />} />
+                <Route path="/reviewConfirm" element={<ReviewConfirm />} />
             </Routes>
             {!isStoreManagementPage && <Footer />}
         </div>

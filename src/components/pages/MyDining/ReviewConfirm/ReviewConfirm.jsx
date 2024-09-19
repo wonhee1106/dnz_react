@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import styles from './Review.module.css'
+import styles from './ReviewConfirm.module.css'
 import { api } from '../../../config/config'
 
-function Review() {
+function ReviewConfirm() {
     const location = useLocation()
     const navigate = useNavigate()
     const { reservation } = location.state || {} // MyDining에서 전달된 예약 정보 가져오기
@@ -119,4 +119,4 @@ function Review() {
     )
 }
 
-export default Review
+export default ReviewConfirm
