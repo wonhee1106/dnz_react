@@ -1,9 +1,17 @@
+// PopularRestaurants.jsx
+
 import React, { useRef, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigate 추가
+import { useNavigate } from 'react-router-dom';
 import './PopularRestaurants.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
-import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBookmark as regularBookmark,
+} from '@fortawesome/free-regular-svg-icons';
+import {
+  faBookmark as solidBookmark,
+  faChevronLeft,
+  faChevronRight,
+} from '@fortawesome/free-solid-svg-icons';
 
 const PopularRestaurants = () => {
   const [koreanRestaurants, setKoreanRestaurants] = useState([]);
@@ -17,7 +25,7 @@ const PopularRestaurants = () => {
   const scrollRef4 = useRef(null);
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
-  const navigate = useNavigate(); // useNavigate 훅 추가
+  const navigate = useNavigate();
 
   const fetchRestaurantPhotos = (storeSeq) => {
     return fetch(`${serverURL}/photos/store/${storeSeq}`, {
@@ -31,7 +39,7 @@ const PopularRestaurants = () => {
       })
       .catch((error) => {
         console.error('Error fetching photos:', error);
-        return []; // 에러가 발생한 경우 빈 배열 반환
+        return [];
       });
   };
 
@@ -60,13 +68,13 @@ const PopularRestaurants = () => {
       .then(async (data) => {
         const updatedData = await Promise.all(
           data.map(async (restaurant) => {
-            const photos = await fetchRestaurantPhotos(restaurant.storeSeq); // 사진 데이터 가져오기
-            return { ...restaurant, photos, isBookmarked: false }; // 사진을 레스토랑 데이터에 추가
+            const photos = await fetchRestaurantPhotos(restaurant.storeSeq);
+            return { ...restaurant, photos, isBookmarked: false };
           })
         );
 
-        const filteredData = removeDuplicateNames(updatedData); // 중복된 이름을 필터링
-        setRestaurants(filteredData); // 상태에 설정
+        const filteredData = removeDuplicateNames(updatedData);
+        setRestaurants(filteredData);
       })
       .catch((error) => console.error(`Error fetching ${category}:`, error));
   };
@@ -91,18 +99,17 @@ const PopularRestaurants = () => {
   };
 
   const handleCardClick = (storeSeq) => {
-    navigate(`/store/${storeSeq}`); // storeSeq를 포함하여 StoreDetail로 이동
+    navigate(`/store/${storeSeq}`);
   };
 
-  // 북마크 토글
   const toggleBookmark = (e, restaurantId, setRestaurants, restaurants) => {
-    e.stopPropagation(); // 클릭 이벤트가 카드로 전달되지 않도록 방지
+    e.stopPropagation();
     const updatedRestaurants = restaurants.map((restaurant) =>
       restaurant.storeSeq === restaurantId
         ? { ...restaurant, isBookmarked: !restaurant.isBookmarked }
         : restaurant
     );
-    setRestaurants(updatedRestaurants); // 토글된 북마크 상태 반영
+    setRestaurants(updatedRestaurants);
   };
 
   const renderRestaurantCard = (restaurant, restaurants, setRestaurants) => (
@@ -147,13 +154,13 @@ const PopularRestaurants = () => {
   );
 
   const handleMoreClick = (category) => {
-    navigate(`/storeList/${category}`); // 카테고리를 URL에 포함하여 페이지로 이동
+    navigate(`/storeList/${category}`);
   };
 
   return (
     <div>
       {/* 한식 섹션 */}
-      <div className="popular-restaurants container gutter-sm">
+      <div id="korean" className="popular-restaurants container gutter-sm">
         <div className="section-header-wrap">
           <h2 className="section-header">한식</h2>
           <button className="btn-more" onClick={() => handleMoreClick('한식')}>
@@ -162,7 +169,7 @@ const PopularRestaurants = () => {
         </div>
         <div className="section-body">
           <button className="scroll-button left" onClick={() => scrollLeft(scrollRef1)}>
-            {'<'}
+            <FontAwesomeIcon icon={faChevronLeft} />
           </button>
           <div className="v-scroll-inner" ref={scrollRef1}>
             <div className="restaurant-list restaurant-list-sm">
@@ -172,13 +179,13 @@ const PopularRestaurants = () => {
             </div>
           </div>
           <button className="scroll-button right" onClick={() => scrollRight(scrollRef1)}>
-            {'>'}
+            <FontAwesomeIcon icon={faChevronRight} />
           </button>
         </div>
       </div>
 
       {/* 중식 섹션 */}
-      <div className="popular-restaurants container gutter-sm">
+      <div id="chinese" className="popular-restaurants container gutter-sm">
         <div className="section-header-wrap">
           <h2 className="section-header">중식</h2>
           <button className="btn-more" onClick={() => handleMoreClick('중식')}>
@@ -187,7 +194,7 @@ const PopularRestaurants = () => {
         </div>
         <div className="section-body">
           <button className="scroll-button left" onClick={() => scrollLeft(scrollRef2)}>
-            {'<'}
+            <FontAwesomeIcon icon={faChevronLeft} />
           </button>
           <div className="v-scroll-inner" ref={scrollRef2}>
             <div className="restaurant-list restaurant-list-sm">
@@ -197,13 +204,13 @@ const PopularRestaurants = () => {
             </div>
           </div>
           <button className="scroll-button right" onClick={() => scrollRight(scrollRef2)}>
-            {'>'}
+            <FontAwesomeIcon icon={faChevronRight} />
           </button>
         </div>
       </div>
 
       {/* 양식 섹션 */}
-      <div className="popular-restaurants container gutter-sm">
+      <div id="western" className="popular-restaurants container gutter-sm">
         <div className="section-header-wrap">
           <h2 className="section-header">양식</h2>
           <button className="btn-more" onClick={() => handleMoreClick('양식')}>
@@ -212,7 +219,7 @@ const PopularRestaurants = () => {
         </div>
         <div className="section-body">
           <button className="scroll-button left" onClick={() => scrollLeft(scrollRef3)}>
-            {'<'}
+            <FontAwesomeIcon icon={faChevronLeft} />
           </button>
           <div className="v-scroll-inner" ref={scrollRef3}>
             <div className="restaurant-list restaurant-list-sm">
@@ -222,13 +229,13 @@ const PopularRestaurants = () => {
             </div>
           </div>
           <button className="scroll-button right" onClick={() => scrollRight(scrollRef3)}>
-            {'>'}
+            <FontAwesomeIcon icon={faChevronRight} />
           </button>
         </div>
       </div>
 
       {/* 일식 섹션 */}
-      <div className="popular-restaurants container gutter-sm">
+      <div id="japanese" className="popular-restaurants container gutter-sm">
         <div className="section-header-wrap">
           <h2 className="section-header">일식</h2>
           <button className="btn-more" onClick={() => handleMoreClick('일식')}>
@@ -237,7 +244,7 @@ const PopularRestaurants = () => {
         </div>
         <div className="section-body">
           <button className="scroll-button left" onClick={() => scrollLeft(scrollRef4)}>
-            {'<'}
+            <FontAwesomeIcon icon={faChevronLeft} />
           </button>
           <div className="v-scroll-inner" ref={scrollRef4}>
             <div className="restaurant-list restaurant-list-sm">
@@ -247,7 +254,7 @@ const PopularRestaurants = () => {
             </div>
           </div>
           <button className="scroll-button right" onClick={() => scrollRight(scrollRef4)}>
-            {'>'}
+            <FontAwesomeIcon icon={faChevronRight} />
           </button>
         </div>
       </div>
