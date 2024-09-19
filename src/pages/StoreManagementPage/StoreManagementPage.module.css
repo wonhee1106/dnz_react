@@ -47,6 +47,87 @@
     margin-top: auto; /* 설정 버튼을 맨 아래로 배치 */
 }
 
+/* 리뷰 목록 스타일 */
+.reviewList {
+    width: 50%;
+    padding: 20px;
+    background-color: #ecf0f1;
+    border-right: 1px solid #ddd;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.reviewTitle {
+    font-size: 22px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.reviewItem {
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    position: relative; /* 우측 상단에 위치시키기 위해 position 설정 */
+}
+
+.reviewItem:hover {
+    background-color: #f1f3f5;
+}
+
+.reviewItem p {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+/* 리뷰 작성 시간 스타일 */
+.reviewTime {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 14px;
+    color: #888; /* 흐린 글씨 */
+}
+
+/* 답글 입력 섹션 */
+.replySection {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.replyInput {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    margin-bottom: 10px;
+    resize: none; /* 사용자가 직접 크기를 조정하지 못하게 설정 */
+    overflow: hidden; /* 텍스트가 넘칠 경우 감추도록 설정 */
+    line-height: 1.5; /* 줄 간격을 늘려서 더 여유 있게 보이도록 설정 */
+    min-height: 40px; /* 기본 높이 설정 */
+    max-height: 200px; /* 최대 높이 설정 */
+}
+
+.replyButton {
+    align-self: flex-end;
+    background-color: #004a77ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.replyButton:hover {
+    background-color: #229954;
+}
+
+
+
 /* 예약 목록 스타일 */
 .reservationList {
     width: 50%;
@@ -162,7 +243,7 @@
         flex-direction: column;
     }
     
-    .sidebar, .reservationList, .reservationDetails {
+    .sidebar, .reservationList, .reservationDetails, .reviewList {
         width: 100%;
     }
 
