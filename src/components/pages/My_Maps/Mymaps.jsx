@@ -1,99 +1,101 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // axios를 직접 import
-import './Mymaps.css'; // CSS 파일 추가
 
-function Mymaps() {
-  const [stores, setStores] = useState([]);
+const MyMaps = () => {
+  const [map, setMap] = useState(null);
+  const [restaurants, setRestaurants] = useState([]);  // 맛집 정보를 저장하는 상태
 
-  // Axios 인스턴스 생성
-  const api = axios.create({
-    baseURL: 'http://192.168.1.11', // 백엔드 서버 주소와 포트로 수정하세요
-  });
+  // 지도 초기화 함수
+  const initMap = () => {
+    const mapDiv = document.getElementById('map');  // 지도를 표시할 div
+    if (window.naver) {
+      const map = new window.naver.maps.Map(mapDiv, {
+        center: new window.naver.maps.LatLng(37.5665, 126.9780),  // 서울 중심 좌표
+        zoom: 14,  // 줌 레벨
+      });
+      setMap(map);  // map 객체를 상태로 저장
+    }
+  };
 
-  // 모든 가게 정보를 가져오는 함수
-  useEffect(() => {
-    const fetchStores = async () => {
-      try {
-        // 모든 가게 데이터를 가져오는 API 호출 (/store/all)
-        const response = await api.get('/store/all');
-        setStores(response.data); // stores 상태에 데이터를 저장
-      } catch (error) {
-        console.error('Error fetching store data:', error);
+  // 네이버 검색 API로 맛집 정보 가져오기
+  const fetchRestaurants = async () => {
+    const query = 'blog';
+   
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'X-Naver-Client-Id': 'ChKDn5ZXWdLP0wtTxULN',  // 검색 API Client ID
+          'X-Naver-Client-Secret': 'RwZj03KpZ_'  // 검색 API Client Secret
+        }
+      });
+
+      const contentType = response.headers.get("content-type");
+
+      // 응답이 성공적인지 확인
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
 
-    fetchStores();
+      // 응답이 JSON 형식인지 확인
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        setRestaurants(data.items);  // JSON 응답 처리
+      } else {
+        const errorText = await response.text();
+        throw new Error(`Unexpected response format: ${errorText}`);
+      }
+    } catch (error) {
+      console.error('Error fetching restaurant data:', error);
+    }
+  };
+
+  // 지도에 마커 추가하는 함수
+  const addMarkers = () => {
+    if (!map || restaurants.length === 0) return;
+
+    restaurants.forEach((restaurant) => {
+      const { mapx, mapy, title } = restaurant;
+
+      // 마커 생성
+      const marker = new window.naver.maps.Marker({
+        position: new window.naver.maps.LatLng(mapy, mapx),
+        map: map,
+        title: title,
+      });
+
+      // 마커 클릭 이벤트 추가 (마커 클릭 시 정보 창 표시)
+      const infoWindow = new window.naver.maps.InfoWindow({
+        content: `<div style="padding:5px;">${title}</div>`,  // 맛집 이름을 정보 창으로 표시
+      });
+
+      window.naver.maps.Event.addListener(marker, 'click', () => {
+        infoWindow.open(map, marker);  // 마커 클릭 시 정보 창 열기
+      });
+    });
+  };
+
+  // 컴포넌트 마운트 시 지도 초기화 및 맛집 데이터 가져오기
+  useEffect(() => {
+    initMap();
   }, []);
 
-  // 카카오 지도 API를 불러와서 마커 생성
+  // 맛집 데이터를 가져오고 마커를 지도에 추가
   useEffect(() => {
-    const loadKakaoMapScript = () => {
-      return new Promise((resolve, reject) => {
-        // 이미 스크립트가 로드되었는지 확인
-        if (window.kakao && window.kakao.maps) {
-          resolve(window.kakao);
-          return;
-        }
+    fetchRestaurants();
+  }, [map]);
 
-        const script = document.createElement('script');
-        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=02825686e2926de94f77186ec704adf1&autoload=false&libraries=services`;
-        script.async = true;
-        script.onload = () => resolve(window.kakao);
-        script.onerror = () => reject(new Error('Failed to load Kakao Map API'));
-        document.head.appendChild(script);
-      });
-    };
-
-    // 스크립트가 로드되면 지도 설정
-    if (stores.length > 0) {
-      loadKakaoMapScript().then((kakao) => {
-        kakao.maps.load(() => {
-          const mapContainer = document.getElementById('map');
-          const mapOption = {
-            center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울을 기본 중심으로 설정
-            level: 5, // 지도의 줌 레벨
-          };
-
-          const map = new kakao.maps.Map(mapContainer, mapOption);
-          const geocoder = new kakao.maps.services.Geocoder();
-
-          // 모든 가게 주소를 반복하여 마커로 표시
-          stores.forEach((store) => {
-            const fullAddress = `${store.address1} ${store.address2}`;
-
-            geocoder.addressSearch(fullAddress, function (result, status) {
-              if (status === kakao.maps.services.Status.OK) {
-                const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-                // 지도에 마커를 생성
-                const marker = new kakao.maps.Marker({
-                  map: map,
-                  position: coords,
-                });
-
-                // 마커에 클릭 이벤트를 추가해 인포윈도우를 보여줌
-                const infowindow = new kakao.maps.InfoWindow({
-                  content: `<div style="padding:5px;">${store.name}</div>`,
-                });
-
-                kakao.maps.event.addListener(marker, 'click', function () {
-                  infowindow.open(map, marker);
-                });
-              } else {
-                console.error('주소 검색 실패:', fullAddress);
-              }
-            });
-          });
-        });
-      });
-    }
-  }, [stores]);
+  // 마커를 지도에 추가
+  useEffect(() => {
+    addMarkers();
+  }, [restaurants]);
 
   return (
-    <div className="maps-container">
-      <div id="map" style={{ width: '100%', height: '600px' }}></div>
+    <div>
+      <h2>내 주변 맛집</h2>
+      <div id="map" style={{ width: '100%', height: '500px' }}></div>
     </div>
   );
-}
+};
 
-export default Mymaps;
+export default MyMaps;

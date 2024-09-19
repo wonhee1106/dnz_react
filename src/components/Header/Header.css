@@ -1,7 +1,4 @@
 .header {
-  position: sticky;
-  top: 0;
-  z-index: 1000; /* 다른 요소보다 앞에 보이도록 설정 */
   display: flex;
   justify-content: space-between; /* 요소들을 양 끝에 배치 */
   align-items: center;
