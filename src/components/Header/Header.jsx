@@ -1,3 +1,5 @@
+// Header.jsx
+
 import React, { useEffect, useState } from 'react';
 import './Header.css';
 import { useNavigate } from 'react-router-dom';
@@ -5,15 +7,14 @@ import { useAuthStore } from 'utils/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faBookmark, faUser } from '@fortawesome/free-regular-svg-icons';
 
-
-
-
 const Header = () => {
     const navigate = useNavigate();
     const isAuth = useAuthStore((state) => state.isAuth);
     const logout = useAuthStore((state) => state.logout);
     const [notificationCount, setNotificationCount] = useState(0);
     const [unreadNotifications, setUnreadNotifications] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
     const serverUrl = process.env.REACT_APP_SERVER_URL;
 
     useEffect(() => {
@@ -80,6 +81,42 @@ const Header = () => {
         navigate('/mypage');
     };
 
+    // 검색 입력값 변경 시 호출되는 함수
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    // 검색 키 입력 핸들러
+    const handleSearchKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    };
+
+    // 검색 로직 구현
+    const performSearch = () => {
+        const query = searchQuery.trim();
+
+        // 검색어에 따른 카테고리 매핑
+        const categoryMapping = {
+            '한식': 'korean',
+            '중식': 'chinese',
+            '양식': 'western',
+            '일식': 'japanese',
+        };
+
+        if (categoryMapping[query]) {
+            // 해당 카테고리 섹션으로 스크롤 이동
+            const element = document.getElementById(categoryMapping[query]);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        } else {
+            // 매칭되는 카테고리가 없을 경우 경고 메시지 표시
+            alert('해당 카테고리를 찾을 수 없습니다.');
+        }
+    };
+
     return (
         <header className="header">
             <div
@@ -92,7 +129,14 @@ const Header = () => {
                 9900
             </div>
             <div className="header-section search-container">
-                <input className="search" type="text" placeholder="검색" />
+                <input
+                    className="search"
+                    type="text"
+                    placeholder="음식 카테고리 항목을 입력해주세요"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    onKeyPress={handleSearchKeyPress}
+                />
             </div>
 
             <div className="header-section icon">

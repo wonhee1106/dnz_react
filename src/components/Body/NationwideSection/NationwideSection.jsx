@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./NationwideSection.css";
-import img from "../../../img/map.png"; // 경로 수정
+
 
 
 

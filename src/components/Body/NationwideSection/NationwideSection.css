@@ -1,13 +1,17 @@
 .nationwide-section {
+  position: sticky;
+  top: calc(50vh - 125px); /* 뷰포트 중간에 고정되도록 설정 */
+  z-index: 100; /* 다른 요소보다 앞에 보이도록 설정 */
   width: 12%;
   padding: 20px;
   background-color: #f9f9f9;
   border: 2px solid #ff6600; /* 주황색 테두리 */
   border-radius: 8px;
   color: #333;
-  height: 250px; /* PopularRestaurants와 동일한 높이 설정 */
+  height: 250px; /* 요소의 높이 */
   text-align: center; /* h2 요소를 중앙 정렬 */
 }
+
 
 .nationwide-section h2 {
   margin-bottom: 20px;
