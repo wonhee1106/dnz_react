@@ -13,14 +13,15 @@ import Alam from 'pages/Alampage/Alam.jsx'
 import StoreDetail from 'pages/StoreDetail/StoreDetail.jsx'
 import ConfirmReserveModal from 'pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveModal.jsx'
 import Mypage from 'pages/Mypages/Mypage.jsx'
-
 import FinalConfirmReserveModal from 'pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal.jsx'
 import ReserveDetail from 'pages/StoreDetail/ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveButton/ReserveDetail/ReserveDetail.jsx'
 import MyDining from 'pages/MyDining/MyDining.jsx'
-
 import StoreManagementPage from 'pages/StoreManagementPage/StoreManagementPage.jsx'
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import StoreAddPage from 'pages/StoreAddPage/StoreAddPage.jsx'
+import StoreList from 'pages/StoreList/StoreList.jsx' // 추가된 StoreList 컴포넌트
+import Mymaps from 'pages/My_Maps/Mymaps.jsx';
+
 
 const AppContent = () => {
     const location = useLocation() // 현재 경로 확인
@@ -35,24 +36,16 @@ const AppContent = () => {
                 <Route path="/" element={<Body />} />
                 <Route path="/login" element={<Login />} />
                 <Route path='/mypage' element={<Mypage />} />
+                <Route path="/maps" element={<Mymaps />} />
                 <Route path="/store/:storeId" element={<StoreDetail />} />
                 <Route path="/alarm" element={<Alam />} />
-                <Route
-                    path="/confirmReserve"
-                    element={<ConfirmReserveModal />}
-                />
-                <Route
-                    path="/StoreManagementPage"
-                    element={<StoreManagementPage />}
-                />
-
-                <Route
-                    path="/finalconfirmReserve"
-                    element={<FinalConfirmReserveModal />}
-                />
+                <Route path="/confirmReserve" element={<ConfirmReserveModal />} />
+                <Route path="/StoreManagementPage" element={<StoreManagementPage />} />
+                <Route path="/finalconfirmReserve" element={<FinalConfirmReserveModal />} />
                 <Route path="/reserveDetail" element={<ReserveDetail />} />
                 <Route path="/storeadd" element={<StoreAddPage />} />
                 <Route path="/myDining" element={<MyDining />} />
+                <Route path="/storeList/:category" element={<StoreList />} /> {/* 추가된 StoreList 경로 */}
             </Routes>
             {!isStoreManagementPage && <Footer />}
         </div>

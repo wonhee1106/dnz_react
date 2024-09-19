@@ -101,9 +101,39 @@
 
 /* 예약하기 버튼 컨테이너 */
 .reserve-button-container {
-    margin-top: 30px;
+    margin-bottom: 30px;
     display: flex;
-    justify-content: center; /* 버튼을 중앙에 배치 */
+    margin-left:500px;
 }
 
+/* 가게 이름과 예약하기 버튼을 배치 */
+.store-header {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 가운데 정렬 */
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.store-name {
+    flex-grow: 1;
+    text-align: center; /* 가게 이름을 가운데 정렬 */
+}
+
+.reserve-button-container {
+    position: absolute;
+   margin-left: 630px;
+}
+
+.load-more{
+    padding: 12px 24px;
+    font-size: 1.2em;
+    color: white;
+    background-color: #ff6b00; /* 주황색 배경 */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
