@@ -1,7 +1,7 @@
 /* 전체 컨테이너 */
 .alam-container {
     padding: 20px;
-    height: 641px;
+    height: 817px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -176,4 +176,111 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start; /* 위쪽으로 정렬 */
+}
+
+.editor-container {
+    border: 1px solid #ddd;
+    padding: 16px;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.close-button {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    background-color: #ff7875;
+}
+
+
+.title-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 18px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.title-input:focus {
+    outline: none;
+    border-color: #1890ff;
+    box-shadow: 0 0 5px rgba(24, 144, 255, 0.5);
+}
+
+
+.submit-button {
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.submit-button:hover {
+    background-color: #40a9ff;
+}
+
+.close-button {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.close-button:hover {
+    background-color: #ff7875;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.write-button {
+    background-color: #52c41a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.write-button:hover {
+    background-color: #73d13d;
+}
+
+/* Alam.css */
+
+.modal-content p {
+    color: #555; /* 글씨 색상 */
+    font-size: 14px; /* 글씨 크기 */
+    margin: 5px 0;
+}
+
+.modal-content strong {
+    color: #000; /* 강조 텍스트 색상 */
+    font-weight: bold;
 }
