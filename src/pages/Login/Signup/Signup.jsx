@@ -1,7 +1,15 @@
 import React, { useState, useRef } from 'react';
-import { api } from '../../../config/config';
+import {
+    requestEmailVerification,
+    verifyEmailCode,
+    checkIdExist,
+    checkNameExist,
+    checkEmailExist,
+    checkPhoneExist
+} from '../../../utils/api';
+import { validateSignupInputs } from '../../../utils/validation';
 import styles from './Signup.module.css';
-import AddStoreOwner from './AddStoreOwner/AddStoreOwner';
+import { api } from '../../../config/config';
 
 const Signup = ({ toggleSignup }) => {
     const [signup, setSignup] = useState({
@@ -9,130 +17,33 @@ const Signup = ({ toggleSignup }) => {
         userPw: '',
         userPwConfirm: '',
         userName: '',
-        userBirthDate: '',  
+        userBirthDate: '',  // 통합된 생년월일 필드
         userPhoneNumber: '',
         userEmail: ''
     });
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
     const [isVerificationRequestSent, setIsVerificationRequestSent] = useState(false);
-    const [isStoreOwner , setIsStoreOwner] = useState(false);
 
     const userIdRef = useRef(null);
     const userEmailRef = useRef(null);
     const userPhoneRef = useRef(null);
     const userNameRef = useRef(null);
     const userPwConfirmRef = useRef(null);
-    const userPwRef = useRef();
-
+    const userPwRef = useRef(null);
 
     const handleSignupChange = (e) => {
         const { name, value } = e.target;
-        setSignup((prev) => {
+        setSignup(prev => {
             const updatedSignup = { ...prev, [name]: value };
-            // userBirthDateFront와 userBirthDateBack을 합쳐서 userBirthDate를 업데이트
+
+            // 생년월일을 하나의 필드로 통합
             if (name === 'userBirthDateFront' || name === 'userBirthDateBack') {
-                updatedSignup.userBirthDate = `${updatedSignup.userBirthDateFront}${updatedSignup.userBirthDateBack}`;
+                updatedSignup.userBirthDate = `${updatedSignup.userBirthDateFront || ''}${updatedSignup.userBirthDateBack || ''}`;
             }
+
             return updatedSignup;
         });
-
-       
-    };
-
-    const validateSignupInputs = () => {
-        const idRegex = /^[a-zA-Z0-9]{6,20}$/;
-        const nameRegex = /^[a-zA-Z0-9가-힣]{2,15}$/;
-        const phoneRegex = /^\d{10,11}$/;
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2}$/;
-        const pwRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,12}$/;
-
-        const emailAddressArr = ['naver.com', 'gmail.com'];
-
-        if (!idRegex.test(signup.userId)) {
-            alert("아이디는 6자 이상 20자 이하의 알파벳과 숫자로만 구성되어야 합니다.");
-            return false;
-        }
-
-        if (!nameRegex.test(signup.userName)) {
-            alert("닉네임은 2자 이상 15자로 구성되어야 합니다.");
-            return false;
-        }
-
-        if (!phoneRegex.test(signup.userPhoneNumber)) {
-            alert("핸드폰 번호는 숫자 10자리 또는 11자리로 입력해 주세요.");
-            return false;
-        }
-
-        // if (!emailRegex.test(signup.userEmail)) {
-        //     alert("유효한 이메일 주소를 입력해 주세요.");
-        //     return false;
-        // }
-
-        if (!pwRegex.test(signup.userPw)) {
-            alert("비밀번호는 대소문자, 숫자, 특수문자를 포함하여 8~12자리로 입력해 주세요.");
-            return false;
-        }
-
-        if (signup.userPw !== signup.userPwConfirm) {
-            alert("비밀번호가 일치하지 않습니다.");
-            return false;
-        }
-
-        if(signup.userEmail.indexOf("@") != -1) {
-            const emailAddress = signup.userEmail.substring(signup.userEmail.indexOf("@") + 1, signup.userEmail.length);
-            if(emailAddressArr.filter((x) => x === emailAddress).length == 0) {
-                alert("유효한 이메일 형식이 아닙니다.");
-                return false;
-            }
-        }
-        else {
-            alert("유효한 이메일 형식이 아닙니다.");
-            return false;
-        }
-
-
-
-
-        return true;
-    };
-
-    const requestEmailVerification = () => {
-        if (!validateSignupInputs()) {
-            return;
-        }
-
-        if (!signup.userEmail) {
-            alert("이메일을 입력해 주세요");
-            return;
-        }
-
-        api.post(`/auth/requestEmailVerification/` + signup.userEmail)
-            .then(resp => {
-                alert('이메일이 전송되었습니다. 이메일을 확인해주세요.');
-                setIsVerificationRequestSent(true);
-            })
-            .catch((error) => {
-                alert("이메일 전송 실패, 다시 시도하여 주세요");
-            });
-    };
-
-    const verifyCode = () => {
-        if (!verificationCode) {
-            alert("인증 코드를 입력해 주세요.");
-            return;
-        }
-
-        api.post(`/auth/verifyEmail`, { userEmail: signup.userEmail, verificationCode })
-            .then(resp => {
-                if (resp.data === "verified") {
-                    setIsEmailVerified(true);
-                    alert("이메일 인증 완료");
-                } else {
-                    alert('인증 코드가 올바르지 않습니다.');
-                }
-            })
-            .catch(error => alert("인증 실패"));
     };
 
     const handleSignup = () => {
@@ -141,13 +52,24 @@ const Signup = ({ toggleSignup }) => {
             return;
         }
 
-        if (!validateSignupInputs()) {
+        const validationError = validateSignupInputs(signup);
+        if (validationError) {
+            alert(validationError);
             return;
         }
 
+        // 생년월일은 userBirthDate에 통합되어 이미 처리됨
+        const signupData = {
+            userId: signup.userId,
+            userPw: signup.userPw,
+            userPwConfirm: signup.userPwConfirm,
+            userName: signup.userName,
+            userBirthDate: signup.userBirthDate, // 통합된 생년월일
+            userPhoneNumber: signup.userPhoneNumber,
+            userEmail: signup.userEmail
+        };
 
-        
-        api.post(`/auth/registerUser`, signup)
+        api.post(`/auth/registerUser`, signupData)
             .then(() => {
                 alert("회원가입 완료");
                 setSignup({
@@ -161,106 +83,97 @@ const Signup = ({ toggleSignup }) => {
                 });
                 setIsEmailVerified(false);
                 setIsVerificationRequestSent(false);
-                setIsStoreOwner(false)
             })
             .catch(() => alert("회원가입 실패"));
     };
 
-    const checkIdExist = (id) => {
-        const idRegex = /^[a-zA-Z0-9]{6,20}$/;
-
-        if (!idRegex.test(signup.userId)) {
-            userIdRef.current.style.backgroundColor = "#ffe1ca";
-            userIdRef.current.style.borderColor = "#ffeedf";
-
+    const requestEmailVerificationHandler = () => {
+        const validationError = validateSignupInputs(signup);
+        if (validationError) {
+            alert(validationError);
             return;
         }
 
-        api.post(`/auth/existId`, { userId: id })
+        if (!signup.userEmail) {
+            alert("이메일을 입력해 주세요");
+            return;
+        }
+
+        requestEmailVerification(signup.userEmail)
+            .then(() => {
+                alert('이메일이 전송되었습니다. 이메일을 확인해주세요.');
+                setIsVerificationRequestSent(true);
+            })
+            .catch(() => alert("이메일 전송 실패, 다시 시도하여 주세요"));
+    };
+
+    const verifyCodeHandler = () => {
+        if (!verificationCode) {
+            alert("인증 코드를 입력해 주세요.");
+            return;
+        }
+
+        verifyEmailCode(signup.userEmail, verificationCode)
             .then(resp => {
+                if (resp.data === "verified") {
+                    setIsEmailVerified(true);
+                    alert("이메일 인증 완료");
+                } else {
+                    alert('인증 코드가 올바르지 않습니다.');
+                }
+            })
+            .catch(() => alert("인증 실패"));
+    };
+
+    const checkIdExistHandler = (id) => {
+        checkIdExist(id)
+            .then(() => {
                 userIdRef.current.style.backgroundColor = "#e7ffef";
                 userIdRef.current.style.borderColor = "rgb(124 213 119)";
             })
-            .catch(error => {
+            .catch(() => {
                 userIdRef.current.style.backgroundColor = "#ffe1ca";
                 userIdRef.current.style.borderColor = "#ffeedf";
-            }
-            )
-    }
+            });
+    };
 
-    const checkNameExist = (name) => {
-        const nameRegex = /^[a-zA-Z0-9가-힣]{2,15}$/;
-
-        if (!nameRegex.test(signup.userName)) {
-            userNameRef.current.style.backgroundColor = "#ffe1ca";
-            userNameRef.current.style.borderColor = "#ffeedf";
-
-            return;
-        }
-
-        api.post(`/auth/existName`, { userName: name })
-            .then(resp => {
+    const checkNameExistHandler = (name) => {
+        checkNameExist(name)
+            .then(() => {
+                console.log('닉네임이 사용 가능함'); // 성공 메시지 확인
+                userNameRef.current.style.backgroundColor = "#e7ffef";
+                userNameRef.current.style.borderColor = "rgb(124 213 119)";
+            })
+            .catch(() => {
+                console.log('닉네임이 이미 사용 중임'); // 실패 메시지 확인
                 userNameRef.current.style.backgroundColor = "#ffe1ca";
                 userNameRef.current.style.borderColor = "#ffeedf";
-            })
-            .catch(error => {
-                userNameRef.current.style.borderColor = "rgb(124 213 119)";
-                userNameRef.current.style.backgroundColor = "#e7ffef";
-            }
-            )
-    }
+            });
+    };
 
-    const checkEmailExist = (email) => {
-        const emailAddressArr = ['naver.com', 'gmail.com'];
-
-        const emailAddress = email.substring(email.indexOf("@") + 1, email.length);
-        if(emailAddressArr.filter((x) => x === emailAddress).length == 0) {
-            userEmailRef.current.style.backgroundColor = "#ffe1ca";
-            userEmailRef.current.style.borderColor = "#ffeedf";
-
-            return;
-        }
-
-
-        api.post(`/auth/existEmail`, { userEmail: email })
-            .then(resp => {
-                userEmailRef.current.style.backgroundColor = "#ffe1ca";
-                userEmailRef.current.style.borderColor = "#ffeedf";
-            })
-            .catch(error => {
+    const checkEmailExistHandler = (email) => {
+        checkEmailExist(email)
+            .then(() => {
                 userEmailRef.current.style.backgroundColor = "#e7ffef";
                 userEmailRef.current.style.borderColor = "rgb(124 213 119)";
-            }
-            )
-    }
+            })
+            .catch(() => {
+                userEmailRef.current.style.backgroundColor = "#ffe1ca";
+                userEmailRef.current.style.borderColor = "#ffeedf";
+            });
+    };
 
-    const checkPhoneExist = (phone) => {
-        const phoneRegex = /^01[016789]\d{4}\d{4}$/;
-
-        if (!phoneRegex.test(signup.userPhoneNumber)) {
-            userPhoneRef.current.style.backgroundColor = "#ffe1ca";
-            userPhoneRef.current.style.borderColor = "#ffeedf";
-
-            return;
-        }
-
-        api.post(`/auth/existPhoneNumber`, { userPhoneNumber: phone })
-            .then(resp => {
+    const checkPhoneExistHandler = (phone) => {
+        checkPhoneExist(phone)
+            .then(() => {
                 userPhoneRef.current.style.backgroundColor = "#e7ffef";
                 userPhoneRef.current.style.borderColor = "rgb(124 213 119)";
             })
-            .catch(error => {
+            .catch(() => {
                 userPhoneRef.current.style.backgroundColor = "#ffe1ca";
                 userPhoneRef.current.style.borderColor = "#ffeedf";
-            }
-            )
-    }
-
-    const handleStoreOwnerChange = (e) => {
-        setIsStoreOwner(e.target.checked);
+            });
     };
-
-    
 
     return (
         <div className={styles.signupForm}>
@@ -273,7 +186,7 @@ const Signup = ({ toggleSignup }) => {
                     onChange={handleSignupChange}
                     placeholder="6~20자리 아이디를 입력해 주세요"
                     className={styles.inputField}
-                    onKeyUp={(e) => { checkIdExist(e.target.value) }}
+                    onKeyUp={(e) => { checkIdExistHandler(e.target.value) }}
                     ref={userIdRef}
                 />
                 <p>Password</p>
@@ -290,30 +203,45 @@ const Signup = ({ toggleSignup }) => {
                     name="userPwConfirm"
                     value={signup.userPwConfirm}
                     onChange={handleSignupChange}
-                    placeholder="비밀번호를 한 번 더 입력해 주세요"
+                    placeholder="비밀번호 확인"
                     className={styles.inputField}
                     ref={userPwConfirmRef}
                 />
-                <p>닉네임</p>
+                <p>Nickname</p>
                 <input
                     type="text"
                     name="userName"
                     value={signup.userName}
                     onChange={handleSignupChange}
-                    placeholder="2~15자리 닉네임을 입력해 주세요"
+                    placeholder="2~15자 닉네임을 입력해 주세요"
                     className={styles.inputField}
-                    onKeyUp={(e) => { checkNameExist(e.target.value) }}
+                    onKeyUp={(e) => { checkNameExistHandler(e.target.value) }}
                     ref={userNameRef}
+
                 />
-                <p>주민번호</p>
+                <p>Phone Number</p>
+                <input
+                    type="text"
+                    name="userPhoneNumber"
+                    value={signup.userPhoneNumber}
+                    onChange={handleSignupChange}
+                    placeholder="전화번호를 입력해 주세요"
+                    className={styles.inputField}
+                    onKeyUp={(e) => { checkPhoneExistHandler(e.target.value) }}
+                    ref={userPhoneRef}
+                    maxLength="11"
+                />
+
+                <p>생년월일</p>
                 <div className={styles.birthDateContainer}>
                     <input
                         type="text"
                         name="userBirthDateFront"
                         value={signup.userBirthDateFront}
                         onChange={handleSignupChange}
-                        placeholder="주민번호 앞 6자리를 입력해 주세요"
+                        placeholder="YYYYMMDD (6자리)"
                         className={styles.inputField}
+                        maxLength="6"
                     />
                     <select
                         name="userBirthDateBack"
@@ -321,90 +249,48 @@ const Signup = ({ toggleSignup }) => {
                         onChange={handleSignupChange}
                         className={styles.inputField}
                     >
-                        <option value="">주민번호 뒷자리 선택</option>
+                        <option value="">선택하세요</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
                         <option value="4">4</option>
                     </select>
                 </div>
-                <p>핸드폰번호</p>
+
+                <p>Email</p>
                 <input
                     type="text"
-                    name="userPhoneNumber"
-                    value={signup.userPhoneNumber}
-                    onChange={handleSignupChange}
-                    placeholder="핸드폰 번호를 입력해 주세요 (숫자 10~11자리)"
-                    className={styles.inputField}
-                    onKeyUp={(e) => { checkPhoneExist(e.target.value) }}
-                    ref={userPhoneRef}
-                />
-                <p>이메일</p>
-                <input
-                    type="email"
                     name="userEmail"
                     value={signup.userEmail}
                     onChange={handleSignupChange}
-                    placeholder="이메일을 입력해 주세요"
+                    placeholder="이메일 주소를 입력해 주세요"
                     className={styles.inputField}
-                    onKeyUp={(e) => { checkEmailExist(e.target.value) }}
+                    onKeyUp={(e) => { checkEmailExistHandler(e.target.value) }}
                     ref={userEmailRef}
                 />
-                <button
-                    onClick={requestEmailVerification}
-                    className={`${styles.actionButton} ${isVerificationRequestSent ? styles.active : ''}`}
-                >
-                    이메일 인증 요청
+                <button onClick={requestEmailVerificationHandler} disabled={isVerificationRequestSent}>
+                    인증 코드 요청
                 </button>
                 {isVerificationRequestSent && (
                     <>
+                        <p>인증 코드 입력</p>
                         <input
                             type="text"
                             value={verificationCode}
                             onChange={(e) => setVerificationCode(e.target.value)}
-                            placeholder="인증 코드"
+                            placeholder="인증 코드를 입력해 주세요"
                             className={styles.inputField}
                         />
-                        <button
-                            onClick={verifyCode}
-                            className={styles.actionButton}
-                        >
-                            인증 코드 확인
-                        </button>
+                        <button onClick={verifyCodeHandler}>인증 코드 확인</button>
                     </>
                 )}
 
-                   {/* 점주 여부에 따른 추가 폼 표시 */}
-                   <div className={styles.storeOwnerContainer}>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={isStoreOwner}
-                            onChange={handleStoreOwnerChange}
-                        />
-                        점주 등록
-                    </label>
-                    {isStoreOwner && <AddStoreOwner />} {/* 점주 관련 추가 폼 컴포넌트 */}
-                </div>
-
-
-                {isEmailVerified && (
-                    <button
-                        onClick={handleSignup}
-                        className={styles.actionButton}
-                    >
-                        회원가입
-                    </button>
-                )}
-                <button
-                    onClick={toggleSignup}
-                    className={styles.actionButton}
-                >
-                    뒤로가기
-                </button>
+                <button onClick={handleSignup}>회원가입</button>
+                <button onClick={toggleSignup}>로그인 화면으로 돌아가기</button>
             </div>
         </div>
     );
 };
 
 export default Signup;
+

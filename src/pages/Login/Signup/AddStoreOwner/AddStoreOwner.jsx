@@ -1,61 +1,47 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const AddStoreOwner = () => {
-  const [storeData, setStoreData] = useState({
-    businessNumber: '',
-    representativeName: '',
-    storeAddress: '',
-    businessType: ''
-  });
+const AddStoreOwner = ({ storeData, setStoreData }) => {
+    const handleStoreDataChange = (e) => {
+        const { name, value } = e.target;
+        setStoreData(prev => ({ ...prev, [name]: value }));
+    };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setStoreData({ ...storeData, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // 점주 정보 저장 처리 로직
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="businessNumber"
-        value={storeData.businessNumber}
-        onChange={handleChange}
-        placeholder="사업자 등록 번호"
-        required
-      />
-      <input
-        type="text"
-        name="representativeName"
-        value={storeData.representativeName}
-        onChange={handleChange}
-        placeholder="대표자명"
-        required
-      />
-      <input
-        type="text"
-        name="storeAddress"
-        value={storeData.storeAddress}
-        onChange={handleChange}
-        placeholder="사업장 주소"
-        required
-      />
-      <input
-        type="text"
-        name="businessType"
-        value={storeData.businessType}
-        onChange={handleChange}
-        placeholder="업태"
-        required
-      />
-
-      <button type="submit">점주 정보 등록</button>
-    </form>
-  );
+    return (
+        <div>
+            <p>사업자 등록번호</p>
+            <input
+                type="text"
+                name="businessNumber"
+                value={storeData.businessNumber}
+                onChange={handleStoreDataChange}
+                placeholder="사업자 등록번호를 입력해 주세요"
+            />
+            <p>대표자명</p>
+            <input
+                type="text"
+                name="representativeName"
+                value={storeData.representativeName}
+                onChange={handleStoreDataChange}
+                placeholder="대표자명을 입력해 주세요"
+            />
+            <p>매장 주소</p>
+            <input
+                type="text"
+                name="storeAddress"
+                value={storeData.storeAddress}
+                onChange={handleStoreDataChange}
+                placeholder="매장 주소를 입력해 주세요"
+            />
+            <p>업종</p>
+            <input
+                type="text"
+                name="businessType"
+                value={storeData.businessType}
+                onChange={handleStoreDataChange}
+                placeholder="업종을 입력해 주세요"
+            />
+        </div>
+    );
 };
 
 export default AddStoreOwner;
