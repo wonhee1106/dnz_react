@@ -81,7 +81,7 @@ function StoreDetail() {
         const loadKakaoMapScript = () => {
             return new Promise((resolve, reject) => {
                 const script = document.createElement('script');
-                script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=02825686e2926de94f77186ec704adf1&autoload=false&libraries=services`;
+                script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=b924aaca10af3dbd3c75d198e88d0de0&autoload=false&libraries=services`;
                 script.async = true;
                 script.onload = () => resolve(window.kakao);
                 script.onerror = () => reject(new Error('Failed to load Kakao Map API'));

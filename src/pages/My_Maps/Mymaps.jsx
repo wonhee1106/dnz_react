@@ -7,9 +7,11 @@ import './Mymaps.css'; // CSS 파일 추가
 function Mymaps() {
   const [stores, setStores] = useState([]);
 
+ const serverURL = process.env.REACT_APP_SERVER_URL;
+
   // Axios 인스턴스 생성
   const api = axios.create({
-    baseURL: 'http://192.168.1.11', // 백엔드 서버 주소와 포트로 수정하세요
+    baseURL: `${serverURL}`, // 백엔드 서버 주소와 포트로 수정하세요
   });
 
   // 모든 가게 정보를 가져오는 함수
@@ -38,7 +40,7 @@ function Mymaps() {
         }
 
         const script = document.createElement('script');
-        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=02825686e2926de94f77186ec704adf1&autoload=false&libraries=services`;
+        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=b924aaca10af3dbd3c75d198e88d0de0&autoload=false&libraries=services`;
         script.async = true;
         script.onload = () => resolve(window.kakao);
         script.onerror = () => reject(new Error('Failed to load Kakao Map API'));
