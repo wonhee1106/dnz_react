@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // axios를 직접 import
+import Footer from 'components/Footer/Footer'; // Footer 컴포넌트 추가
 import './Mymaps.css'; // CSS 파일 추가
 
 function Mymaps() {
@@ -48,7 +49,7 @@ function Mymaps() {
     if (stores.length > 0) {
       loadKakaoMapScript().then((kakao) => {
         kakao.maps.load(() => {
-          const mapContainer = document.getElementById('map');
+          const mapContainer = document.getElementById('my-map'); // 여기서 id를 my-map으로 변경
           const mapOption = {
             center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울을 기본 중심으로 설정
             level: 5, // 지도의 줌 레벨
@@ -90,8 +91,11 @@ function Mymaps() {
   }, [stores]);
 
   return (
-    <div className="maps-container">
-      <div id="map" style={{ width: '100%', height: '600px' }}></div>
+    <div className="maps-page">
+      <div className="mymaps-container">
+        <div id="my-map"></div> {/* id를 my-map으로 수정 */}
+      </div>
+      <Footer /> {/* Footer 고정 */}
     </div>
   );
 }

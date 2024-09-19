@@ -150,8 +150,10 @@ function StoreDetail() {
                     )}
                 </div>
 
-                <p>{store.address1}</p>
-                <div id="map"></div>
+                {/* 가게 이름과 주소를 출력하는 부분 */}
+                <h3>{store.name}</h3> {/* 가게 이름 출력 */}
+                <div id="map"></div> {/* 지도 */}
+                <p>{store.address1} {store.address2}</p> {/* 지도 아래 가게 주소 출력 */}
                 <p>{store.description}</p>
             </div>
 
@@ -160,7 +162,13 @@ function StoreDetail() {
                 <div className="reserve-button-container">
                     <ReserveButton />
                 </div>
-                <h2 className="store-name">{store.name}</h2>
+                <h2 className="reservation"></h2>
+            </div>
+
+            {/* 공지사항 영역 추가 */}
+            <div className="notice-section">
+                <h3>공지사항</h3>
+                <p>여기에는 공지사항이 들어갈 수 있습니다.</p>
             </div>
 
             <div className="menu-list">
