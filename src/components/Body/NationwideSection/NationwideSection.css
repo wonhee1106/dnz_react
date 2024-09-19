@@ -1,11 +1,12 @@
 .nationwide-section {
-  width: 30%;
+  width: 15%;
   padding: 20px;
   background-color: #f9f9f9;
   border: 2px solid #ff6600; /* 주황색 테두리 */
   border-radius: 8px;
   color: #333;
   height: 250px; /* PopularRestaurants와 동일한 높이 설정 */
+  text-align: center; /* h2 요소를 중앙 정렬 */
 }
 
 .nationwide-section h2 {
@@ -16,6 +17,7 @@
 .section-body {
   display: flex;
   align-items: center;
+  justify-content: center; /* 콘텐츠를 중앙 정렬 */
   position: relative;
 }
 
@@ -23,7 +25,6 @@
   overflow-x: auto;
   white-space: nowrap;
 }
-
 
 .location-item {
   display: inline-block;
@@ -54,7 +55,7 @@
 .nearme-button {
   width: 150px;
   height: 100px;
-  background-color: #ff6600; /* Same orange color for the Near Me button */
+  background-image: url('../../../img/map.png');
   color: white;
   border: none;
   border-radius: 8px;
