@@ -17,9 +17,10 @@ import MyDining from './components/pages/MyDining/MyDining.jsx'
 
 import StoreManagementPage from './components/pages/StoreManagementPage/StoreManagementPage.jsx'
 import '@fortawesome/fontawesome-free/css/all.min.css'
-import StoreAddPage from './components/pages/StoreAddPage/StoreAddPage.jsx'
-import Review from './components/pages/MyDining/Review/Review.jsx'
-import ReviewConfirm from 'components/pages/MyDining/ReviewConfirm/ReviewConfirm.jsx'
+import StoreAddPage from 'pages/StoreAddPage/StoreAddPage.jsx'
+import StoreList from 'pages/StoreList/StoreList.jsx' // 추가된 StoreList 컴포넌트
+import Mymaps from 'pages/My_Maps/Mymaps.jsx';
+
 
 const AppContent = () => {
     const location = useLocation() // 현재 경로 확인
@@ -33,7 +34,8 @@ const AppContent = () => {
             <Routes>
                 <Route path="/" element={<Body />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/mypage" element={<Mypage />} />
+                <Route path='/mypage' element={<Mypage />} />
+                <Route path="/maps" element={<Mymaps />} />
                 <Route path="/store/:storeId" element={<StoreDetail />} />
                 <Route path="/alarm" element={<Alam />} />
                 <Route
