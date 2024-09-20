@@ -59,7 +59,7 @@
     display: flex;
     overflow-x: hidden;
     gap: 8px;
-    padding: 10px 40px;
+    padding: 10px 50px;
     width: 100%;
     scroll-behavior: smooth;
 }
@@ -75,6 +75,7 @@
     border: 1px solid #ff3d00;
     background-color: #ffffff;
     cursor: pointer;
+    padding-top: 9px;
     cursor: all
 }
 
@@ -120,6 +121,29 @@
     font-weight: bold;
 }
 
+.todayButton {
+    display: block;
+    margin: 10px auto;
+    padding: 8px 16px;
+    background-color: #ff3d00;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    width: 100px;
+}
+
+.todayButton:hover {
+    background-color: #ff3d00;
+}
+
+/* 캘린더와 오늘 버튼 간의 여백을 최소화 */
+.react-calendar {
+    margin-bottom: 0;
+}
+
 /* 캘린더 관련 스타일 */
 :global(.react-calendar__tile--now) {
     background: #ff3d00;
@@ -138,6 +162,7 @@
 :global(.react-calendar__navigation) {
     display: flex;
     height: 44px;
+    margin-left: 91px;
     margin-bottom: 1em;
 }
 
@@ -163,7 +188,8 @@
 :global(.react-calendar__navigation__label:hover) {
     background: none !important;
     /* 배경 제거 */
-    color: #666666;
+    transition: filter 0.3s ease;
+    /* 부드러운 효과 전환 */
 }
 
 :global(.react-calendar__navigation__prev-button),

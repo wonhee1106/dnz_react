@@ -74,13 +74,22 @@ function Review() {
             <h2 className={styles.title}>리뷰 작성 페이지</h2>
             {reservation ? (
                 <div>
-                    <p>가게 이름: {reservation.storeName}</p>
                     <p>
-                        예약 날짜:{' '}
+                        <strong>가게 이름: </strong>
+                        {reservation.storeName}
+                    </p>
+                    <p>
+                        <strong>예약 날짜: </strong>
                         {formatDateToLocal(reservation.reservationDate)}
                     </p>
-                    <p>예약 시간: {reservation.reservationTime}</p>
-                    <p>예약 인원: {reservation.numGuests}명</p>
+                    <p>
+                        <strong>예약 시간: </strong>
+                        {reservation.reservationTime}
+                    </p>
+                    <p>
+                        <strong>예약 인원: </strong>
+                        {reservation.numGuests}명
+                    </p>
                     <div className={styles.ratingContainer}>
                         <label>평점:</label>
                         {[1, 2, 3, 4, 5].map(star => (
