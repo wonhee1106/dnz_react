@@ -14,7 +14,7 @@ const Header = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   const [unreadNotifications, setUnreadNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-
+// 살려주시라요
   const serverUrl = process.env.REACT_APP_SERVER_URL;
 
   useEffect(() => {
@@ -163,7 +163,6 @@ const Header = () => {
         ) : (
           <>
             <button onClick={handleLoginClick}>로그인</button>
-            <button onClick={handleSignup}>회원가입</button>
           </>
         )}
       </div>
