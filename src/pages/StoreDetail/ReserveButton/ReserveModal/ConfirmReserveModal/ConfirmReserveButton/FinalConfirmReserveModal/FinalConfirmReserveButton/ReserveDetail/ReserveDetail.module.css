@@ -1,0 +1,86 @@
+.reservationContainer {
+    padding: 20px;
+    max-width: 800px;
+    /* 더 넓은 레이아웃을 위해 확장 */
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.reservationCard {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.reservationInfoRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.imagePlaceholder {
+    width: 80px;
+    height: 80px;
+    background-color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #9e9e9e;
+    margin-right: 20px;
+}
+
+.textInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.restaurantName {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.additionalInfo {
+    color: #9e9e9e;
+    margin-top: 4px;
+}
+
+.dateInfo {
+    color: #ff5722;
+    margin-top: 8px;
+}
+
+.reservationActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.goToReview {
+    background-color: #ccc;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cancelButton {
+    background-color: #ff5722;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
