@@ -145,7 +145,14 @@
 }
 
 
-h3{
-    font-size: 3em;
-    text-align: center;
+/* 메뉴 제목 크기 조정 */
+.menu-title-container h3 {
+    font-size: 2.5em; /* 메뉴 제목의 텍스트 크기를 2.5em으로 설정 (원하는 크기로 조정) */
+    font-weight: bold;
+}
+
+.store-info h3 {
+    font-size: 3em; /* 가게 이름의 텍스트 크기를 3em으로 설정 (원하는 크기로 조정) */
+    font-weight: bold;
+    margin-bottom: 10px;
 }
