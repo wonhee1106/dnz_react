@@ -21,9 +21,8 @@ import '@fortawesome/fontawesome-free/css/all.min.css'
 import StoreAddPage from 'pages/StoreAddPage/StoreAddPage.jsx'
 import StoreList from 'pages/StoreList/StoreList.jsx' // 추가된 StoreList 컴포넌트
 import Mymaps from 'pages/My_Maps/Mymaps.jsx';
-import Signup from './pages/Login/Signup/Signup.jsx'
 
-
+// 뭐징 17:06
 
 const AppContent = () => {
     const location = useLocation() // 현재 경로 확인
@@ -37,7 +36,6 @@ const AppContent = () => {
             <Routes>
                 <Route path="/" element={<Body />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="signup" element ={<Signup/>} />
                 <Route path='/mypage' element={<Mypage />} />
                 <Route path="/maps" element={<Mymaps />} />
                 <Route path="/store/:storeId" element={<StoreDetail />} />
