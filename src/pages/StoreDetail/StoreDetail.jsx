@@ -152,18 +152,13 @@ function StoreDetail() {
 
                 {/* 가게 이름과 주소를 출력하는 부분 */}
                 <h3>{store.name}</h3> {/* 가게 이름 출력 */}
+                <p>{store.description}</p>
                 <div id="map"></div> {/* 지도 */}
                 <p>{store.address1} {store.address2}</p> {/* 지도 아래 가게 주소 출력 */}
-                <p>{store.description}</p>
             </div>
 
-            {/* 예약하기 버튼은 왼쪽, 가게 이름은 가운데 배치 */}
-            <div className="store-header">
-                <div className="reserve-button-container">
-                    <ReserveButton />
-                </div>
-                <h2 className="reservation"></h2>
-            </div>
+
+           
 
             {/* 공지사항 영역 추가 */}
             <div className="notice-section">
@@ -172,7 +167,14 @@ function StoreDetail() {
             </div>
 
             <div className="menu-list">
-                <h3>메뉴</h3>
+    <div className="menu-title-container">
+        <h3>메뉴</h3> {/* 메뉴 제목 */}
+        <div className="reserve-button-container">
+            <ReserveButton />
+        </div> {/* 예약 버튼 */}
+    </div>
+
+               
                 {menus.length > 0 ? (
                     <div>
                         {menus.slice(0, visibleMenus).map((menu) => (
