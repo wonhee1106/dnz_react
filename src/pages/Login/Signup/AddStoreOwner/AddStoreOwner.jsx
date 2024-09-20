@@ -6,6 +6,8 @@ const AddStoreOwner = ({ storeData, setStoreData }) => {
         setStoreData(prev => ({ ...prev, [name]: value }));
     };
 
+//    const[isOwner ,setIsOwner] 
+
     return (
         <div>
             <p>사업자 등록번호</p>
