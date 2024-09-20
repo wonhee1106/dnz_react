@@ -20,10 +20,12 @@ import StoreManagementPage from 'pages/StoreManagementPage/StoreManagementPage.j
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import StoreAddPage from 'pages/StoreAddPage/StoreAddPage.jsx'
 import StoreList from 'pages/StoreList/StoreList.jsx' // 추가된 StoreList 컴포넌트
-import Mymaps from 'pages/My_Maps/Mymaps.jsx';
+import Mymaps from 'pages/My_Maps/Mymaps.jsx'
+import Review from 'pages/MyDining/Review/Review'
+import ReviewDetail from 'pages/MyDining/ReviewDetail/ReviewDetail'
 import Signup from './pages/Login/Signup/Signup.jsx'
 
-
+// 뭐징 17:06
 
 const AppContent = () => {
     const location = useLocation() // 현재 경로 확인
@@ -37,18 +39,32 @@ const AppContent = () => {
             <Routes>
                 <Route path="/" element={<Body />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="signup" element ={<Signup/>} />
                 <Route path='/mypage' element={<Mypage />} />
                 <Route path="/maps" element={<Mymaps />} />
                 <Route path="/store/:storeId" element={<StoreDetail />} />
                 <Route path="/alarm" element={<Alam />} />
-                <Route path="/confirmReserve" element={<ConfirmReserveModal />} />
-                <Route path="/StoreManagementPage" element={<StoreManagementPage />} />
-                <Route path="/finalconfirmReserve" element={<FinalConfirmReserveModal />} />
+                <Route
+                    path="/confirmReserve"
+                    element={<ConfirmReserveModal />}
+                />
+                <Route
+                    path="/StoreManagementPage"
+                    element={<StoreManagementPage />}
+                />
+                <Route
+                    path="/finalconfirmReserve"
+                    element={<FinalConfirmReserveModal />}
+                />
                 <Route path="/reserveDetail" element={<ReserveDetail />} />
                 <Route path="/storeadd" element={<StoreAddPage />} />
                 <Route path="/myDining" element={<MyDining />} />
-                <Route path="/storeList/:category" element={<StoreList />} /> {/* 추가된 StoreList 경로 */}
+                <Route path="/Review" element={<Review />} />
+                <Route
+                    path="/ReviewDetail/:reservationId"
+                    element={<ReviewDetail />}
+                />
+                <Route path="/storeList/:category" element={<StoreList />} />{' '}
+                {/* 추가된 StoreList 경로 */}
             </Routes>
             {!isStoreManagementPage && <Footer />}
         </div>
@@ -64,3 +80,4 @@ const App = () => {
 }
 
 export default App
+// 0920  16:56
