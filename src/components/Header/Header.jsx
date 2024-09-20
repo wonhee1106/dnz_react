@@ -81,23 +81,18 @@ const Header = () => {
     navigate('/mypage');
   };
 
-  // 검색 입력값 변경 시 호출되는 함수
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  // 검색 키 입력 핸들러
   const handleSearchKeyPress = (e) => {
     if (e.key === 'Enter') {
       performSearch();
     }
   };
 
-  // 검색 로직 구현
   const performSearch = () => {
     const query = searchQuery.trim();
-
-    // 검색어에 따른 카테고리 매핑
     const categoryMapping = {
       '한식': 'korean',
       '중식': 'chinese',
@@ -106,16 +101,19 @@ const Header = () => {
     };
 
     if (categoryMapping[query]) {
-      // 해당 카테고리 섹션으로 스크롤 이동
       const element = document.getElementById(categoryMapping[query]);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      // 매칭되는 카테고리가 없을 경우 경고 메시지 표시
       alert('해당 카테고리를 찾을 수 없습니다.');
     }
-  }; // <-- 닫는 중괄호와 세미콜론 추가
+  };
+
+  // 회원가입 핸들러 추가
+  const handleSignup = () => {
+    navigate('/signup'); // 회원가입 페이지로 이동
+  };
 
   return (
     <header className="header">
@@ -144,7 +142,7 @@ const Header = () => {
           <FontAwesomeIcon
             icon={faUser}
             className="faUser"
-            onClick={handleUserClick} // 유저 아이콘 클릭 이벤트
+            onClick={handleUserClick}
           />
         )}
 
@@ -163,7 +161,10 @@ const Header = () => {
         {isAuth ? (
           <button onClick={handleLogout}>로그아웃</button>
         ) : (
-          <button onClick={handleLoginClick}>로그인</button>
+          <>
+            <button onClick={handleLoginClick}>로그인</button>
+            <button onClick={handleSignup}>회원가입</button>
+          </>
         )}
       </div>
     </header>
