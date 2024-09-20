@@ -70,7 +70,7 @@ const Signup = ({ toggleSignup }) => {
             return
         }
 
-        const validationError = validateSignupInputs(signup + storeData)
+        const validationError = validateSignupInputs(signup )
         if (validationError) {
             alert(validationError)
             return
@@ -110,7 +110,7 @@ const Signup = ({ toggleSignup }) => {
             return
         }
 
-        const validationError = validateSignupInputs(signup)
+        const validationError = validateSignupInputs(signup+storeData)
         if (validationError) {
             alert(validationError)
             return
