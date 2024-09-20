@@ -10,6 +10,7 @@ const AddStoreOwner = ({ storeData, setStoreData }) => {
 
     return (
         <div>
+            <h2>점주 회원가입</h2>
             <p>사업자 등록번호</p>
             <input
                 type="text"
@@ -42,6 +43,7 @@ const AddStoreOwner = ({ storeData, setStoreData }) => {
                 onChange={handleStoreDataChange}
                 placeholder="업종을 입력해 주세요"
             />
+            <button>점주 회원가입</button> {/* 회원가입 처리 버튼 */}
         </div>
     );
 };
