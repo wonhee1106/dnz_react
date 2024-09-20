@@ -96,14 +96,15 @@ function StoreDetail() {
     useEffect(() => {
         const loadKakaoMapScript = () => {
             return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=b924aaca10af3dbd3c75d198e88d0de0&autoload=false&libraries=services`;
-                script.async = true;
-                script.onload = () => resolve(window.kakao);
-                script.onerror = () => reject(new Error('Failed to load Kakao Map API'));
-                document.head.appendChild(script);
-            });
-        };
+                const script = document.createElement('script')
+                script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=b924aaca10af3dbd3c75d198e88d0de0&autoload=false&libraries=services`
+                script.async = true
+                script.onload = () => resolve(window.kakao)
+                script.onerror = () =>
+                    reject(new Error('Failed to load Kakao Map API'))
+                document.head.appendChild(script)
+            })
+        }
 
         if (store && store.address1) {
             loadKakaoMapScript().then(kakao => {
@@ -189,19 +190,14 @@ function StoreDetail() {
                         <p>사진이 없습니다.</p>
                     )}
                 </div>
-
                 {/* 가게 이름과 주소를 출력하는 부분 */}
                 <h3>{store.name}</h3> {/* 가게 이름 출력 */}
                 <p>{store.description}</p>
                 <div id="map"></div> {/* 지도 */}
-                <p>{store.address1} {store.address2}</p> {/* 지도 아래 가게 주소 출력 */}
-            </div>
-
-            {/* 예약하기 버튼 */}
-            <div className="reserve-button-container">
-                <button onClick={openReserveModal} className="reserve-button">
-                    예약하기
-                </button>
+                <p>
+                    {store.address1} {store.address2}
+                </p>{' '}
+                {/* 지도 아래 가게 주소 출력 */}
             </div>
 
             {/* Reserve Modal */}
@@ -239,8 +235,6 @@ function StoreDetail() {
                 />
             )}
 
-           
-
             {/* 공지사항 영역 추가 */}
             <div className="notice-section">
                 <h3>공지사항</h3>
@@ -248,14 +242,19 @@ function StoreDetail() {
             </div>
 
             <div className="menu-list">
-    <div className="menu-title-container">
-        <h3>메뉴</h3> {/* 메뉴 제목 */}
-        <div className="reserve-button-container">
-            <ReserveButton />
-        </div> {/* 예약 버튼 */}
-    </div>
+                <div className="menu-title-container">
+                    <h3>메뉴</h3> {/* 메뉴 제목 */}
+                    <div className="reserve-button-container">
+                        <button
+                            onClick={openReserveModal}
+                            className="reserve-button"
+                        >
+                            예약하기
+                        </button>
+                    </div>{' '}
+                    {/* 예약 버튼 */}
+                </div>
 
-               
                 {menus.length > 0 ? (
                     <div>
                         {menus.slice(0, visibleMenus).map(menu => (
