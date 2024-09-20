@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './PopularRestaurants.module.css';
+import './PopularRestaurants.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBookmark as regularBookmark,

@@ -3,7 +3,7 @@ import Banner from './Banner/Banner';
 import NationwideSection from './NationwideSection/NationwideSection';
 import PopularRestaurants from './PopularRestaurants/PopularRestaurants';
 
-import './Body.module.css';
+import './Body.css';
 
 
 const Body = () => {

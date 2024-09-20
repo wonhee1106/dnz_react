@@ -1,7 +1,7 @@
 // Banner.jsx
 
 import React, { useState, useEffect } from 'react';
-import './Banner.module.css';
+import './Banner.css';
 
 const Banner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
