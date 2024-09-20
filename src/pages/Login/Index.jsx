@@ -5,6 +5,7 @@ import FindId from './FindAccount/FindId';
 import FindPassword from './FindAccount/FindPassword';
 import Modal from './Modal/Modal';
 import commonStyles from './common.module.css';
+import AddStoreOwner from './Signup/AddStoreOwner/AddStoreOwner';
 
 const Index = () => {
     const [isSignup, setIsSignup] = useState(false);
@@ -16,6 +17,7 @@ const Index = () => {
     const closeFindIdModal = () => setIsFindIdModalOpen(false);
     const openFindPasswordModal = () => setIsFindPasswordModalOpen(true);
     const closeFindPasswordModal = () => setIsFindPasswordModalOpen(false);
+    const [isStoreOwner , setIsStoreOwner] =useState(false);
 
     return (
         <div className={commonStyles.container}>
