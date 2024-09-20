@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';  // 'jwt-decode'에서 기본 수입
+import {jwtDecode} from 'jwt-decode';  // 'jwt-decode' 기본 수입
 import styles from './Profile.module.css';
-import img from '../../../img/img2.png';
+import img from '../../../img/img2.png';  // 기본 이미지
 import { api } from '../../../config/config';
 import { useAuthStore } from 'utils/store';
 
@@ -12,8 +12,11 @@ const Profile = () => {
         token: state.token,
     }));
 
-    const [profileImage, setProfileImage] = useState(null);  // 프로필 이미지 상태
-    const [userProfile, setUserProfile] = useState({        // 사용자 프로필 상태
+    // 서버의 기본 URL (이미지 경로 앞에 추가)
+    const serverBaseUrl = "http://192.168.1.11";  // 서버 주소
+
+    const [profileImage, setProfileImage] = useState(img);  // 기본 이미지를 초기값으로 설정
+    const [userProfile, setUserProfile] = useState({
         userId: '',
         userName: '',
         userPassword: '',
@@ -49,6 +52,12 @@ const Profile = () => {
         })
         .then(resp => {
             setUserProfile(resp.data); 
+            // 이미지 경로가 있을 경우, 서버 주소와 합쳐서 표시
+            if (resp.data.imageUrl) {
+                setProfileImage(`${serverBaseUrl}${resp.data.imageUrl}`);
+            } else {
+                setProfileImage(img);  // 기본 이미지 세팅
+            }
         })
         .catch(error => {
             console.error('Error fetching user profile:', error);
@@ -64,7 +73,7 @@ const Profile = () => {
             ...prev,
             [name]: value
         }));
-    }
+    };
 
     const handleProfileUpdate = () => {
         if (Object.keys(modifiedFields).length === 0) {
@@ -89,7 +98,24 @@ const Profile = () => {
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setProfileImage(URL.createObjectURL(file)); 
+            const formData = new FormData();
+            formData.append('profileImage', file);
+
+            // API 요청으로 파일을 서버로 전송
+            api.post('/members/updateProfileImage', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((response) => {
+                // 서버에서 반환한 이미지 URL을 저장하고, 프로필 이미지를 업데이트
+                setProfileImage(`${serverBaseUrl}${response.data}`);  // 이미지 경로에 서버 URL 추가
+                alert('프로필 이미지가 성공적으로 업데이트되었습니다.');
+            })
+            .catch((error) => {
+                console.error('Error uploading profile image:', error);
+            });
         }
     };
 
@@ -100,8 +126,13 @@ const Profile = () => {
     return (
         <div className={styles.container}>
             <div className={styles.imageContainer} onClick={() => fileInputRef.current.click()}>
-                <img src={profileImage || img} alt="Profile" />
-                <input type="file" ref={fileInputRef} onChange={handleImageUpload} style={{ display: 'none' }} />
+                <img src={profileImage} alt="Profile" />  {/* 프로필 이미지 출력 */}
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    style={{ display: 'none' }}
+                />
             </div>
 
             <ProfileForm 
@@ -118,7 +149,7 @@ const Profile = () => {
 const ProfileForm = ({ userProfile, handleInputChange, handleProfileUpdate, isEditable, handleEditToggle }) => {
     return (
         <div className={styles.profileDetails}>
-             <div className={styles.field}>
+            <div className={styles.field}>
                 <p>아이디:</p>
                 <input
                     type="text"
