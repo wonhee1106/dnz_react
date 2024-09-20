@@ -35,7 +35,7 @@ const Signup = ({ toggleSignup }) => {
     const [verificationCode, setVerificationCode] = useState('')
     const [isVerificationRequestSent, setIsVerificationRequestSent] =
         useState(false)
-
+    // 시발
     const userIdRef = useRef(null)
     const userEmailRef = useRef(null)
     const userPhoneRef = useRef(null)
