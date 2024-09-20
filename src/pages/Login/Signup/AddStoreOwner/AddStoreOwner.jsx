@@ -6,6 +6,8 @@ const AddStoreOwner = ({ storeData, setStoreData }) => {
         setStoreData(prev => ({ ...prev, [name]: value }));
     };
 
+//    const[isOwner ,setIsOwner] 
+
     return (
         <div>
             <h2>점주 회원가입</h2>
