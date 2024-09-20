@@ -25,3 +25,13 @@
   height: 100%; /* 배너 높이에 맞추기 */
   object-fit: cover; /* 이미지가 배너에 꽉 차면서 비율을 유지 */
 }
+
+/* Swiper.js 추가 스타일 */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #ff6600; /* 주황색 내비게이션 버튼 */
+}
+
+.swiper-pagination-bullet-active {
+  background: #ff6600; /* 주황색 페이징 점 */
+}
