@@ -235,6 +235,7 @@ function StoreDetail() {
                 />
             )}
 
+
             {/* 공지사항 영역 추가 */}
             <div className="notice-section">
                 <h3>공지사항</h3>
@@ -242,6 +243,7 @@ function StoreDetail() {
             </div>
 
             <div className="menu-list">
+
                 <div className="menu-title-container">
                     <h3>메뉴</h3> {/* 메뉴 제목 */}
                     <div className="reserve-button-container">
@@ -253,6 +255,9 @@ function StoreDetail() {
                         </button>
                     </div>{' '}
                     {/* 예약 버튼 */}
+                </div>
+
+                
                 </div>
 
                 {menus.length > 0 ? (
@@ -281,7 +286,6 @@ function StoreDetail() {
                     <p>메뉴가 없습니다.</p>
                 )}
             </div>
-        </div>
     )
 }
 
