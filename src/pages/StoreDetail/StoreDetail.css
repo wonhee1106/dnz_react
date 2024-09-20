@@ -1,5 +1,3 @@
-/* 가게 상세 정보 페이지의 스타일 */
-
 /* 전체 컨테이너 스타일 */
 .store-detail-container {
     display: flex;
@@ -22,13 +20,12 @@
 #map {
     width: 80%; /* 지도의 넓이를 80%로 줄임 */
     max-width: 600px; /* 최대 넓이를 600px로 제한 */
-    height: 300px; /* 지도의 높이를 300px로 줄임 */
+    height: 400px; /* 지도의 높이를 400px로 변경 */
     margin: 20px auto; /* 수평 중앙 정렬 */
     border: 2px solid #ddd; /* 테두리 추가 (옵션) */
     border-radius: 8px; /* 테두리 둥글게 처리 (옵션) */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
 }
-
 
 /* 사진 컨테이너 */
 .photos-container {
@@ -116,17 +113,35 @@
     margin-bottom: 20px;
 }
 
-.store-name {
-    flex-grow: 1;
-    text-align: center; /* 가게 이름을 가운데 정렬 */
-}
+
 
 .reserve-button-container {
     position: absolute;
    margin-left: 630px;
 }
 
-.load-more{
+/* 공지사항 섹션 스타일 */
+.notice-section {
+    width: 100%;
+    text-align: left;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+}
+
+.notice-section h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.notice-section p {
+    font-size: 1.1em;
+}
+
+/* 더보기 버튼 */
+.load-more {
     padding: 12px 24px;
     font-size: 1.2em;
     color: white;
@@ -137,3 +152,6 @@
     transition: background-color 0.3s ease;
 }
 
+h3{
+    font-size: 3em;
+}

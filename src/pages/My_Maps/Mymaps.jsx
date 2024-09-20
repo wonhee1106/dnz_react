@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // axios를 직접 import
+import Footer from 'components/Footer/Footer'; // Footer 컴포넌트 추가
 import './mymaps.css'; // CSS 파일 추가
+
 
 function Mymaps() {
   const [stores, setStores] = useState([]);
 
+ const serverURL = process.env.REACT_APP_SERVER_URL;
+
   // Axios 인스턴스 생성
   const api = axios.create({
-    baseURL: 'http://192.168.1.11', // 백엔드 서버 주소와 포트로 수정하세요
+    baseURL: `${serverURL}`, // 백엔드 서버 주소와 포트로 수정하세요
   });
 
   // 모든 가게 정보를 가져오는 함수
@@ -36,7 +40,7 @@ function Mymaps() {
         }
 
         const script = document.createElement('script');
-        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=02825686e2926de94f77186ec704adf1&autoload=false&libraries=services`;
+        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=b924aaca10af3dbd3c75d198e88d0de0&autoload=false&libraries=services`;
         script.async = true;
         script.onload = () => resolve(window.kakao);
         script.onerror = () => reject(new Error('Failed to load Kakao Map API'));
@@ -48,7 +52,7 @@ function Mymaps() {
     if (stores.length > 0) {
       loadKakaoMapScript().then((kakao) => {
         kakao.maps.load(() => {
-          const mapContainer = document.getElementById('map');
+          const mapContainer = document.getElementById('my-map'); // 여기서 id를 my-map으로 변경
           const mapOption = {
             center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울을 기본 중심으로 설정
             level: 5, // 지도의 줌 레벨
@@ -90,8 +94,11 @@ function Mymaps() {
   }, [stores]);
 
   return (
-    <div className="maps-container">
-      <div id="map" style={{ width: '100%', height: '600px' }}></div>
+    <div className="maps-page">
+      <div className="mymaps-container">
+        <div id="my-map"></div> {/* id를 my-map으로 수정 */}
+      </div>
+      <Footer /> {/* Footer 고정 */}
     </div>
   );
 }
