@@ -198,5 +198,4 @@ function StoreDetail() {
     );
 }
 //16ㅣ26
-//16ㅣ26
 export default StoreDetail;
