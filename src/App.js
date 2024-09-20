@@ -23,6 +23,9 @@ import StoreList from 'pages/StoreList/StoreList.jsx' // 추가된 StoreList 컴
 import Mymaps from 'pages/My_Maps/Mymaps.jsx'
 import Review from 'pages/MyDining/Review/Review'
 import ReviewDetail from 'pages/MyDining/ReviewDetail/ReviewDetail'
+import Mymaps from 'pages/My_Maps/Mymaps.jsx';
+import Signup from './pages/Login/Signup/Signup.jsx'
+
 
 const AppContent = () => {
     const location = useLocation() // 현재 경로 확인
@@ -36,7 +39,8 @@ const AppContent = () => {
             <Routes>
                 <Route path="/" element={<Body />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/mypage" element={<Mypage />} />
+                <Route path="signup" element ={<Signup/>} />
+                <Route path='/mypage' element={<Mypage />} />
                 <Route path="/maps" element={<Mymaps />} />
                 <Route path="/store/:storeId" element={<StoreDetail />} />
                 <Route path="/alarm" element={<Alam />} />
