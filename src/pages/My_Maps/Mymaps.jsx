@@ -98,7 +98,7 @@ function Mymaps() {
       <div className="mymaps-container">
         <div id="my-map"></div> {/* id를 my-map으로 수정 */}
       </div>
-      <Footer /> {/* Footer 고정 */}
+      
     </div>
   );
 }
