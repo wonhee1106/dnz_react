@@ -46,26 +46,42 @@
 /* 메뉴 리스트 */
 .menu-list {
     margin-top: 20px;
-    width: 100%; /* 메뉴 영역을 전체 넓이에 맞추기 */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 메뉴 리스트 가운데 정렬 */
 }
 
+/* 메뉴 제목과 버튼을 나란히 배치하는 스타일 */
+.menu-title-container {
+    display: flex;
+    justify-content: center; /* 제목과 버튼을 기본적으로 가운데 정렬 */
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative; /* 버튼의 절대 위치 조정을 위한 설정 */
+}
+
+/* 메뉴 제목 스타일 */
+.menu-title-container h3 {
+    margin: 0 auto; /* 제목을 가운데 정렬 */
+}
+
+/* 예약하기 버튼 컨테이너 수정 */
+.reserve-button-container {
+    position: absolute;
+    right: 0; /* 버튼을 제목의 오른쪽 끝으로 이동 */
+}
+
+/* 메뉴 항목 스타일 */
 .menu-item {
+    width: 100%;
+    max-width: 600px; /* 메뉴 아이템의 최대 너비를 제한 */
+    text-align: center; /* 메뉴 항목 가운데 정렬 */
     margin-bottom: 20px;
     font-size: 1.1em;
     border-bottom: 1px solid #ccc;
     padding-bottom: 10px;
-}
-
-/* 메뉴 제목과 가격 */
-.menu-item strong {
-    display: block;
-    font-size: 1.2em;
-    margin-bottom: 5px;
-}
-
-.menu-item div {
-    color: #555;
-    font-size: 1.1em;
 }
 
 /* 로딩 중 메시지 */
@@ -94,30 +110,6 @@
 /* 예약하기 버튼에 마우스를 올렸을 때 스타일 */
 .reserve-button:hover {
     background-color: #ff3d00; /* 주황색에서 더 진한 색으로 변화 */
-}
-
-/* 예약하기 버튼 컨테이너 */
-.reserve-button-container {
-    margin-bottom: 30px;
-    display: flex;
-    margin-left:500px;
-}
-
-/* 가게 이름과 예약하기 버튼을 배치 */
-.store-header {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* 가운데 정렬 */
-    position: relative;
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-
-
-.reserve-button-container {
-    position: absolute;
-   margin-left: 630px;
 }
 
 /* 공지사항 섹션 스타일 */
@@ -152,6 +144,8 @@
     transition: background-color 0.3s ease;
 }
 
+
 h3{
     font-size: 3em;
+    text-align: center;
 }

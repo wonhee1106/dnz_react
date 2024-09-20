@@ -82,7 +82,7 @@ const PopularRestaurants = () => {
   useEffect(() => {
     fetchRestaurants('한식', setKoreanRestaurants);
     fetchRestaurants('중식', setChineseRestaurants);
-    fetchRestaurants('양식', setWesternRestaurants);
+    fetchRestaurants('카페,디저트', setWesternRestaurants);
     fetchRestaurants('일식', setJapaneseRestaurants);
   }, [serverURL]);
 
