@@ -285,4 +285,4 @@ function StoreDetail() {
     )
 }
 
-export default StoreDetail
+export default StoreDetail;
