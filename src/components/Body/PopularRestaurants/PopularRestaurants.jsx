@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './PopularRestaurants.css';
+import './PopularRestaurants.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBookmark as regularBookmark,
@@ -82,7 +82,7 @@ const PopularRestaurants = () => {
   useEffect(() => {
     fetchRestaurants('한식', setKoreanRestaurants);
     fetchRestaurants('중식', setChineseRestaurants);
-    fetchRestaurants('카페,디저트', setWesternRestaurants);
+    fetchRestaurants('양식,카페,디저트', setWesternRestaurants);
     fetchRestaurants('일식', setJapaneseRestaurants);
   }, [serverURL]);
 

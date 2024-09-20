@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // axios를 직접 import
-import Footer from 'components/Footer/Footer'; // Footer 컴포넌트 추가
-import './mymaps.css'; // CSS 파일 추가
+import './Mymaps.module.css'; // CSS 파일 추가
 
 
 function Mymaps() {

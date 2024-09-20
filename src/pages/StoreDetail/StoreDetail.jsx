@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReserveButton from './ReserveButton/ReserveButton';
 import { api } from '../../config/config';
 import { useParams } from 'react-router-dom';
-import './StoreDetail.css'; // CSS 파일 추가
+import './StoreDetail.module.css'; // CSS 파일 추가
 
 function StoreDetail() {
     const { storeId } = useParams(); // storeId는 메뉴 요청에 사용

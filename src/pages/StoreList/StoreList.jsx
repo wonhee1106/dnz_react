@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; // useNavigate 추가
-import './StoreList.css'
+import './StoreList.module.css'
 
 const StoreList = () => {
   const { category } = useParams(); // URL에서 카테고리를 가져옴
