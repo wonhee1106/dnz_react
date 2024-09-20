@@ -8,14 +8,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell, faBookmark, faUser } from '@fortawesome/free-regular-svg-icons'
 
 const Header = () => {
-    const navigate = useNavigate()
-    const isAuth = useAuthStore(state => state.isAuth)
-    const logout = useAuthStore(state => state.logout)
-    const [notificationCount, setNotificationCount] = useState(0)
-    const [unreadNotifications, setUnreadNotifications] = useState(false)
-    const [searchQuery, setSearchQuery] = useState('')
-
-    const serverUrl = process.env.REACT_APP_SERVER_URL
+  const navigate = useNavigate();
+  const isAuth = useAuthStore((state) => state.isAuth);
+  const logout = useAuthStore((state) => state.logout);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [unreadNotifications, setUnreadNotifications] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+// 살려주시라요
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
 
     useEffect(() => {
         let ws
@@ -148,33 +148,29 @@ const Header = () => {
                     />
                 )}
 
-                <FontAwesomeIcon icon={faBookmark} className="faBookmark" />
-                <div
-                    className="notification-wrapper"
-                    onClick={handleAlarmClick}
-                >
-                    <FontAwesomeIcon
-                        icon={faBell}
-                        className={`faBell ${
-                            unreadNotifications ? 'active' : ''
-                        }`}
-                    />
-                    {notificationCount > 0 && (
-                        <span className="notification-count">
-                            {notificationCount}
-                        </span>
-                    )}
-                </div>
-            </div>
-            <div className="header-section login-buttons">
-                {isAuth ? (
-                    <button onClick={handleLogout}>로그아웃</button>
-                ) : (
-                    <button onClick={handleLoginClick}>로그인</button>
-                )}
-            </div>
-        </header>
-    )
-}
+        <FontAwesomeIcon icon={faBookmark} className="faBookmark" />
+        <div className="notification-wrapper" onClick={handleAlarmClick}>
+          <FontAwesomeIcon
+            icon={faBell}
+            className={`faBell ${unreadNotifications ? 'active' : ''}`}
+          />
+          {notificationCount > 0 && (
+            <span className="notification-count">{notificationCount}</span>
+          )}
+        </div>
+      </div>
+      <div className="header-section login-buttons">
+        {isAuth ? (
+          <button onClick={handleLogout}>로그아웃</button>
+        ) : (
+          <>
+            <button onClick={handleLoginClick}>로그인</button>
+            <button onClick={handleSignup}>회원가입</button>
+          </>
+        )}
+      </div>
+    </header>
+  );
+};
 
 export default Header
