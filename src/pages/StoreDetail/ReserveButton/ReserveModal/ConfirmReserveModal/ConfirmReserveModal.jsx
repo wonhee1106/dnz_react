@@ -1,8 +1,10 @@
 import styles from './ConfirmReserveModal.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendar } from '@fortawesome/free-regular-svg-icons'
-import { faClock } from '@fortawesome/free-regular-svg-icons'
-import { faUser } from '@fortawesome/free-regular-svg-icons'
+import {
+    faCalendar,
+    faClock,
+    faUser,
+} from '@fortawesome/free-regular-svg-icons'
 import { api } from '../../../../../config/config'
 import { useAuthStore } from 'utils/store'
 import { useState } from 'react'
@@ -41,11 +43,13 @@ function ConfirmReserveModal({
             if (response.status === 200) {
                 console.log('예약 성공!')
                 onNext() // 부모 컴포넌트에서 최종 모달로 전환
+            } else if (response.status === 403) {
+                alert(response.data) // 예약 불가 메시지를 그대로 표시
             } else {
                 alert('예약 실패! 다시 시도해 주세요.')
             }
         } catch (error) {
-            alert('예약 실패! 서버와의 통신 중 문제가 발생했습니다.')
+            alert('당일 취소로 인해 24시간 동안 예약이 불가능합니다.')
         } finally {
             setIsLoading(false) // 요청이 완료되면 로딩 상태 해제
         }

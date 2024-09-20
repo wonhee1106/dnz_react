@@ -4,13 +4,14 @@ import styles from './MyDining.module.css'
 import { api } from '../../config/config'
 
 function MyDining() {
-    const [reservations, setReservations] = useState([])
-    const [reviewsMap, setReviewsMap] = useState({})
-    const [currentPage, setCurrentPage] = useState(1) // 현재 페이지를 관리하는 상태
+    const [reservations, setReservations] = useState([]) // 예약 목록 상태
+    const [reviewsMap, setReviewsMap] = useState({}) // 리뷰 상태를 저장하는 객체
+    const [currentPage, setCurrentPage] = useState(1) // 현재 페이지 상태
     const reservationsPerPage = 5 // 한 번에 보여줄 예약 개수
     const navigate = useNavigate()
     const location = useLocation()
 
+    // 예약 데이터를 가져오는 함수
     useEffect(() => {
         const fetchReservations = async () => {
             try {
@@ -28,6 +29,7 @@ function MyDining() {
         fetchReservations()
     }, [])
 
+    // 리뷰 상태를 업데이트하는 로직
     useEffect(() => {
         if (location.state?.updatedReservationId) {
             const updatedId = location.state.updatedReservationId
@@ -37,6 +39,7 @@ function MyDining() {
         }
     }, [location.state])
 
+    // 각 예약의 리뷰 상태를 확인하는 함수
     useEffect(() => {
         const fetchReviewStatus = async () => {
             const reviewsStatus = {}
@@ -62,6 +65,7 @@ function MyDining() {
         }
     }, [reservations])
 
+    // 예약 날짜와 시간이 현재 시간보다 지났는지 확인하는 함수
     const isPastReservation = (reservationDate, reservationTime) => {
         const now = new Date()
         const [hour, minute] = reservationTime.split(':')
@@ -71,20 +75,50 @@ function MyDining() {
         return reservationDateTime < now
     }
 
+    // 날짜 형식을 '년.월.일 (요일)'로 변환하는 함수
     const formatDate = date => {
-        const dateString = new Date(date).toLocaleDateString('ko-KR', {
+        return new Date(date).toLocaleDateString('ko-KR', {
             year: 'numeric',
             month: 'numeric',
             day: 'numeric',
             weekday: 'short',
         })
-        return dateString
     }
 
-    const handleCancelReservation = async (reservationId, reservationDate) => {
-        const confirmed = window.confirm('정말 예약을 취소하시겠습니까?')
-        if (!confirmed) return
+    // 예약 취소 처리 함수
+    const handleCancelReservation = async (
+        reservationId,
+        reservationDate,
+        reservationTime
+    ) => {
+        const now = new Date()
+        const reservationDateTime = new Date(reservationDate)
+        const [hour, minute] = reservationTime.split(':')
+        reservationDateTime.setHours(hour)
+        reservationDateTime.setMinutes(minute)
 
+        // 당일 예약인지 확인
+        const isSameDay =
+            now.getFullYear() === reservationDateTime.getFullYear() &&
+            now.getMonth() === reservationDateTime.getMonth() &&
+            now.getDate() === reservationDateTime.getDate()
+
+        // 예약 시간이 현재 시간보다 지났는지 확인 (노쇼 여부)
+        const isNoShow = reservationDateTime < now
+
+        // 당일 취소 또는 노쇼일 경우 바로 경고 메시지 띄움
+        if (isSameDay || isNoShow) {
+            const confirmed = window.confirm(
+                '당일 취소 및 노쇼는 3분 동안 예약이 불가능합니다. 그래도 취소하시겠습니까?'
+            )
+            if (!confirmed) return
+        } else {
+            // 당일 취소가 아닌 경우 일반적인 경고 메시지 띄움
+            const confirmed = window.confirm('정말로 취소하시겠습니까?')
+            if (!confirmed) return
+        }
+
+        // 예약 취소 로직 (백엔드와 통신)
         try {
             const response = await api.delete(`/reservation/${reservationId}`)
             if (response.status === 200) {
@@ -94,6 +128,10 @@ function MyDining() {
                         res => res.reservationId !== reservationId
                     )
                 )
+                // 예약 취소 후 3분 동안 예약 불가 처리
+                setTimeout(async () => {
+                    alert('3분 후에 다시 예약할 수 있습니다.')
+                }, 3 * 60 * 1000) // 3분 대기
             } else {
                 alert('예약 취소 실패')
             }
@@ -103,21 +141,24 @@ function MyDining() {
         }
     }
 
+    // 리뷰 작성 페이지로 이동하는 함수
     const handleGoToReview = reservation => {
         navigate('/review', {
             state: { reservation },
         })
     }
 
+    // 리뷰 상세 보기 페이지로 이동하는 함수
     const handleGoToViewReview = reservationId => {
         navigate(`/reviewDetail/${reservationId}`)
     }
 
+    // 더보기 버튼 클릭 시 페이지 증가
     const loadMoreReservations = () => {
         setCurrentPage(prevPage => prevPage + 1)
     }
 
-    // 현재 페이지에 따라 예약을 잘라서 보여줌
+    // 현재 페이지에 따라 예약 목록을 제한
     const displayedReservations = reservations.slice(
         0,
         currentPage * reservationsPerPage
@@ -185,7 +226,8 @@ function MyDining() {
                                         onClick={() =>
                                             handleCancelReservation(
                                                 reservation.reservationId,
-                                                reservation.reservationDate
+                                                reservation.reservationDate,
+                                                reservation.reservationTime
                                             )
                                         }
                                     >
