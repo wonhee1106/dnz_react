@@ -56,6 +56,7 @@ const Index = () => {
             <Modal isOpen={isFindPasswordModalOpen} closeModal={closeFindPasswordModal}>
                 <FindPassword closeModal={closeFindPasswordModal} />
             </Modal>
+
         </div>
     );
 };
