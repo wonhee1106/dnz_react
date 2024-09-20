@@ -22,6 +22,7 @@
     "axios": "^1.7.7",
     "dom": "^0.0.3",
     "firebase": "^10.13.1",
+    "firebase-tools": "^13.17.0",
     "i": "^0.3.7",
     "install": "^0.13.0",
     "jwt-decode": "^4.0.0",
