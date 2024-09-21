@@ -143,15 +143,23 @@ const StoreManagementPage = () => {
     // 서버에서 리뷰 데이터를 가져오는 함수
     const fetchReviews = async () => {
         try {
-            const response = await api.get(`/reviews/store/${storeInfo.storeSeq}`);  // 서버에서 내 가게에 대한 리뷰 데이터를 가져옴
-            console.log("Fetched Reviews Data:", response.data); // 전체 데이터 구조 확인
-        console.log("Fetched Reviews:", response.data.reviews); // 리뷰 데이터 확인
-       
-            setReviews(response.data); // 최신순으로 리뷰 데이터 설정
+            const response = await api.get(`/reviews/store/${storeInfo.storeSeq}`);
+            const { reviews, replies } = response.data;
+    
+            // 리뷰와 답글을 매칭
+            const reviewsWithReplies = reviews.map(review => {
+                return {
+                    ...review,
+                    replies: replies.filter(reply => reply.reviewId === review.reviewId)
+                };
+            });
+    
+            setReviews(reviewsWithReplies);
         } catch (error) {
             console.error('리뷰 데이터를 가져오는데 실패했습니다:', error);
         }
     };
+    
 
     useEffect(() => {
         if (currentStatus === 'review') {
@@ -554,53 +562,58 @@ const StoreManagementPage = () => {
             )}
 
             {/* 리뷰 관리 화면 */}
-            {currentStatus === 'review' && (
+{currentStatus === 'review' && (
     <div className={styles.reviewList}>
         <h3 className={styles.reviewTitle}>리뷰 목록</h3>
 
         {reviews && reviews.length > 0 ? (
-    reviews.map((review) => (
-        <div key={review.reviewId} className={styles.reviewItem}>
-            <span className={styles.reviewTime}>{new Date(review.createdAt).toLocaleString()}</span>
-            <p><strong>예약 날짜/시간:</strong> {new Date(review.createdAt).toLocaleDateString()} {new Date(review.createdAt).toLocaleTimeString()}</p>
-            {/* <p><strong>예약 인원:</strong> {review.numGuests}명</p> */}
-            <p><strong>평점:</strong> {renderStars(review.rating)}</p>
-            <p><strong>리뷰 내용:</strong> {review.reviewText}</p>
-            <p><strong>작성자:</strong> {review.userId}</p>
+            reviews.map((review) => (
+                <div key={review.reviewId} className={styles.reviewItem}>
+                    <span className={styles.reviewTime}>{new Date(review.createdAt).toLocaleString()}</span>
+                    <p><strong>예약 날짜/시간:</strong> {new Date(review.createdAt).toLocaleDateString()} {new Date(review.createdAt).toLocaleTimeString()}</p>
+                    <p><strong>평점:</strong> {renderStars(review.rating)}</p>
+                    <p><strong>리뷰 내용:</strong> {review.reviewText}</p>
+                    <p><strong>작성자:</strong> {review.userId}</p>
 
-            {/* 사장 답글 표시 */}
-            {review.replies && review.replies.length > 0 && (
-                <div className={styles.replyItem}>
-                    <p><strong>사장 답글:</strong> {review.replies[0].replyText}</p>
-                    <span className={styles.replyTime}>{new Date(review.replies[0].createdAt).toLocaleString()}</span>
+                    {/* 사장 답글 표시 */}
+                    {review.replies && review.replies.length > 0 && (
+                        <div className={styles.repliesContainer}>
+                            {review.replies.map((reply) => (
+                                <div key={reply.replySeq} className={styles.replyItem}>
+                                    <p><strong>사장 답글:</strong> {reply.replyText}</p>
+                                    <span className={styles.replyTime}>{new Date(reply.createdAt).toLocaleString()}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* 사장 답글 달기 */}
+                    {(!review.replies || review.replies.length === 0) && (
+                        <div className={styles.replySection}>
+                            <textarea
+                                placeholder="답글을 작성하세요..."
+                                className={styles.replyInput}
+                                rows={1}
+                                value={replyContent[review.reviewId] || ''}
+                                onChange={(e) => handleReplyChange(review.reviewId, e.target.value)}
+                                onInput={(e) => {
+                                    e.target.style.height = 'auto';
+                                    e.target.style.height = e.target.scrollHeight + 'px';
+                                }}
+                            ></textarea>
+                            <button className={styles.replyButton} onClick={() => handleReplySubmit(review.reviewId)}>
+                                답글 달기
+                            </button>
+                        </div>
+                    )}
                 </div>
-            )}
-
-            {/* 사장 답글 달기 */}
-            <div className={styles.replySection}>
-                <textarea
-                    placeholder="답글을 작성하세요..."
-                    className={styles.replyInput}
-                    rows={1}
-                    value={replyContent[review.reviewId] || ''}
-                    onChange={(e) => handleReplyChange(review.reviewId, e.target.value)}
-                    onInput={(e) => {
-                        e.target.style.height = 'auto';
-                        e.target.style.height = e.target.scrollHeight + 'px';
-                    }}
-                ></textarea>
-                <button className={styles.replyButton} onClick={() => handleReplySubmit(review.reviewId)}>
-                    답글 달기
-                </button>
-            </div>
-        </div>
-    ))
-) : (
-    <p>리뷰가 없습니다.</p>
-)}
-
+            ))
+        ) : (
+            <p>리뷰가 없습니다.</p>
+        )}
     </div>
 )}
+
 
             {/* 설정 화면 */}
             {currentStatus === 'settings' && (
