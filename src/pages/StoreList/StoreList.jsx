@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import './StoreList.module.css'; // 추가된 CSS 파일
+import { useParams, useNavigate } from 'react-router-dom'; // useNavigate 추가
+import './StoreList.css'
 
 const StoreList = () => {
   const { category } = useParams(); // URL에서 카테고리를 가져옴
   const [stores, setStores] = useState([]);
   const [page, setPage] = useState(1);
+  const navigate = useNavigate(); // useNavigate 훅 사용
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
 
@@ -67,6 +68,11 @@ const StoreList = () => {
     setPage(prevPage => prevPage + 1); // 페이지 번호 증가
   };
 
+  // 가게 클릭 시 store 경로로 이동하는 함수
+  const navigateToStoreDetail = (storeSeq) => {
+    navigate(`/store/${storeSeq}`); // store 경로로 이동 (예: /store/17)
+  };
+
   return (
     <div className="store-list-page">
       <h2>{category} 가게 리스트</h2>
@@ -75,7 +81,8 @@ const StoreList = () => {
           <article
             key={store.storeSeq} // storeSeq를 고유 key로 사용하여 중복 방지
             className="saved-restaurant-list-item"
-            style={{ marginBottom: '20px', padding: '0px 20px 20px', borderBottom: '1px solid rgb(249, 249, 249)' }}
+            onClick={() => navigateToStoreDetail(store.storeSeq)}  // 클릭 시 /store/{storeSeq}로 이동
+            style={{ marginBottom: '20px', padding: '0px 20px 20px', borderBottom: '1px solid rgb(249, 249, 249)', cursor: 'pointer' }} // 커서 포인터 스타일 추가
           >
             <div className="restaurant-info __a-center mb-0">
               <div className="tb __lg">
