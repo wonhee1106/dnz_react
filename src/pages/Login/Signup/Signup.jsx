@@ -45,6 +45,7 @@ const Signup = ({ toggleSignup }) => {
 
     const handleSignupChange = e => {
         const { name, value } = e.target
+        console.log(name, value);
         setSignup(prev => {
             const updatedSignup = { ...prev, [name]: value }
 
@@ -101,7 +102,10 @@ const Signup = ({ toggleSignup }) => {
                 setIsEmailVerified(false)
                 setIsVerificationRequestSent(false)
             })
-            .catch(() => alert(' 회원가입 실패'))
+            .catch(err => {
+                console.error(err); // 에러 로그를 확인
+                alert('회원가입 실패: ' + err.response.data.message);
+            });
     }
 
     const handleSignupOwner = () => {
@@ -110,7 +114,7 @@ const Signup = ({ toggleSignup }) => {
             return
         }
 
-        const validationError = validateSignupInputs(signup+storeData)
+        const validationError = validateSignupInputs(Object.assign(signup,  storeData))
         if (validationError) {
             alert(validationError)
             return
@@ -124,6 +128,7 @@ const Signup = ({ toggleSignup }) => {
             userBirthDate: signup.userBirthDate,
             userPhoneNumber: signup.userPhoneNumber,
             userEmail: signup.userEmail,
+
             businessNumber: storeData.businessNumber,
             storeAddress: storeData.storeAddress,
             representativeName: storeData.representativeName,
@@ -131,6 +136,7 @@ const Signup = ({ toggleSignup }) => {
         }
 
         api.post(`/auth/registerOwner`, ownerSignupData)
+
             .then(() => {
                 alert('회원가입 완료')
                 setSignup({
@@ -141,6 +147,8 @@ const Signup = ({ toggleSignup }) => {
                     userBirthDate: '',
                     userPhoneNumber: '',
                     userEmail: '',
+                });
+                setStoreData({
                     businessNumber: '',
                     storeAddress: '',
                     representativeName: '',
@@ -149,7 +157,10 @@ const Signup = ({ toggleSignup }) => {
                 setIsEmailVerified(false)
                 setIsVerificationRequestSent(false)
             })
-            .catch(() => alert('점주 회원가입 실패'))
+            .catch(err => {
+                console.error(err); // 에러 로그를 확인
+                alert('점주 회원가입 실패: ' + err.response.data.message);
+            });
     }
 
     const requestEmailVerificationHandler = () => {
