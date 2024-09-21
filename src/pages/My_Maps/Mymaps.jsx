@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // axios를 직접 import
-import './mymaps.css'; // CSS 파일 추가
+import './Mymaps.css'; // CSS 파일 추가
 
 
 function Mymaps() {
