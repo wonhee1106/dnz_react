@@ -12,6 +12,7 @@ function ReviewDetail() {
     const [error, setError] = useState(null) // 오류 상태
     const [isEditing, setIsEditing] = useState(false) // 수정 모드 상태
     const [originalReviewText, setOriginalReviewText] = useState('') // 원본 리뷰 상태
+    const [replies, setReplies] = useState([]) // 댓글 상태
 
     const storeName = location.state?.storeName // 가게 이름 받아오기
 
@@ -34,6 +35,24 @@ function ReviewDetail() {
 
         fetchReview()
     }, [reservationId])
+
+    useEffect(() => {
+        // 댓글 데이터 가져오기
+        const fetchReplies = async () => {
+            try {
+                const response = await api.get(`/replies/${review.reviewId}`)
+                if (response.status === 200) {
+                    setReplies(response.data) // 댓글 데이터 설정
+                }
+            } catch (error) {
+                console.log('댓글 데이터를 가져오는데 실패했습니다.')
+            }
+        }
+
+        if (review) {
+            fetchReplies()
+        }
+    }, [review])
 
     const handleReviewTextChange = e => {
         setReview({ ...review, reviewText: e.target.value }) // 리뷰 내용만 수정
@@ -160,6 +179,23 @@ function ReviewDetail() {
                             리뷰 삭제
                         </button>
                     </>
+                )}
+            </div>
+
+            {/* 댓글 목록 표시 */}
+            <div className={styles.repliesSection}>
+                <h3>댓글</h3>
+                {replies.length > 0 ? (
+                    replies.map(reply => (
+                        <div key={reply.replyId} className={styles.replyItem}>
+                            <p>{reply.replyText}</p>
+                            <p>
+                                <small>작성자: {reply.userId}</small>
+                            </p>
+                        </div>
+                    ))
+                ) : (
+                    <p>댓글이 없습니다.</p>
                 )}
             </div>
         </div>

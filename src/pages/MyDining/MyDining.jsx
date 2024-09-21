@@ -65,6 +65,44 @@ function MyDining() {
         }
     }, [reservations])
 
+    // 예약 시간이 지난 예약의 상태를 confirmed로 업데이트
+    useEffect(() => {
+        const updatePastReservations = async () => {
+            const now = new Date()
+            await Promise.all(
+                reservations.map(async reservation => {
+                    const reservationDateTime = new Date(
+                        reservation.reservationDate
+                    )
+                    const [hour, minute] =
+                        reservation.reservationTime.split(':')
+                    reservationDateTime.setHours(hour)
+                    reservationDateTime.setMinutes(minute)
+
+                    if (
+                        reservationDateTime < now &&
+                        reservation.status !== 'confirmed'
+                    ) {
+                        try {
+                            await api.put(
+                                `/reservation/${reservation.reservationId}`,
+                                {
+                                    status: 'confirmed',
+                                }
+                            )
+                        } catch (error) {
+                            console.log('예약 상태 변경 중 오류 발생:', error)
+                        }
+                    }
+                })
+            )
+        }
+
+        if (reservations.length > 0) {
+            updatePastReservations()
+        }
+    }, [reservations])
+
     // 예약 날짜와 시간이 현재 시간보다 지났는지 확인하는 함수
     const isPastReservation = (reservationDate, reservationTime) => {
         const now = new Date()
@@ -113,12 +151,10 @@ function MyDining() {
             )
             if (!confirmed) return
         } else {
-            // 당일 취소가 아닌 경우 일반적인 경고 메시지 띄움
             const confirmed = window.confirm('정말로 취소하시겠습니까?')
             if (!confirmed) return
         }
 
-        // 예약 취소 로직 (백엔드와 통신)
         try {
             const response = await api.delete(`/reservation/${reservationId}`)
             if (response.status === 200) {
@@ -128,10 +164,9 @@ function MyDining() {
                         res => res.reservationId !== reservationId
                     )
                 )
-                // 예약 취소 후 3분 동안 예약 불가 처리
                 setTimeout(async () => {
                     alert('3분 후에 다시 예약할 수 있습니다.')
-                }, 3 * 60 * 1000) // 3분 대기
+                }, 3 * 60 * 1000)
             } else {
                 alert('예약 취소 실패')
             }
@@ -158,7 +193,6 @@ function MyDining() {
         setCurrentPage(prevPage => prevPage + 1)
     }
 
-    // 현재 페이지에 따라 예약 목록을 제한
     const displayedReservations = reservations.slice(
         0,
         currentPage * reservationsPerPage
@@ -195,11 +229,8 @@ function MyDining() {
                                 </div>
                             </div>
                             <div className={styles.reservationActions}>
-                                {isPastReservation(
-                                    reservation.reservationDate,
-                                    reservation.reservationTime
-                                ) ? (
-                                    reviewsMap[reservation.reservationId] ? (
+                                {reservation.status === 'confirmed' ? ( // 'confirmed' 상태인지만 확인
+                                    reviewsMap[reservation.reservationId] ? ( // 이미 리뷰가 있는 경우
                                         <button
                                             className={styles.viewReviewButton}
                                             onClick={() =>
