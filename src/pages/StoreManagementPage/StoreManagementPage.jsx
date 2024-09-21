@@ -9,7 +9,32 @@ const StoreManagementPage = () => {
     const [currentStatus, setCurrentStatus] = useState('pending');
     const [reviews, setReviews] = useState([]);
     const [replyContent, setReplyContent] = useState({});  // 각 리뷰별로 개별 답글을 관리
+    const [storeInfo, setStoreInfo] = useState({
+        profileImage: '',    
+        name: '',
+        address1: '',        //address1, address2로 변경
+        address2: '',
+        postalCode: '',      // postcode로 변경
+        category: '',
+        description: '',
+        maxTables: 0,        // seat_capacity로 변경
+    });
+    
+    const [currentSettingTab, setCurrentSettingTab] = useState('basic');  // 설정 탭 관리
 
+    // 메뉴 설정 관련 상태
+    const [menuItems, setMenuItems] = useState([]);
+    const [newMenuItem, setNewMenuItem] = useState({ name: '', description: '', price: 0 });
+    const [isEditingMenu, setIsEditingMenu] = useState(false);
+
+    // 메뉴 수정 및 추가 관련 상태
+    const [currentMenuItem, setCurrentMenuItem] = useState({ name: '', description: '', price: 0 });
+    const [isEditing, setIsEditing] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // 공지사항 관리 관련 상태
+    const [notice, setNotice] = useState('');
+    const [noticeExists, setNoticeExists] = useState(false); // 공지사항이 존재하는지 여부 확인
 
 // 하드코딩된 리뷰 데이터
 const hardcodedReviews = [
@@ -54,27 +79,53 @@ const hardcodedReviews = [
     }
 ];
 
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+        script.async = true;
+        document.body.appendChild(script);
 
-    
+        script.onload = () => {
+            console.log('Kakao Postcode API loaded.');
+        };
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
+
+    const handleAddressClick = () => {
+        if (window.daum && window.daum.Postcode) {
+            new window.daum.Postcode({
+                oncomplete: function (data) {
+                    setStoreInfo((prevState) => ({
+                        ...prevState,
+                        address1: data.jibunAddress,
+                        postalCode: data.zonecode,
+                    }));
+                },
+            }).open();
+        } else {
+            console.error("Kakao Postcode API is not loaded.");
+        }
+    };
+
     // 서버에서 예약 데이터를 가져오는 함수
     const fetchReservations = async (status) => {
         try {
             const response = await api.get(`/reservation`, {
                 params: { status }
             });
-    
-            // reservations 배열의 각 항목에 userName을 병합
+
             const { reservations: reservationData, userName } = response.data;
             const reservationsWithUserName = reservationData.map(reservation => ({
                 ...reservation,
                 userName
             }));
-    
+
             setReservations(reservationsWithUserName);
             setUserName(userName);
-            console.log(reservationsWithUserName);
 
-            // 상태가 변경되었을 때 해당 상태의 예약 중 가장 최근 예약을 기본 선택
             if (reservationsWithUserName.length > 0) {
                 const recentReservation = reservationsWithUserName.reduce((latest, current) => {
                     return new Date(current.reservationDate) > new Date(latest.reservationDate) ? current : latest;
@@ -165,13 +216,183 @@ const hardcodedReviews = [
             alert("답글을 달지 못했습니다.");
         }
     };
-    // const formatReservationTime = (time) => {
-    //     const parsedTime = Date.parse(time);
-    //     if (!isNaN(parsedTime)) {
-    //         return new Date(parsedTime).toLocaleTimeString();
-    //     }
-    //     return 'Invalid Date';
-    // };
+
+    // 가게 설정
+
+    // 서버에서 가게 정보를 불러오는 함수
+    const fetchStoreInfo = async () => {
+        try {
+            const response = await api.get('/store/info'); // 서버로부터 가게 정보 조회
+            if (response.data) {
+                setStoreInfo({
+                    name: response.data.name || '',
+                    address1: response.data.address1 || '',
+                    address2: response.data.address2 || '',
+                    postalCode: response.data.postcode || '',
+                    category: response.data.category || '',
+                    description: response.data.description || '',
+                    maxTables: response.data.seatCapacity || 0,  // seat_capacity를 maxTables에 매핑
+                });
+            }
+        } catch (error) {
+            console.error('가게 정보를 가져오는데 실패했습니다.', error);
+        }
+    };
+
+    const handleStoreInfoChange = (field, value) => {
+        setStoreInfo((prevState) => ({
+            ...prevState,
+            [field]: value,
+        }));
+    };
+
+    const handleStoreInfoSubmit = async () => {
+        try {
+            const updatedStoreInfo = {
+                ...storeInfo,
+                seatCapacity: storeInfo.maxTables, // seat_capacity 필드로 데이터를 전달
+                postcode: storeInfo.postalCode,    // postcode 필드로 데이터를 전달
+                address1: storeInfo.address1,
+                address2: storeInfo.address2
+            };
+    
+            await api.put(`/store/update`, updatedStoreInfo);
+            alert('가게 정보가 성공적으로 업데이트되었습니다.');
+        } catch (error) {
+            console.error('가게 정보 업데이트에 실패했습니다.', error);
+            alert('가게 정보 업데이트에 실패했습니다.');
+        }
+    };
+
+    // 설정 탭 변경 함수
+    const handleSettingTabClick = (tab) => {
+        setCurrentSettingTab(tab);
+    };
+
+    // 메뉴 설정 관련 함수
+    const fetchMenuItems = async () => {
+        try {
+            const response = await api.get(`/menu`);
+            setMenuItems(response.data || []);  // 데이터가 없으면 빈 배열로 설정
+        } catch (error) {
+            console.error('메뉴 데이터를 가져오는데 실패했습니다.', error);
+            setMenuItems([]);  // 오류가 발생해도 안전하게 빈 배열로 초기화
+        }
+    };
+
+    const handleNewMenuItemChange = (field, value) => {
+        setNewMenuItem((prevState) => ({
+            ...prevState,
+            [field]: value,
+        }));
+    };
+
+    const handleCurrentMenuItemChange = (field, value) => {
+        setCurrentMenuItem((prevState) => ({
+            ...prevState,
+            [field]: value,
+        }));
+    };
+
+    const openModalForEdit = (menuItem) => {
+        setCurrentMenuItem(menuItem);
+        setIsEditing(true);
+        setIsModalOpen(true);
+    };
+
+    const openModalForNew = () => {
+        setNewMenuItem({ name: '', description: '', price: 0 });
+        setIsEditing(false);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setCurrentMenuItem(null);
+        setIsEditing(false);
+    };
+
+    const handleMenuItemSubmit = async () => {
+        try {
+            const response = await api.post(`/menu`, newMenuItem);
+            // setMenuItems([...menuItems, response.data]);
+            await fetchMenuItems();
+            closeModal();
+            alert('메뉴가 성공적으로 추가되었습니다.');
+        } catch (error) {
+            console.error('메뉴 추가에 실패했습니다.', error);
+            alert('메뉴 추가에 실패했습니다.');
+        }
+    };
+
+    const handleMenuItemUpdate = async () => {
+        try {
+            await api.put(`/menu/${currentMenuItem.menuSeq}`, currentMenuItem);
+            setMenuItems(menuItems.map(item => item.menuSeq === currentMenuItem.menuSeq ? currentMenuItem : item));
+            closeModal();
+            alert('메뉴가 성공적으로 수정되었습니다.');
+        } catch (error) {
+            console.error('메뉴 수정에 실패했습니다.', error);
+            alert('메뉴 수정에 실패했습니다.');
+        }
+    };
+
+    const handleMenuItemDelete = async (menuSeq) => {
+        if (window.confirm('정말 이 메뉴를 삭제하시겠습니까?')) {
+            try {
+                await api.delete(`/menu/${menuSeq}`);
+                setMenuItems(menuItems.filter(item => item.menuSeq !== menuSeq));
+                alert('메뉴가 성공적으로 삭제되었습니다.');
+            } catch (error) {
+                console.error('메뉴 삭제에 실패했습니다.', error);
+                alert('메뉴 삭제에 실패했습니다.');
+            }
+        }
+    };
+
+    // 공지사항 조회 함수
+    const fetchNotice = async () => {
+        try {
+            const response = await api.get('/notice');
+            if (response.data && response.data.content) {
+                setNotice(response.data.content);
+                setNoticeExists(true);
+            } else {
+                setNotice(''); // 공지사항이 없을 때
+                setNoticeExists(false);
+            }
+        } catch (error) {
+            console.error('공지사항을 가져오는데 실패했습니다.', error);
+        }
+    };
+
+    // 공지사항 저장 함수
+    const handleNoticeSave = async () => {
+        try {
+            if (noticeExists) {
+                await api.put('/notice', { content: notice }); // 공지사항 수정
+                alert('공지사항이 성공적으로 수정되었습니다.');
+            } else {
+                await api.post('/notice', { content: notice }); // 공지사항 추가
+                alert('공지사항이 성공적으로 추가되었습니다.');
+                setNoticeExists(true);
+            }
+        } catch (error) {
+            console.error('공지사항 저장에 실패했습니다.', error);
+            alert('공지사항 저장에 실패했습니다.');
+        }
+    };
+
+    // 탭 선택 시 데이터 로드
+    useEffect(() => {
+        if (currentSettingTab === 'notice') {
+            fetchNotice();
+        } else if (currentSettingTab === 'basic') {
+            fetchStoreInfo();
+        } else if (currentSettingTab === 'menu') {
+            fetchMenuItems();
+        }
+    }, [currentSettingTab]);
 
     const formatReservationDate = (date) => {
         const parsedDate = Date.parse(date);
@@ -181,7 +402,6 @@ const hardcodedReviews = [
         return 'Invalid Date';
     };
 
-    // 예약 상태에 따른 타이틀 변경 함수
     const getReservationTitle = () => {
         switch (currentStatus) {
             case 'pending':
@@ -197,7 +417,6 @@ const hardcodedReviews = [
         }
     };
 
-    // 리뷰 별점 출력
     const renderStars = (rating) => {
         return (
             <span>
@@ -241,14 +460,17 @@ const hardcodedReviews = [
                     <i className="fas fa-star"></i>
                     <span>리뷰 관리</span>
                 </div>
-                <div className={`${styles.menuItem} ${styles.settings}`}>
+                <div 
+                    className={`${styles.menuItem} ${styles.settings} ${currentStatus === 'settings' ? styles.selectedMenu : ''}`} 
+                    onClick={() => handleMenuClick('settings')}
+                >
                     <i className="fas fa-cogs"></i>
                     <span>설정</span>
                 </div>
             </div>
 
             {/* 예약 관리 화면 */}
-            {currentStatus !== 'review' && (
+            {currentStatus !== 'review' && currentStatus !== 'settings' && (
                 <div className={styles.reservationList}>
                     <h3 className={styles.reservationTitle}>{getReservationTitle()}</h3>
 
@@ -270,7 +492,7 @@ const hardcodedReviews = [
             )}
 
             {/* 예약 상세 정보 */}
-            {selectedReservation && currentStatus !== 'review' && (
+            {selectedReservation && currentStatus !== 'review' && currentStatus !== 'settings' && (
                 <div className={styles.reservationDetails}>
                     <h3 className={styles.detailsTitle}>예약 상세 정보</h3>
                     <div className={styles.detailInfo}>
@@ -317,7 +539,7 @@ const hardcodedReviews = [
                                 <p><strong>리뷰 내용:</strong> {review.review_text}</p>
                                 <p><strong>작성자:</strong> {review.userName}</p>
 
-                {/* 사장 답글 달기 */}
+                                {/* 사장 답글 달기 */}
                                 <div className={styles.replySection}>
                                     <textarea
                                         placeholder="답글을 작성하세요..."
@@ -334,12 +556,158 @@ const hardcodedReviews = [
                                         답글 달기
                                     </button>
                                 </div>
-
-                </div>
+                            </div>
                         ))
                     ) : (
                         <p>리뷰가 없습니다.</p>
                     )}
+                </div>
+            )}
+
+            {/* 설정 화면 */}
+            {currentStatus === 'settings' && (
+                <div className={styles.settingsContainer}>
+                    <div className={styles.settingTabs}>
+                        <div 
+                            className={`${styles.settingTab} ${currentSettingTab === 'basic' ? styles.selectedSettingTab : ''}`}
+                            onClick={() => handleSettingTabClick('basic')}
+                        >
+                            기본 정보 설정
+                        </div>
+                        <div 
+                            className={`${styles.settingTab} ${currentSettingTab === 'menu' ? styles.selectedSettingTab : ''}`}
+                            onClick={() => handleSettingTabClick('menu')}
+                        >
+                            메뉴 설정
+                        </div>
+                        <div 
+                            className={`${styles.settingTab} ${currentSettingTab === 'notice' ? styles.selectedSettingTab : ''}`}
+                            onClick={() => handleSettingTabClick('notice')}
+                        >
+                            공지사항 관리
+                        </div>
+                    </div>
+
+                    {/* 설정 화면 내용 - 기본 정보 설정 */}
+                    {currentSettingTab === 'basic' && (
+                        <div className={styles.settingContent}>
+                            <div className={styles.field}>
+                                <label>가게 이름</label>
+                                <input type="text" value={storeInfo.name} onChange={(e) => handleStoreInfoChange('name', e.target.value)} />
+                            </div>
+                            <div className={styles.field}>
+                                <label>가게 주소</label>
+                                <input type="text" placeholder="주소" value={storeInfo.address1} onChange={(e) => handleStoreInfoChange('address1', e.target.value)} />
+                                <input type="text" placeholder="상세 주소" value={storeInfo.address2} onChange={(e) => handleStoreInfoChange('address2', e.target.value)} />
+                                <input type="text" placeholder="우편번호" value={storeInfo.postalCode} onChange={(e) => handleStoreInfoChange('postalCode', e.target.value)} />
+                                <button type="button" onClick={handleAddressClick}>우편번호 찾기</button>
+                            </div>
+                            <div className={styles.field}>
+                                <label>카테고리</label>
+                                <select value={storeInfo.category} onChange={(e) => handleStoreInfoChange('category', e.target.value)}>
+                                    <option value="한식">한식</option>
+                                    <option value="중식">중식</option>
+                                    <option value="일식">일식</option>
+                                    <option value="양식">양식</option>
+                                </select>
+                            </div>
+                            <div className={styles.field}>
+                                <label>가게 소개</label>
+                                <textarea value={storeInfo.description} onChange={(e) => handleStoreInfoChange('description', e.target.value)} rows="4"></textarea>
+                            </div>
+                            <div className={styles.field}>
+                                <label>최대 좌석 수</label>
+                                <input type="number" value={storeInfo.maxTables} onChange={(e) => handleStoreInfoChange('maxTables', e.target.value)} />
+                            </div>
+                            <div className={styles.buttons}>
+                                <button className={styles.saveButton} onClick={handleStoreInfoSubmit}>저장</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {currentSettingTab === 'menu' && (
+                        <div className={styles.settingContent}>
+                            <h4>메뉴 설정</h4>
+                            <button className={styles.addButton} onClick={openModalForNew}>메뉴 추가</button>
+
+                            {menuItems && menuItems.length > 0 ? (
+                                menuItems.map((item) => (
+                                    <div key={item.menuSeq} className={styles.menuListItem}>
+                                        <div className={styles.menuDetails}>
+                                            <p><strong>이름:</strong> {item.name}</p>
+                                            <p><strong>설명:</strong> {item.description}</p>
+                                            <p><strong>가격:</strong> {item.price}</p>
+                                        </div>
+                                        <div className={styles.menuActions}>
+                                            <button className={styles.editMenuButton} onClick={() => openModalForEdit(item)}>수정</button>
+                                            <button className={styles.deleteMenuButton} onClick={() => handleMenuItemDelete(item.menuSeq)}>삭제</button>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>등록된 메뉴가 없습니다.</p>
+                            )}
+                        </div>
+                    )}
+
+                    {/* 메뉴 수정 및 추가 모달 */}
+                    {isModalOpen && (
+                        <div className={styles.modal}>
+                            <div className={styles.modalContent}>
+                                <h4>{isEditing ? '메뉴 수정' : '메뉴 추가'}</h4>
+                                <div className={styles.field}>
+                                    <label>메뉴 이름</label>
+                                    <input
+                                        type="text"
+                                        value={isEditing ? currentMenuItem?.name : newMenuItem.name}
+                                        onChange={(e) => isEditing ? handleCurrentMenuItemChange('name', e.target.value) : handleNewMenuItemChange('name', e.target.value)}
+                                    />
+                                </div>
+                                <div className={styles.field}>
+                                    <label>메뉴 설명</label>
+                                    <textarea
+                                        value={isEditing ? currentMenuItem?.description : newMenuItem.description}
+                                        onChange={(e) => isEditing ? handleCurrentMenuItemChange('description', e.target.value) : handleNewMenuItemChange('description', e.target.value)}
+                                        rows="4"
+                                    ></textarea>
+                                </div>
+                                <div className={styles.field}>
+                                    <label>메뉴 가격</label>
+                                    <input
+                                        type="number"
+                                        value={isEditing ? currentMenuItem?.price : newMenuItem.price}
+                                        onChange={(e) => isEditing ? handleCurrentMenuItemChange('price', e.target.value) : handleNewMenuItemChange('price', e.target.value)}
+                                    />
+                                </div>
+                                <div className={styles.modalActions}>
+                                    <button className={styles.saveButton} onClick={isEditing ? handleMenuItemUpdate : handleMenuItemSubmit}>
+                                        {isEditing ? '저장' : '추가'}
+                                    </button>
+                                    <button className={styles.cancelButton} onClick={closeModal}>취소</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* 설정 화면 내용 */}
+                    {currentSettingTab === 'notice' && (
+                        <div className={styles.settingContent}>
+                            <h4>공지사항 관리</h4>
+                            <div className={styles.field}>
+                                <label>공지사항 내용</label>
+                                <textarea
+                                    value={notice}
+                                    onChange={(e) => setNotice(e.target.value)}
+                                    placeholder="가게 공지사항이 없습니다"
+                                    rows="4"
+                                ></textarea>
+                            </div>
+                            <button className={styles.saveButton} onClick={handleNoticeSave}>
+                                {noticeExists ? '공지사항 수정' : '공지사항 추가'}
+                            </button>
+                        </div>
+                    )}
+
                 </div>
             )}
         </div>
@@ -347,3 +715,4 @@ const hardcodedReviews = [
 };
 
 export default StoreManagementPage;
+
