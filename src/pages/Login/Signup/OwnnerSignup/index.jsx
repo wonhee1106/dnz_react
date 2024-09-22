@@ -148,6 +148,54 @@
                 .catch(() => alert('인증 실패'));
         };
 
+        const checkIdExistHandler = id => {
+            checkIdExist(id)
+                .then(() => {
+                    userIdRef.current.style.backgroundColor = '#e7ffef';
+                    userIdRef.current.style.borderColor = 'rgb(124 213 119)';
+                })
+                .catch(() => {
+                    userIdRef.current.style.backgroundColor = '#ffe1ca';
+                    userIdRef.current.style.borderColor = '#ffeedf';
+                });
+        };
+
+        const checkNameExistHandler = name => {
+            checkNameExist(name)
+                .then(() => {
+                    userNameRef.current.style.backgroundColor = '#e7ffef';
+                    userNameRef.current.style.borderColor = 'rgb(124 213 119)';
+                })
+                .catch(() => {
+                    userNameRef.current.style.backgroundColor = '#ffe1ca';
+                    userNameRef.current.style.borderColor = '#ffeedf';
+                });
+        };
+
+        const checkEmailExistHandler = email => {
+            checkEmailExist(email)
+                .then(() => {
+                    userEmailRef.current.style.backgroundColor = '#e7ffef';
+                    userEmailRef.current.style.borderColor = 'rgb(124 213 119)';
+                })
+                .catch(() => {
+                    userEmailRef.current.style.backgroundColor = '#ffe1ca';
+                    userEmailRef.current.style.borderColor = '#ffeedf';
+                });
+        };
+
+        const checkPhoneExistHandler = phone => {
+            checkPhoneExist(phone)
+                .then(() => {
+                    userPhoneRef.current.style.backgroundColor = '#e7ffef';
+                    userPhoneRef.current.style.borderColor = 'rgb(124 213 119)';
+                })
+                .catch(() => {
+                    userPhoneRef.current.style.backgroundColor = '#ffe1ca';
+                    userPhoneRef.current.style.borderColor = '#ffeedf';
+                });
+        };
+
         return (
             <div className={styles.OwnnerSignupContainer}>
                 <div className={styles.OwnnerSignupContent}>
