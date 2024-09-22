@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'; // useRef 추가
-import './Alam.css'; // 스타일 파일
+import './Alam.css' ; // 스타일 파일
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faEnvelope, faEnvelopeOpen } from '@fortawesome/free-regular-svg-icons'; // 필요한 아이콘 추가
 import axios from 'axios';
