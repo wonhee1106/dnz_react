@@ -10,7 +10,7 @@ import {
 } from '../../../../utils/api';
 import { validateSignupInputs } from '../../../../utils/validation';
 import { api } from '../../../../config/config';
-
+import {useNavigate} from 'react-router-dom';
 const OwnnerSignup = () => {
     const [signup, setSignup] = useState({
         userId: '',
@@ -29,6 +29,7 @@ const OwnnerSignup = () => {
         businessType: '',
     });
 
+    const navigate =useNavigate();
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
     const [isVerificationRequestSent, setIsVerificationRequestSent] = useState(false);
@@ -56,7 +57,7 @@ const OwnnerSignup = () => {
     const handleSignupOwner = () => {
         if (!isEmailVerified) {
             alert('이메일 인증이 완료되지 않았습니다.');
-            return;
+            return; 
         }
 
         const validationError = validateSignupInputs({ ...signup, ...storeData });
@@ -284,21 +285,21 @@ const OwnnerSignup = () => {
                         <input
                             type="radio"
                             value="M"
-                            name="userGender"  // 같은 name 속성으로 그룹화
+                            name="userGender" 
                             id="gender-m"
-                            onChange={handleSignupChange} // 변화 감지
+                            onChange={handleSignupChange}
                         />
                         <label htmlFor="gender-f">여</label>
                         <input
                             type="radio"
                             value="F"
-                            name="userGender"  // 같은 name 속성으로 그룹화
+                            name="userGender"  
                             id="gender-f"
-                            onChange={handleSignupChange} // 변화 감지
+                            onChange={handleSignupChange} 
                         />
                     </div>
 
-                    <div className={styles.InputGroup}>
+                    {/* <div className={styles.InputGroup}>
                         <p>이메일</p>
                         <input
                             type="email"
@@ -371,8 +372,9 @@ const OwnnerSignup = () => {
                                 className={styles.inputField}
                             />
                         </div>
-                    </div>
+                    </div> */}
                     <button className={styles.signupButton} onClick={handleSignupOwner}>회원가입</button>
+                    <button onClick={() =>navigate("/SignType")}>뒤로가기</button>
                 </div>
             </div>
         </div>

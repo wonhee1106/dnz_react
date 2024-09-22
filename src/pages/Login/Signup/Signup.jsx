@@ -10,6 +10,7 @@ import {
 import { validateSignupInputs } from '../../../utils/validation'
 import styles from './Signup.module.css'
 import { api } from '../../../config/config'
+import { useNavigate } from 'react-router-dom'
 
 const Signup = ({ toggleSignup }) => {
     const [signup, setSignup] = useState({
@@ -23,6 +24,7 @@ const Signup = ({ toggleSignup }) => {
         userEmail: '',
     })
  
+    const navigate =useNavigate();
     const [isEmailVerified, setIsEmailVerified] = useState(false)
     const [verificationCode, setVerificationCode] = useState('')
     const [isVerificationRequestSent, setIsVerificationRequestSent] =useState(false)
@@ -34,17 +36,14 @@ const Signup = ({ toggleSignup }) => {
     const userPwConfirmRef = useRef(null)
     const userPwRef = useRef(null)
 
+
     const handleSignupChange = e => {
-        const { name, value } = e.target
-        console.log(name, value);
-        setSignup(prev => {
-            const updatedSignup = { ...prev, [name]: value }
-
-        
-
-            return updatedSignup
-        })
-    }
+        const { name, value } = e.target;
+        setSignup(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
 
     const handleSignup = () => {
@@ -64,8 +63,8 @@ const Signup = ({ toggleSignup }) => {
             userPw: signup.userPw,
             userPwConfirm: signup.userPwConfirm,
             userName: signup.userName,
-            userGender:signup.userGender,
             userBirthDate: signup.userBirthDate,
+            userGender:signup.userGender,
             userPhoneNumber: signup.userPhoneNumber,
             userEmail: signup.userEmail,
         }
@@ -248,25 +247,14 @@ const Signup = ({ toggleSignup }) => {
                 <div className={styles.birthDateContainer}>
                     <input
                         type="text"
-                        name="userBirthDateFront"
-                        value={signup.userBirthDateFront}
+                        name="userBirthDate"
+                        value={signup.userBirthDate}
                         onChange={handleSignupChange}
-                        placeholder="YYMMDD (6자리)"
+                        placeholder="YYYYMMDD (8자리)"
                         className={styles.inputField}
-                        maxLength="6"
+                        maxLength="8"
                     />
-                    <select
-                        name="userBirthDateBack"
-                        value={signup.userBirthDateBack}
-                        onChange={handleSignupChange}
-                        className={styles.inputField}
-                    >
-                        <option value="">선택하세요</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                    </select>
+                  
                 </div>
                 <div className={styles.InputGroup}>
                         <p>성별</p>
@@ -327,7 +315,8 @@ const Signup = ({ toggleSignup }) => {
                     회원가입
                 </button>
 
-                <button onClick={toggleSignup}>뒤로가기</button>
+                <button onClick={() =>navigate("/SignType")}>뒤로가기</button>
+
             </div>
         </div>
     )
