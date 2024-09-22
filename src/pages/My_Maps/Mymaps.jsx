@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // axios를 직접 import
-import './Mymaps.css'; // CSS 파일 추가
+import Footer from 'components/Footer/Footer'; // Footer 컴포넌트 추가
 
 
 function Mymaps() {
@@ -97,7 +97,7 @@ function Mymaps() {
       <div className="mymaps-container">
         <div id="my-map"></div> {/* id를 my-map으로 수정 */}
       </div>
-      
+      <Footer /> {/* Footer 고정 */}
     </div>
   );
 }

@@ -62,8 +62,11 @@ const Header = () => {
     }
 
     const handleLoginClick = () => {
-        navigate('/login')
+        navigate('/login');
+
     }
+
+
 
     const handleAlarmClick = () => {
         setUnreadNotifications(false)
@@ -172,6 +175,7 @@ const Header = () => {
                 ) : (
                     <>
                         <button onClick={handleLoginClick}>로그인</button>
+                        <button onClick={() =>navigate("/signup")}>회원가입</button>
                     </>
                 )}
             </div>

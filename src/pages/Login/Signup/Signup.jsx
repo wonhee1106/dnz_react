@@ -10,32 +10,23 @@ import {
 import { validateSignupInputs } from '../../../utils/validation'
 import styles from './Signup.module.css'
 import { api } from '../../../config/config'
-// 0946;
-// 씨발 좀 되자 제발
+
 const Signup = ({ toggleSignup }) => {
     const [signup, setSignup] = useState({
         userId: '',
         userPw: '',
         userPwConfirm: '',
         userName: '',
-        userBirthDate: '', // 통합된 생년월일 필드
+        userBirthDate: '', 
+        userGender :'',
         userPhoneNumber: '',
         userEmail: '',
     })
-    // 16:42
-    const [isOwner, setIsOwner] = useState(false)
-    const [storeData, setStoreData] = useState({
-        businessNumber: '',
-        storeAddress: '',
-        representativeName: '',
-        businessType: '',
-    })
-
+ 
     const [isEmailVerified, setIsEmailVerified] = useState(false)
     const [verificationCode, setVerificationCode] = useState('')
-    const [isVerificationRequestSent, setIsVerificationRequestSent] =
-        useState(false)
-    // 시발
+    const [isVerificationRequestSent, setIsVerificationRequestSent] =useState(false)
+    
     const userIdRef = useRef(null)
     const userEmailRef = useRef(null)
     const userPhoneRef = useRef(null)
@@ -49,21 +40,12 @@ const Signup = ({ toggleSignup }) => {
         setSignup(prev => {
             const updatedSignup = { ...prev, [name]: value }
 
-            // 생년월일을 하나의 필드로 통합
-            if (name === 'userBirthDateFront' || name === 'userBirthDateBack') {
-                updatedSignup.userBirthDate = `${
-                    updatedSignup.userBirthDateFront || ''
-                }${updatedSignup.userBirthDateBack || ''}`
-            }
+        
 
             return updatedSignup
         })
     }
 
-    const handleStoreDataChange = e => {
-        const { name, value } = e.target
-        setStoreData(prev => ({ ...prev, [name]: value }))
-    }
 
     const handleSignup = () => {
         if (!isEmailVerified) {
@@ -82,6 +64,7 @@ const Signup = ({ toggleSignup }) => {
             userPw: signup.userPw,
             userPwConfirm: signup.userPwConfirm,
             userName: signup.userName,
+            userGender:signup.userGender,
             userBirthDate: signup.userBirthDate,
             userPhoneNumber: signup.userPhoneNumber,
             userEmail: signup.userEmail,
@@ -96,6 +79,7 @@ const Signup = ({ toggleSignup }) => {
                     userPwConfirm: '',
                     userName: '',
                     userBirthDate: '',
+                    userGender:'',
                     userPhoneNumber: '',
                     userEmail: '',
                 })
@@ -108,60 +92,6 @@ const Signup = ({ toggleSignup }) => {
             });
     }
 
-    const handleSignupOwner = () => {
-        if (!isEmailVerified) {
-            alert('이메일 인증이 완료되지 않았습니다.')
-            return
-        }
-
-        const validationError = validateSignupInputs(Object.assign(signup,  storeData))
-        if (validationError) {
-            alert(validationError)
-            return
-        }
-
-        const ownerSignupData = {
-            userId: signup.userId,
-            userPw: signup.userPw,
-            userPwConfirm: signup.userPwConfirm,
-            userName: signup.userName,
-            userBirthDate: signup.userBirthDate,
-            userPhoneNumber: signup.userPhoneNumber,
-            userEmail: signup.userEmail,
-
-            businessNumber: storeData.businessNumber,
-            storeAddress: storeData.storeAddress,
-            representativeName: storeData.representativeName,
-            businessType: storeData.businessType,
-        }
-
-        api.post(`/auth/registerOwner`, ownerSignupData)
-
-            .then(() => {
-                alert('회원가입 완료')
-                setSignup({
-                    userId: '',
-                    userPw: '',
-                    userPwConfirm: '',
-                    userName: '',
-                    userBirthDate: '',
-                    userPhoneNumber: '',
-                    userEmail: '',
-                });
-                setStoreData({
-                    businessNumber: '',
-                    storeAddress: '',
-                    representativeName: '',
-                    businessType: '',
-                })
-                setIsEmailVerified(false)
-                setIsVerificationRequestSent(false)
-            })
-            .catch(err => {
-                console.error(err); // 에러 로그를 확인
-                alert('점주 회원가입 실패: ' + err.response.data.message);
-            });
-    }
 
     const requestEmailVerificationHandler = () => {
         const validationError = validateSignupInputs(signup)
@@ -254,14 +184,7 @@ const Signup = ({ toggleSignup }) => {
     return (
         <div className={styles.signupForm}>
             <div className={styles.signupContainer}>
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={isOwner}
-                        onChange={() => setIsOwner(!isOwner)}
-                    />
-                    점주 가입
-                </label>
+              
                 <p>ID</p>
                 <input
                     type="text"
@@ -345,6 +268,25 @@ const Signup = ({ toggleSignup }) => {
                         <option value="4">4</option>
                     </select>
                 </div>
+                <div className={styles.InputGroup}>
+                        <p>성별</p>
+                        <label htmlFor="gender-m">남</label>
+                        <input
+                            type="radio"
+                            value="M"
+                            name="userGender"  // 같은 name 속성으로 그룹화
+                            id="gender-m"
+                            onChange={handleSignupChange} // 변화 감지
+                        />
+                        <label htmlFor="gender-f">여</label>
+                        <input
+                            type="radio"
+                            value="F"
+                            name="userGender"  // 같은 name 속성으로 그룹화
+                            id="gender-f"
+                            onChange={handleSignupChange} // 변화 감지
+                        />
+                    </div>
 
                 <p>Email</p>
                 <input
@@ -380,45 +322,9 @@ const Signup = ({ toggleSignup }) => {
                         </button>
                     </>
                 )}
-                {isOwner && (
-                    <>
-                        <p>사업자 등록번호</p>
-                        <input
-                            type="text"
-                            name="businessNumber"
-                            value={storeData.businessNumber}
-                            onChange={handleStoreDataChange}
-                            placeholder="사업자 등록번호를 입력해 주세요"
-                        />
-                        <p>대표자명</p>
-                        <input
-                            type="text"
-                            name="representativeName"
-                            value={storeData.representativeName}
-                            onChange={handleStoreDataChange}
-                            placeholder="대표자명을 입력해 주세요"
-                        />
-                        <p>매장 주소</p>
-                        <input
-                            type="text"
-                            name="storeAddress"
-                            value={storeData.storeAddress}
-                            onChange={handleStoreDataChange}
-                            placeholder="매장 주소를 입력해 주세요"
-                        />
-                        <p>업종</p>
-                        <input
-                            type="text"
-                            name="businessType"
-                            value={storeData.businessType}
-                            onChange={handleStoreDataChange}
-                            placeholder="업종을 입력해 주세요"
-                        />
-                    </>
-                )}
-
-                <button onClick={isOwner ? handleSignupOwner : handleSignup}>
-                    {isOwner ? '점주 회원가입' : '회원가입'}
+               
+                <button onClick={handleSignup}>
+                    회원가입
                 </button>
 
                 <button onClick={toggleSignup}>뒤로가기</button>
