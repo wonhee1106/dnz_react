@@ -148,54 +148,6 @@
                 .catch(() => alert('인증 실패'));
         };
 
-        const checkIdExistHandler = id => {
-            checkIdExist(id)
-                .then(() => {
-                    userIdRef.current.style.backgroundColor = '#e7ffef';
-                    userIdRef.current.style.borderColor = 'rgb(124 213 119)';
-                })
-                .catch(() => {
-                    userIdRef.current.style.backgroundColor = '#ffe1ca';
-                    userIdRef.current.style.borderColor = '#ffeedf';
-                });
-        };
-
-        const checkNameExistHandler = name => {
-            checkNameExist(name)
-                .then(() => {
-                    userNameRef.current.style.backgroundColor = '#e7ffef';
-                    userNameRef.current.style.borderColor = 'rgb(124 213 119)';
-                })
-                .catch(() => {
-                    userNameRef.current.style.backgroundColor = '#ffe1ca';
-                    userNameRef.current.style.borderColor = '#ffeedf';
-                });
-        };
-
-        const checkEmailExistHandler = email => {
-            checkEmailExist(email)
-                .then(() => {
-                    userEmailRef.current.style.backgroundColor = '#e7ffef';
-                    userEmailRef.current.style.borderColor = 'rgb(124 213 119)';
-                })
-                .catch(() => {
-                    userEmailRef.current.style.backgroundColor = '#ffe1ca';
-                    userEmailRef.current.style.borderColor = '#ffeedf';
-                });
-        };
-
-        const checkPhoneExistHandler = phone => {
-            checkPhoneExist(phone)
-                .then(() => {
-                    userPhoneRef.current.style.backgroundColor = '#e7ffef';
-                    userPhoneRef.current.style.borderColor = 'rgb(124 213 119)';
-                })
-                .catch(() => {
-                    userPhoneRef.current.style.backgroundColor = '#ffe1ca';
-                    userPhoneRef.current.style.borderColor = '#ffeedf';
-                });
-        };
-
         return (
             <div className={styles.OwnnerSignupContainer}>
                 <div className={styles.OwnnerSignupContent}>
@@ -224,7 +176,17 @@
                             type="date" title="생년월일" description="?" 
                             placeholder="생년월일를 입력해 주세요" keyUp={(e)=>{}}/>
                         <InputGroup 
-                            type="gender" title="성별" keyUp={(e)=>{}}/>
+                            type="gender" title="사업자 번호" keyUp={(e)=>{}}/>
+                              <InputGroup 
+                            type="number" title="가게 주소" description="" 
+                            placeholder="전화번호를 입력해 주세요" keyUp={(e)=>{}}/>
+                              <InputGroup 
+                            type="number" title="대표 성함" description="" 
+                            placeholder="전화번호를 입력해 주세요" keyUp={(e)=>{}}/>
+                              <InputGroup 
+                            type="number" title="업종" description="" 
+                            placeholder="전화번호를 입력해 주세요" keyUp={(e)=>{}}/>
+                            
                         <InputGroup 
                             type="email" title="이메일" description="?" 
                             btnComment="인증코드" placeholder="이메일 주소를 입력해 주세요" keyUp={(e)=>console.log(e)} />
