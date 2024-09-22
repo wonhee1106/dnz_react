@@ -1,8 +1,10 @@
 .reservationContainer {
-    padding: 20px;
+    padding: 66px;
     max-width: 800px;
     /* 더 넓은 레이아웃을 위해 확장 */
-    margin: 0 auto;
+    margin: 0 580px;
+    margin-top: -50px;
+    margin-left: 530px;
 }
 
 .title {
@@ -19,6 +21,7 @@
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;
+    width: 700px;
 }
 
 .reservationInfoRow {
@@ -83,4 +86,35 @@
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.viewReviewButton {
+    background-color: #ccc;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.loadMoreButtonContainer {
+    display: flex;
+    justify-content: center;
+    /* 수평 중앙 정렬 */
+    margin-top: 20px;
+    /* 위쪽 여백 추가 */
+}
+
+.loadMoreButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ff5722;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 285px;
+}
+
+.loadMoreButton:hover {
+    background-color: #ff5722;
 }

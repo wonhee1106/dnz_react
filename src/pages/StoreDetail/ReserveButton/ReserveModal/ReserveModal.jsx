@@ -1,18 +1,13 @@
-import { useNavigate } from 'react-router-dom'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styles from './ReserveModal.module.css'
 
-function ReserveModal({ storeSeq, name }) {
-    const navigate = useNavigate()
-
-    const closeModal = () => {
-        navigate(-1) // 모달을 닫는 함수
-    }
-
+function ReserveModal({ storeSeq, name, onClose, onNext }) {
     // 날짜 선택
     const [reserveDate, setReserveDate] = useState(new Date())
+    // 현재 보이는 달의 시작 날짜 (activeStartDate)
+    const [activeStartDate, setActiveStartDate] = useState(new Date())
     // 인원 선택 (기본값을 2명으로 설정)
     const [numberOfGuests, setNumberOfGuests] = useState(2)
     // 시간 선택
@@ -34,25 +29,26 @@ function ReserveModal({ storeSeq, name }) {
 
     const handleTimeClick = time => {
         setReserveTime(time)
-        console.log('예약한 시간:', time) // 시간 값 확인
-        console.log('예약 날짜:', reserveDate) // 날짜 값 확인
-        console.log('인원 수:', numberOfGuests) // 인원 수 확인
-        // 시간 선택 시 다음 예약 모달로 이동
-        navigate('/confirmReserve', {
-            state: {
-                storeSeq: storeSeq,
-                time: time,
-                guests: numberOfGuests,
-                date: reserveDate,
-                name: name,
-            },
+        // 시간 선택 시 부모 컴포넌트에서 다음 모달로 이동하도록 onNext 호출
+        onNext({
+            storeSeq,
+            time,
+            guests: numberOfGuests,
+            date: reserveDate,
+            name,
         })
     }
 
-    // 오늘 버튼 클릭 시 오늘 날짜로 이동
+    // 오늘 버튼 클릭 시 오늘 날짜로 이동하고 캘린더도 오늘의 달로 전환
     const handleTodayClick = () => {
-        setReserveDate(new Date())
+        const today = new Date() // 현재 날짜 가져오기
+        setReserveDate(today) // 상태에 오늘 날짜 설정
+        setActiveStartDate(today) // 캘린더도 오늘의 달로 전환
     }
+
+    useEffect(() => {
+        console.log('오늘 날짜로 업데이트된 reserveDate:', reserveDate)
+    }, [reserveDate])
 
     // 좌우 페이지 버튼을 눌렀을 때 인원 페이지 변경
     const changeGuestPage = direction => {
@@ -60,7 +56,7 @@ function ReserveModal({ storeSeq, name }) {
             setGuestPage(guestPage - 1)
         } else if (
             direction === 'right' &&
-            (guestPage + 1) * guestsPerPage < 10
+            (guestPage + 1) * guestsPerPage < 15
         ) {
             setGuestPage(guestPage + 1)
         }
@@ -79,13 +75,13 @@ function ReserveModal({ storeSeq, name }) {
     }
 
     // 현재 페이지에 따라 표시될 인원 버튼 목록
-    const visibleGuests = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].slice(
-        guestPage * guestsPerPage,
-        (guestPage + 1) * guestsPerPage
-    )
+    const visibleGuests = [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+    ].slice(guestPage * guestsPerPage, (guestPage + 1) * guestsPerPage)
 
     // 시간 목록
     const availableTimes = [
+        '03:25',
         '12:00',
         '12:30',
         '13:00',
@@ -107,6 +103,7 @@ function ReserveModal({ storeSeq, name }) {
         '21:00',
         '21:30',
         '22:00',
+        '23:59',
     ]
 
     // 오늘 날짜인지 확인
@@ -136,26 +133,39 @@ function ReserveModal({ storeSeq, name }) {
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.reserveModalContainer}>
-                <Calendar
-                    onChange={handleDateChange}
-                    value={reserveDate}
-                    calendarType="gregory"
-                    locale="ko"
-                    formatDay={(locale, date) => date.getDate()}
-                    showNeighboringMonth={false}
-                    minDetail="year"
-                    prev2Label={null}
-                    next2Label={null}
-                    minDate={new Date(new Date().setHours(0, 0, 0, 0))} // 오늘 날짜까지 활성화 (시간을 0으로 설정)
-                    tileDisabled={({ date }) =>
-                        date < new Date(new Date().setHours(0, 0, 0, 0))
-                    } // 오늘 이전 날짜만 비활성화
-                    tileClassName={({ date }) =>
-                        date < new Date(new Date().setHours(0, 0, 0, 0))
-                            ? styles.disabledTile
-                            : ''
-                    }
-                />
+                {/* 캘린더와 오늘 버튼을 함께 표시 */}
+                <div className={styles.calendarContainer}>
+                    <button
+                        className={styles.todayButton}
+                        onClick={handleTodayClick}
+                    >
+                        오늘
+                    </button>
+                    <Calendar
+                        onChange={handleDateChange}
+                        value={reserveDate}
+                        calendarType="gregory"
+                        locale="ko"
+                        formatDay={(locale, date) => date.getDate()}
+                        showNeighboringMonth={false}
+                        minDetail="year"
+                        prev2Label={null}
+                        next2Label={null}
+                        minDate={new Date(new Date().setHours(0, 0, 0, 0))} // 오늘 날짜까지 활성화 (시간을 0으로 설정)
+                        activeStartDate={activeStartDate} // 캘린더가 시작하는 날짜를 설정 (오늘로 이동 시 달력도 이동)
+                        onActiveStartDateChange={({ activeStartDate }) =>
+                            setActiveStartDate(activeStartDate)
+                        }
+                        tileDisabled={({ date }) =>
+                            date < new Date(new Date().setHours(0, 0, 0, 0))
+                        } // 오늘 이전 날짜만 비활성화
+                        tileClassName={({ date }) =>
+                            date < new Date(new Date().setHours(0, 0, 0, 0))
+                                ? styles.disabledTile
+                                : ''
+                        }
+                    />
+                </div>
                 {/* 인원 선택 버튼 */}
                 <div className={styles.guestListWrapper}>
                     <button
@@ -183,11 +193,12 @@ function ReserveModal({ storeSeq, name }) {
                     <button
                         className={styles.scrollButton.right}
                         onClick={() => changeGuestPage('right')}
-                        disabled={(guestPage + 1) * guestsPerPage >= 10} // 마지막 페이지일 때 비활성화
+                        disabled={(guestPage + 1) * guestsPerPage >= 15} // 마지막 페이지일 때 비활성화
                     >
                         {'>'}
                     </button>
                 </div>
+
                 {/* 시간 선택 버튼 */}
                 <div className={styles.timeListWrapper}>
                     <button
@@ -198,17 +209,26 @@ function ReserveModal({ storeSeq, name }) {
                         {'<'}
                     </button>
                     <div className={styles.timeButtons}>
-                        {visibleTimes.map(time => (
-                            <div
-                                key={time}
-                                className={`${styles.timeButton} ${
-                                    reserveTime === time ? styles.active : ''
-                                }`}
-                                onClick={() => handleTimeClick(time)}
-                            >
-                                {time}
+                        {filteredTimes.length > 0 ? (
+                            visibleTimes.map(time => (
+                                <div
+                                    key={time}
+                                    className={`${styles.timeButton} ${
+                                        reserveTime === time
+                                            ? styles.active
+                                            : ''
+                                    }`}
+                                    onClick={() => handleTimeClick(time)}
+                                >
+                                    {time}
+                                </div>
+                            ))
+                        ) : (
+                            <div className={styles.noTimesMessage}>
+                                예약 가능한 시간이 없습니다. 다른 날짜를
+                                선택해주세요.
                             </div>
-                        ))}
+                        )}
                     </div>
                     <button
                         className={styles.scrollButton.right}
@@ -221,7 +241,7 @@ function ReserveModal({ storeSeq, name }) {
                         {'>'}
                     </button>
                 </div>
-                <div className={styles.closeButton} onClick={closeModal}>
+                <div className={styles.closeButton} onClick={onClose}>
                     닫기
                 </div>
             </div>
