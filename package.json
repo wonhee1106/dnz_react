@@ -22,6 +22,7 @@
     "axios": "^1.7.7",
     "dom": "^0.0.3",
     "firebase": "^10.13.1",
+    "firebase-tools": "^13.17.0",
     "i": "^0.3.7",
     "install": "^0.13.0",
     "jwt-decode": "^4.0.0",
@@ -33,6 +34,7 @@
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
+    "swiper": "^11.1.14",
     "web-vitals": "^2.1.4",
     "zustand": "^4.5.5"
   },

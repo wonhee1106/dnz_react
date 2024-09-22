@@ -9,6 +9,7 @@ export const validateSignupInputs = (signup) => {
 
     const emailAddressArr = ['naver.com', 'gmail.com'];
 
+    console.log(signup);
     if (!idRegex.test(signup.userId)) {
         return "아이디는 6자 이상 20자 이하의 알파벳과 숫자로만 구성되어야 합니다.";
     }
@@ -29,6 +30,9 @@ export const validateSignupInputs = (signup) => {
         return "비밀번호가 일치하지 않습니다.";
     }
 
+if (!signup || typeof signup.userEmail === 'undefined') {
+    return "이메일이 제공되지 않았습니다.";
+}
     if (signup.userEmail.indexOf("@") !== -1) {
         const emailAddress = signup.userEmail.substring(signup.userEmail.indexOf("@") + 1, signup.userEmail.length);
         if (emailAddressArr.indexOf(emailAddress) === -1) {
