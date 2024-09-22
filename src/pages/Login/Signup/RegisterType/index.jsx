@@ -18,7 +18,7 @@ const RegisterType = () => {
                     <FontAwesomeIcon icon={faUserTie} style={ { width : "80px", height : "80px", printColorAdjust : "orange"}} />
                     <p>점주</p>
                 </div>
-                <div id="user">
+                <div id="user" onClick={()=>navigator("/SignUp")}>
                     <FontAwesomeIcon icon={faUser} style={ { width : "80px", height : "80px", printColorAdjust : "orange"}} />
                     <p>일반 사용자</p>
                 </div>
