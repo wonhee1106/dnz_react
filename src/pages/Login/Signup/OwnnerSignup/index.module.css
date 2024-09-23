@@ -1,0 +1,52 @@
+.OwnnerSignupContainer {
+    width : 100svw;
+    height : 100svh;
+    position: absolute;
+    left : 0;
+    top : 0;
+    z-index: 1000;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.OwnnerSignupContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.OwnnerSignupHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.OwnnerSignupHeader p {
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.logo {
+    width : fit-content;
+    flex-basis: 0;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 8px 16px;
+    background-color: #ff6600;
+    color: white;
+    border-radius: 4px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.OwnnerSignupBody {
+    display : flex;
+    flex-direction : column;
+    gap : 4px;
+}

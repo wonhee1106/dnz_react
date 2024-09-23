@@ -6,9 +6,10 @@
 
 .sections {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  justify-content: center;
+  gap: 100px;
   width: 100%; /* 부모 컨테이너의 전체 너비를 사용 */
+  margin-top: 50px;
 }
 
 
