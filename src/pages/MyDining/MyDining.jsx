@@ -4,10 +4,11 @@ import styles from './MyDining.module.css'
 import { api } from '../../config/config'
 
 function MyDining() {
-    const [reservations, setReservations] = useState([]) // 예약 목록 상태
-    const [reviewsMap, setReviewsMap] = useState({}) // 리뷰 상태를 저장하는 객체
-    const [currentPage, setCurrentPage] = useState(1) // 현재 페이지 상태
-    const reservationsPerPage = 5 // 한 번에 보여줄 예약 개수
+    const [reservations, setReservations] = useState([])
+    const [reviewsMap, setReviewsMap] = useState({})
+    const [currentPage, setCurrentPage] = useState(1)
+    const [storeInfoMap, setStoreInfoMap] = useState({})
+    const reservationsPerPage = 5
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -29,7 +30,54 @@ function MyDining() {
         fetchReservations()
     }, [])
 
-    // 리뷰 상태를 업데이트하는 로직
+    // 가게 정보를 가져오는 함수 (사진 포함)
+    useEffect(() => {
+        const fetchStoreInfo = async storeSeq => {
+            try {
+                const response = await api.get(`/store/${storeSeq}`)
+                const photoResponse = await api.get(`/store/${storeSeq}/photos`)
+                return {
+                    ...response.data,
+                    photos: photoResponse.data, // 가게 사진 데이터 포함
+                }
+            } catch (error) {
+                console.log(`가게 정보를 불러오는데 실패했습니다: ${storeSeq}`)
+                return null
+            }
+        }
+
+        if (reservations.length > 0) {
+            const fetchAllStoreInfo = async () => {
+                const storeInfoPromises = reservations.map(
+                    async reservation => {
+                        if (!storeInfoMap[reservation.storeSeq]) {
+                            const storeInfo = await fetchStoreInfo(
+                                reservation.storeSeq
+                            )
+                            return { storeSeq: reservation.storeSeq, storeInfo }
+                        }
+                        return {
+                            storeSeq: reservation.storeSeq,
+                            storeInfo: storeInfoMap[reservation.storeSeq],
+                        }
+                    }
+                )
+
+                const storeInfos = await Promise.all(storeInfoPromises)
+                const updatedStoreInfoMap = { ...storeInfoMap }
+                storeInfos.forEach(({ storeSeq, storeInfo }) => {
+                    if (storeInfo) {
+                        updatedStoreInfoMap[storeSeq] = storeInfo
+                    }
+                })
+                setStoreInfoMap(updatedStoreInfoMap)
+            }
+
+            fetchAllStoreInfo()
+        }
+    }, [reservations])
+
+    // 리뷰 상태 업데이트
     useEffect(() => {
         if (location.state?.updatedReservationId) {
             const updatedId = location.state.updatedReservationId
@@ -39,121 +87,14 @@ function MyDining() {
         }
     }, [location.state])
 
-    // 각 예약의 리뷰 상태를 확인하는 함수
-    useEffect(() => {
-        const fetchReviewStatus = async () => {
-            const reviewsStatus = {}
-            await Promise.all(
-                reservations.map(async reservation => {
-                    try {
-                        const response = await api.get(
-                            `/reviews/${reservation.reservationId}`
-                        )
-                        if (response.status === 200) {
-                            reviewsStatus[reservation.reservationId] = true
-                        }
-                    } catch (error) {
-                        reviewsStatus[reservation.reservationId] = false
-                    }
-                })
-            )
-            setReviewsMap(reviewsStatus)
-        }
-
-        if (reservations.length > 0) {
-            fetchReviewStatus()
-        }
-    }, [reservations])
-
-    // 예약 시간이 지난 예약의 상태를 confirmed로 업데이트
-    useEffect(() => {
-        const updatePastReservations = async () => {
-            const now = new Date()
-            await Promise.all(
-                reservations.map(async reservation => {
-                    const reservationDateTime = new Date(
-                        reservation.reservationDate
-                    )
-                    const [hour, minute] =
-                        reservation.reservationTime.split(':')
-                    reservationDateTime.setHours(hour)
-                    reservationDateTime.setMinutes(minute)
-
-                    if (
-                        reservationDateTime < now &&
-                        reservation.status !== 'confirmed'
-                    ) {
-                        try {
-                            await api.put(
-                                `/reservation/${reservation.reservationId}`,
-                                {
-                                    status: 'confirmed',
-                                }
-                            )
-                        } catch (error) {
-                            console.log('예약 상태 변경 중 오류 발생:', error)
-                        }
-                    }
-                })
-            )
-        }
-
-        if (reservations.length > 0) {
-            updatePastReservations()
-        }
-    }, [reservations])
-
-    // 예약 날짜와 시간이 현재 시간보다 지났는지 확인하는 함수
-    const isPastReservation = (reservationDate, reservationTime) => {
-        const now = new Date()
-        const [hour, minute] = reservationTime.split(':')
-        const reservationDateTime = new Date(reservationDate)
-        reservationDateTime.setHours(hour)
-        reservationDateTime.setMinutes(minute)
-        return reservationDateTime < now
-    }
-
-    // 날짜 형식을 '년.월.일 (요일)'로 변환하는 함수
-    const formatDate = date => {
-        return new Date(date).toLocaleDateString('ko-KR', {
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-            weekday: 'short',
-        })
-    }
-
     // 예약 취소 처리 함수
     const handleCancelReservation = async (
         reservationId,
         reservationDate,
         reservationTime
     ) => {
-        const now = new Date()
-        const reservationDateTime = new Date(reservationDate)
-        const [hour, minute] = reservationTime.split(':')
-        reservationDateTime.setHours(hour)
-        reservationDateTime.setMinutes(minute)
-
-        // 당일 예약인지 확인
-        const isSameDay =
-            now.getFullYear() === reservationDateTime.getFullYear() &&
-            now.getMonth() === reservationDateTime.getMonth() &&
-            now.getDate() === reservationDateTime.getDate()
-
-        // 예약 시간이 현재 시간보다 지났는지 확인 (노쇼 여부)
-        const isNoShow = reservationDateTime < now
-
-        // 당일 취소 또는 노쇼일 경우 바로 경고 메시지 띄움
-        if (isSameDay || isNoShow) {
-            const confirmed = window.confirm(
-                '당일 취소 및 노쇼는 3분 동안 예약이 불가능합니다. 그래도 취소하시겠습니까?'
-            )
-            if (!confirmed) return
-        } else {
-            const confirmed = window.confirm('정말로 취소하시겠습니까?')
-            if (!confirmed) return
-        }
+        const confirmed = window.confirm('정말로 예약을 취소하시겠습니까?')
+        if (!confirmed) return
 
         try {
             const response = await api.delete(`/reservation/${reservationId}`)
@@ -164,9 +105,6 @@ function MyDining() {
                         res => res.reservationId !== reservationId
                     )
                 )
-                setTimeout(async () => {
-                    alert('3분 후에 다시 예약할 수 있습니다.')
-                }, 3 * 60 * 1000)
             } else {
                 alert('예약 취소 실패')
             }
@@ -176,14 +114,12 @@ function MyDining() {
         }
     }
 
-    // 리뷰 작성 페이지로 이동하는 함수
+    // 리뷰 작성 페이지로 이동
     const handleGoToReview = reservation => {
-        navigate('/review', {
-            state: { reservation },
-        })
+        navigate('/review', { state: { reservation } })
     }
 
-    // 리뷰 상세 보기 페이지로 이동하는 함수
+    // 리뷰 상세 보기 페이지로 이동
     const handleGoToViewReview = reservationId => {
         navigate(`/reviewDetail/${reservationId}`)
     }
@@ -203,71 +139,96 @@ function MyDining() {
             <h2 className={styles.title}>나의 예약 내역</h2>
             {displayedReservations.length > 0 ? (
                 <>
-                    {displayedReservations.map(reservation => (
-                        <div
-                            key={reservation.reservationId}
-                            className={styles.reservationCard}
-                        >
-                            <div className={styles.reservationInfoRow}>
-                                <div className={styles.imagePlaceholder}>
-                                    이미지
+                    {displayedReservations.map(reservation => {
+                        const storeInfo =
+                            storeInfoMap[reservation.storeSeq] || {}
+                        const photoUrl =
+                            storeInfo.photos && storeInfo.photos.length > 0
+                                ? storeInfo.photos[0] // 첫 번째 가게 사진 사용
+                                : null // 사진이 없을 경우
+
+                        return (
+                            <div
+                                key={reservation.reservationId}
+                                className={styles.reservationCard}
+                            >
+                                <div className={styles.reservationInfoRow}>
+                                    <div className={styles.imagePlaceholder}>
+                                        {photoUrl ? (
+                                            <img
+                                                src={photoUrl}
+                                                alt="가게 이미지"
+                                                className={styles.storeImage}
+                                            />
+                                        ) : (
+                                            '이미지 없음'
+                                        )}
+                                    </div>
+                                    <div className={styles.textInfo}>
+                                        <p className={styles.restaurantName}>
+                                            {reservation.storeName}
+                                        </p>
+                                        <p className={styles.additionalInfo}>
+                                            {storeInfo.address1 ||
+                                                '지역 정보 없음'}{' '}
+                                            ·{' '}
+                                            {storeInfo.category ||
+                                                '음식종류 정보 없음'}
+                                        </p>
+                                        <p className={styles.dateInfo}>
+                                            {new Date(
+                                                reservation.reservationDate
+                                            ).toLocaleDateString('ko-KR')}{' '}
+                                            {reservation.reservationTime}{' '}
+                                            {reservation.numGuests}명
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className={styles.textInfo}>
-                                    <p className={styles.restaurantName}>
-                                        {reservation.storeName}
-                                    </p>
-                                    <p className={styles.additionalInfo}>
-                                        지역 · 음식종류
-                                    </p>
-                                    <p className={styles.dateInfo}>
-                                        {formatDate(
-                                            reservation.reservationDate
-                                        )}{' '}
-                                        {reservation.reservationTime}{' '}
-                                        {reservation.numGuests}명
-                                    </p>
-                                </div>
-                            </div>
-                            <div className={styles.reservationActions}>
-                                {reservation.status === 'confirmed' ? ( // 'confirmed' 상태인지만 확인
-                                    reviewsMap[reservation.reservationId] ? ( // 이미 리뷰가 있는 경우
+                                <div className={styles.reservationActions}>
+                                    {reservation.status === 'confirmed' ? (
+                                        reviewsMap[
+                                            reservation.reservationId
+                                        ] ? (
+                                            <button
+                                                className={
+                                                    styles.viewReviewButton
+                                                }
+                                                onClick={() =>
+                                                    handleGoToViewReview(
+                                                        reservation.reservationId
+                                                    )
+                                                }
+                                            >
+                                                리뷰 확인
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className={styles.goToReview}
+                                                onClick={() =>
+                                                    handleGoToReview(
+                                                        reservation
+                                                    )
+                                                }
+                                            >
+                                                리뷰 작성
+                                            </button>
+                                        )
+                                    ) : (
                                         <button
-                                            className={styles.viewReviewButton}
+                                            className={styles.cancelButton}
                                             onClick={() =>
-                                                handleGoToViewReview(
+                                                handleCancelReservation(
                                                     reservation.reservationId
                                                 )
                                             }
                                         >
-                                            리뷰 확인
+                                            예약 취소
                                         </button>
-                                    ) : (
-                                        <button
-                                            className={styles.goToReview}
-                                            onClick={() =>
-                                                handleGoToReview(reservation)
-                                            }
-                                        >
-                                            리뷰 작성
-                                        </button>
-                                    )
-                                ) : (
-                                    <button
-                                        className={styles.cancelButton}
-                                        onClick={() =>
-                                            handleCancelReservation(
-                                                reservation.reservationId,
-                                                reservation.reservationDate,
-                                                reservation.reservationTime
-                                            )
-                                        }
-                                    >
-                                        예약 취소
-                                    </button>
-                                )}
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                     {displayedReservations.length < reservations.length && (
                         <button
                             className={styles.loadMoreButton}
