@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faEnvelope, faEnvelopeOpen } from '@fortawesome/free-regular-svg-icons'; // 필요한 아이콘 추가
 import { faTimes } from '@fortawesome/free-solid-svg-icons'; // X 표시 아이콘 추가
 import axios from 'axios';
-import jwtDecode from 'jwt-decode'; // jwtDecode import 수정 (default import 사용)
+import {jwtDecode} from 'jwt-decode'; // jwtDecode import 수정 (default import 사용)
 import Pagination from '@mui/material/Pagination'; // Material-UI Pagination 가져오기
 import { Editor } from '@toast-ui/react-editor'; // Toast UI Editor 임포트
 import '@toast-ui/editor/dist/toastui-editor.css'; // Toast UI Editor 스타일 임포트
