@@ -213,7 +213,7 @@ const PopularRestaurants = () => {
       <div id="western" className="popular-restaurants container gutter-sm">
         <div className="section-header-wrap">
           <h2 className="section-header">카페</h2>
-          <button className="btn-more" onClick={() => handleMoreClick('카페,디저트,양식')}>
+          <button className="btn-more" onClick={() => handleMoreClick('카페,디저트')}>
             더보기
           </button>
         </div>
