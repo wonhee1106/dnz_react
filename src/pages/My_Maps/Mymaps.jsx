@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // axios를 직접 import
-import Footer from 'components/Footer/Footer'; // Footer 컴포넌트 추가
-
 
 function Mymaps() {
   const [stores, setStores] = useState([]);
+  const [mapError, setMapError] = useState(null); // 지도 관련 오류 상태
 
- const serverURL = process.env.REACT_APP_SERVER_URL;
+  const serverURL = process.env.REACT_APP_SERVER_URL;
 
   // Axios 인스턴스 생성
   const api = axios.create({
@@ -22,6 +21,7 @@ function Mymaps() {
         setStores(response.data); // stores 상태에 데이터를 저장
       } catch (error) {
         console.error('Error fetching store data:', error);
+        setMapError('가게 정보를 불러오는 중 오류가 발생했습니다.');
       }
     };
 
@@ -49,55 +49,69 @@ function Mymaps() {
 
     // 스크립트가 로드되면 지도 설정
     if (stores.length > 0) {
-      loadKakaoMapScript().then((kakao) => {
-        kakao.maps.load(() => {
-          const mapContainer = document.getElementById('my-map'); // 여기서 id를 my-map으로 변경
-          const mapOption = {
-            center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울을 기본 중심으로 설정
-            level: 5, // 지도의 줌 레벨
-          };
+      loadKakaoMapScript()
+        .then((kakao) => {
+          kakao.maps.load(() => {
+            const mapContainer = document.getElementById('my-map'); // 여기서 id를 my-map으로 변경
+            if (!mapContainer) {
+              setMapError('지도 컨테이너를 찾을 수 없습니다.');
+              return;
+            }
 
-          const map = new kakao.maps.Map(mapContainer, mapOption);
-          const geocoder = new kakao.maps.services.Geocoder();
+            const mapOption = {
+              center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울을 기본 중심으로 설정
+              level: 5, // 지도의 줌 레벨
+            };
 
-          // 모든 가게 주소를 반복하여 마커로 표시
-          stores.forEach((store) => {
-            const fullAddress = `${store.address1} ${store.address2}`;
+            const map = new kakao.maps.Map(mapContainer, mapOption);
+            const geocoder = new kakao.maps.services.Geocoder();
 
-            geocoder.addressSearch(fullAddress, function (result, status) {
-              if (status === kakao.maps.services.Status.OK) {
-                const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+            // 모든 가게 주소를 반복하여 마커로 표시
+            stores.forEach((store) => {
+              const fullAddress = `${store.address1} ${store.address2}`;
 
-                // 지도에 마커를 생성
-                const marker = new kakao.maps.Marker({
-                  map: map,
-                  position: coords,
-                });
+              geocoder.addressSearch(fullAddress, function (result, status) {
+                if (status === kakao.maps.services.Status.OK) {
+                  const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-                // 마커에 클릭 이벤트를 추가해 인포윈도우를 보여줌
-                const infowindow = new kakao.maps.InfoWindow({
-                  content: `<div style="padding:5px;">${store.name}</div>`,
-                });
+                  // 지도에 마커를 생성
+                  const marker = new kakao.maps.Marker({
+                    map: map,
+                    position: coords,
+                  });
 
-                kakao.maps.event.addListener(marker, 'click', function () {
-                  infowindow.open(map, marker);
-                });
-              } else {
-                console.error('주소 검색 실패:', fullAddress);
-              }
+                  // 마커에 클릭 이벤트를 추가해 인포윈도우를 보여줌
+                  const infowindow = new kakao.maps.InfoWindow({
+                    content: `<div style="padding:5px;">${store.name}</div>`,
+                  });
+
+                  kakao.maps.event.addListener(marker, 'click', function () {
+                    infowindow.open(map, marker);
+                  });
+                } else {
+                  setMapError(`주소 검색 실패: ${fullAddress}`);
+                  console.error('주소 검색 실패:', fullAddress);
+                }
+              });
             });
           });
+        })
+        .catch((error) => {
+          setMapError('카카오 지도 API를 불러오는 중 오류가 발생했습니다.');
+          console.error('Failed to load Kakao Map API:', error);
         });
-      });
     }
   }, [stores]);
 
   return (
     <div className="maps-page">
       <div className="mymaps-container">
-        <div id="my-map"></div> {/* id를 my-map으로 수정 */}
+        {mapError ? (
+          <div className="error-message">{mapError}</div>
+        ) : (
+          <div id="my-map" style={{ width: '100%', height: '600px' }}></div> // id를 my-map으로 수정
+        )}
       </div>
-      <Footer /> {/* Footer 고정 */}
     </div>
   );
 }
