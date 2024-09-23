@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, useLocation, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../../../config/config' // API 경로에 맞게 설정
 import styles from './ReviewDetail.module.css'
 
 function ReviewDetail() {
     const { reservationId } = useParams() // URL에서 reservationId 가져오기
-    const location = useLocation() // state로 전달된 가게 이름을 받기 위한 useLocation 사용
     const navigate = useNavigate()
     const [review, setReview] = useState(null) // 리뷰 상태
     const [loading, setLoading] = useState(true) // 로딩 상태
     const [error, setError] = useState(null) // 오류 상태
     const [isEditing, setIsEditing] = useState(false) // 수정 모드 상태
     const [originalReviewText, setOriginalReviewText] = useState('') // 원본 리뷰 상태
-    const [replies, setReplies] = useState([]) // 댓글 상태
+    const [replies, setReplies] = useState([]) // 답글 상태
 
-    const storeName = location.state?.storeName // 가게 이름 받아오기
-
+    // 리뷰 정보 가져오기
     useEffect(() => {
         const fetchReview = async () => {
             try {
@@ -36,16 +34,16 @@ function ReviewDetail() {
         fetchReview()
     }, [reservationId])
 
+    // 리뷰에 대한 답글 목록 가져오기
     useEffect(() => {
-        // 댓글 데이터 가져오기
         const fetchReplies = async () => {
             try {
                 const response = await api.get(`/replies/${review.reviewId}`)
                 if (response.status === 200) {
-                    setReplies(response.data) // 댓글 데이터 설정
+                    setReplies(response.data) // 답글 데이터 설정
                 }
             } catch (error) {
-                console.log('댓글 데이터를 가져오는데 실패했습니다.')
+                console.log('답글 데이터를 가져오는 중 오류가 발생했습니다.')
             }
         }
 
@@ -115,7 +113,7 @@ function ReviewDetail() {
             <div className={styles.reviewInfo}>
                 <p>
                     <strong>가게 이름: </strong>
-                    {storeName || '정보 없음'}
+                    {review.storeName || '정보 없음'}
                 </p>
             </div>
             <div className={styles.reviewInfo}>
@@ -134,7 +132,7 @@ function ReviewDetail() {
             </div>
             {isEditing ? (
                 <textarea
-                    className={`${styles.reviewText} ${styles.textAreaEdit}`} // 추가된 스타일 클래스
+                    className={`${styles.reviewText} ${styles.textAreaEdit}`}
                     value={review.reviewText}
                     onChange={handleReviewTextChange}
                     placeholder="리뷰를 수정해주세요."
