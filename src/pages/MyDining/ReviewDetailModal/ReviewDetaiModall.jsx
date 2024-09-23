@@ -10,25 +10,38 @@ function ReviewDetailModal({ reservationId, onClose }) {
     const [originalReviewText, setOriginalReviewText] = useState('') // 원본 리뷰 상태
     const [replies, setReplies] = useState([]) // 답글 상태
 
-    // 리뷰 정보 가져오기
+    // 리뷰 및 답글 정보 가져오기
     useEffect(() => {
-        const fetchReview = async () => {
+        const fetchReviewAndReplies = async () => {
             try {
-                const response = await api.get(`/reviews/${reservationId}`)
-                if (response.status === 200) {
-                    setReview(response.data) // 리뷰 데이터 설정
-                    setOriginalReviewText(response.data.reviewText) // 원본 리뷰 텍스트 저장
+                // 리뷰 불러오기
+                const reviewResponse = await api.get(
+                    `/reviews/${reservationId}`
+                )
+                if (reviewResponse.status === 200) {
+                    setReview(reviewResponse.data) // 리뷰 데이터 설정
+                    setOriginalReviewText(reviewResponse.data.reviewText) // 원본 리뷰 텍스트 저장
                 } else {
                     setError('리뷰를 불러오는 중 오류가 발생했습니다.')
                 }
+
+                // 답글 불러오기
+                const repliesResponse = await api.get(
+                    `/replies/${reviewResponse.data.reviewId}`
+                )
+                if (repliesResponse.status === 200) {
+                    setReplies(repliesResponse.data) // 답글 데이터 설정
+                } else {
+                    setError('댓글을 불러오는 중 오류가 발생했습니다.')
+                }
             } catch (error) {
-                setError('리뷰를 불러오는 중 오류가 발생했습니다.')
+                setError('리뷰 및 댓글을 불러오는 중 오류가 발생했습니다.')
             } finally {
                 setLoading(false)
             }
         }
 
-        fetchReview()
+        fetchReviewAndReplies()
     }, [reservationId])
 
     const handleReviewTextChange = e => {
@@ -164,6 +177,8 @@ function ReviewDetailModal({ reservationId, onClose }) {
                         </>
                     )}
                 </div>
+
+                {/* 댓글 섹션 */}
                 <div className={styles.repliesSection}>
                     <h3>댓글</h3>
                     {replies.length > 0 ? (
@@ -182,6 +197,7 @@ function ReviewDetailModal({ reservationId, onClose }) {
                         <p>댓글이 없습니다.</p>
                     )}
                 </div>
+
                 <button className={styles.closeButton} onClick={onClose}>
                     닫기
                 </button>

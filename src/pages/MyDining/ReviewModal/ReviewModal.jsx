@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import styles from './ReviewModal.module.css' // 모달용 스타일
 import { api } from '../../../config/config'
 
-function ReviewModal({ reservation, onClose }) {
+function ReviewModal({ reservation, onClose, onReviewSubmitted }) {
+    // onReviewSubmitted 추가
     const [rating, setRating] = useState(0) // 평점 상태
     const [reviewText, setReviewText] = useState('') // 리뷰 텍스트 상태
     const [isSubmitting, setIsSubmitting] = useState(false) // 제출 중 상태
@@ -50,6 +51,7 @@ function ReviewModal({ reservation, onClose }) {
 
             if (response.status === 200) {
                 alert('리뷰가 성공적으로 제출되었습니다.')
+                onReviewSubmitted(reservation.reservationId) // 리뷰 제출 후 부모 컴포넌트에 알림
                 onClose() // 모달 닫기
             } else {
                 alert('리뷰 제출에 실패했습니다.')

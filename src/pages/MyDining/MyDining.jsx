@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './MyDining.module.css'
 import { api } from '../../config/config'
-import ReviewModal from './ReviewModal/ReviewModal'
 import ReviewDetailModal from './ReviewDetailModal/ReviewDetaiModall'
+import ReviewModal from './ReviewModal/ReviewModal'
 
 function MyDining() {
     const [reservations, setReservations] = useState([])
@@ -161,6 +161,14 @@ function MyDining() {
         setShowReviewDetailModal(false)
     }
 
+    // 리뷰 제출 후 상태 업데이트
+    const handleReviewSubmitted = reservationId => {
+        setReviewsMap(prevMap => ({
+            ...prevMap,
+            [reservationId]: true,
+        }))
+    }
+
     // 더보기 버튼 클릭 시 페이지 증가
     const loadMoreReservations = () => {
         setCurrentPage(prevPage => prevPage + 1)
@@ -285,6 +293,9 @@ function MyDining() {
                 <ReviewModal
                     reservation={selectedReservation}
                     onClose={closeReviewModal} // 모달 닫기 함수 전달
+                    onReviewSubmitted={() =>
+                        handleReviewSubmitted(selectedReservation.reservationId)
+                    }
                 />
             )}
 
