@@ -23,6 +23,16 @@
             userPhoneNumber: '',
             userEmail: '',
         });
+
+        const [userId, setUserId] = useState("");
+        const [userPw, setUserPw] = useState("");
+        const [userPwConfirm, setUserPwConfirm] = useState("");
+        const [userName, setUserName] = useState("");
+        const [userBirthDate, setUserbirthDate] = useState("");
+        const [userPhone, setUserPhone] = useState("");
+        const [userGender, setUserGender] = useState("");
+        const [userEmail, setUserEmail] = useState("");
+
         const [storeData, setStoreData] = useState({
             businessNumber: '',
             storeAddress: '',
@@ -206,25 +216,27 @@
                     <hr />
                     <div className={styles.OwnnerSignupBody}>
                         <InputGroup 
-                            type="text" title="아이디" description="?" 
-                            btnComment="중복확인" placeholder="6~20자리 아이디를 입력해 주세요" keyUp={(e)=>console.log(e)} />
+                            type="text" title="아이디" description="" 
+                            btnComment="중복확인" placeholder="6~20자리 아이디를 입력해 주세요" keyUp={(e)=>setUserId(e)} click={()=>alert("중복확인")} />
                         <InputGroup 
-                            type="password" title="비밀번호" description="?" 
-                            placeholder="8~12자리 대소문자, 숫자, 특수문자 포함" keyUp={(e)=>{}} />
+                            type="password" title="비밀번호" description="" 
+                            placeholder="8~12자리 대소문자, 숫자, 특수문자 포함" keyUp={(e)=>setUserPw(e)} />
                         <InputGroup 
-                            type="password" title="비밀번호 확인" description="?" 
-                            placeholder="비밀번호 확인"  keyUp={(e)=>{}} />
+                            type="password" title="비밀번호 확인" description={userPw === userPwConfirm ? "비밀번호가 서로 일치합니다" : "비밀번호가 서로 다릅니다."} 
+                            placeholder="비밀번호 확인"  keyUp={(e)=>setUserPwConfirm(e)} />
                         <InputGroup 
                             type="text" title="닉네임" description="?" 
-                            placeholder="2~15자 닉네임을 입력해 주세요" keyUp={(e)=>{}}/>
+                            placeholder="2~15자 닉네임을 입력해 주세요" keyUp={(e)=>setUserName(e)}/>
                         <InputGroup 
                             type="number" title="전화번호" description="?" 
-                            placeholder="전화번호를 입력해 주세요" keyUp={(e)=>{}}/>
+                            placeholder="전화번호를 입력해 주세요" keyUp={(e)=>console.log(e)}/>
                         <InputGroup 
                             type="date" title="생년월일" description="?" 
-                            placeholder="생년월일를 입력해 주세요" keyUp={(e)=>{}}/>
+                            placeholder="생년월일를 입력해 주세요" keyUp={(e)=>setUserbirthDate(e)}/>
                         <InputGroup 
-                            type="gender" title="사업자 번호" keyUp={(e)=>{}}/>
+                            type="gender" title="성별" genderValue={(e)=>console.log(e)}/>
+                        <InputGroup 
+                            type="text" title="사업자 번호" keyUp={(e)=>{}}/>
                               <InputGroup 
                             type="number" title="가게 주소" description="" 
                             placeholder="전화번호를 입력해 주세요" keyUp={(e)=>{}}/>
@@ -232,7 +244,7 @@
                             type="number" title="대표 성함" description="" 
                             placeholder="전화번호를 입력해 주세요" keyUp={(e)=>{}}/>
                               <InputGroup 
-                            type="number" title="업종" description="" 
+                            type="number" title="업종" description="?" 
                             placeholder="전화번호를 입력해 주세요" keyUp={(e)=>{}}/>
                             
                         <InputGroup 
