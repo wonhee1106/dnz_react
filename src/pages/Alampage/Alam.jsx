@@ -9,7 +9,7 @@ import Pagination from '@mui/material/Pagination'; // Material-UI Pagination 가
 import { Editor } from '@toast-ui/react-editor'; // Toast UI Editor 임포트
 import '@toast-ui/editor/dist/toastui-editor.css'; // Toast UI Editor 스타일 임포트
 import Modal from 'react-modal'; // react-modal 가져오기
-import { useAuthStore } from '../../store/store'; // Zustand 스토어에서 공지사항 상태 가져오기
+import { useAuthStore } from '../../utils/store'; // Zustand 스토어에서 공지사항 상태 가져오기
 import DOMPurify from 'dompurify'; // DOMPurify 추가 (XSS 방지)
 import { marked } from 'marked'; // 추가: 마크다운을 HTML로 변환하기 위한 라이브러리
 
