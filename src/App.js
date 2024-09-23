@@ -32,7 +32,7 @@ import ReviewDetailModal from 'pages/MyDining/ReviewDetailModal/ReviewDetaiModal
 const AppContent = () => {
     const location = useLocation() // 현재 경로 확인
 
-    const isStoreManagementPage = location.pathname === '/storemanagementpage' // StoreManagementPage 경로 확인 (작은 따음표기때문에 대소문자 구분 有)
+    const isStoreManagementPage = location.pathname.toLowerCase() === '/storemanagementpage';
 
     return (
         <div className="App">
