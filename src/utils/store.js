@@ -9,6 +9,7 @@ export const useAuthStore = create((set) => ({
   notifications: [],
   notices: [], // 공지사항 상태 추가
   userId: null, 
+  // bookmark : [],
 
   // 로그인 함수: 토큰과 사용자 ID 저장, 공지사항 불러오기
   login: async (token, userId) => {
@@ -47,6 +48,7 @@ export const useAuthStore = create((set) => ({
     })),
   })),
 
+
   // 공지사항 상태를 설정하는 함수
   setNotices: (notices) => set(() => ({ notices })),
 
@@ -66,4 +68,5 @@ export const useAuthStore = create((set) => ({
   deleteNotice: (id) => set((state) => ({
     notices: state.notices.filter((notice) => notice.id !== id),
   })),
+
 }));

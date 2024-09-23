@@ -1,0 +1,66 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.Container {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    gap: 4px;
+}
+
+.label p:nth-child(1) {
+    padding-left : 4px;
+    font-size: medium;
+}
+
+.label p:nth-child(2) {
+    font-size: small;
+}
+
+.Content {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    justify-content: space-between;
+}
+
+.Content input {
+    padding: 8px 12px;
+    border-radius: 16px;
+    border: none;
+    outline: none;
+    min-width : 280px;
+    flex: 1 0 auto;
+}
+
+.Content button {
+    padding : 8px 12px;
+    border : none;
+    border-radius: 12px;
+    font-size: smaller;
+    cursor: pointer;
+}
+
+.gender {
+    width : 50%;
+    text-align: center;
+    padding : 2px;
+    border-radius: 12px;
+}
+
+#genderM {
+    background-color: #3f69e5;
+    color : white;
+}
+#genderF {
+    background-color: #e53f3f;
+    color : white;
+}
+

@@ -23,9 +23,7 @@ const Login = () => {
                 if (resp.data && resp.data.token) {
                     const token = resp.data.token;
                     const decodedToken = jwtDecode(token);
-                    console.log("디코딩된 토큰:", decodedToken);
                     const userId = decodedToken.userId;
-                    console.log("디코딩된 userId:", userId);
                     sessionStorage.setItem('token', token); 
                     login(token, userId); 
                     navigate("/"); 
