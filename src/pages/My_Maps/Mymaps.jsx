@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // axios를 직접 import
-import Footer from 'components/Footer/Footer'; // Footer 컴포넌트 추가
-
 
 function Mymaps() {
   const [stores, setStores] = useState([]);
 
- const serverURL = process.env.REACT_APP_SERVER_URL;
+  const serverURL = process.env.REACT_APP_SERVER_URL;
 
   // Axios 인스턴스 생성
   const api = axios.create({
@@ -49,24 +47,36 @@ function Mymaps() {
 
     // 스크립트가 로드되면 지도 설정
     if (stores.length > 0) {
-      loadKakaoMapScript().then((kakao) => {
-        kakao.maps.load(() => {
-          const mapContainer = document.getElementById('my-map'); // 여기서 id를 my-map으로 변경
-          const mapOption = {
-            center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울을 기본 중심으로 설정
-            level: 5, // 지도의 줌 레벨
-          };
+      loadKakaoMapScript()
+        .then((kakao) => {
+          kakao.maps.load(() => {
+            const mapContainer = document.getElementById('my-map'); // 여기서 id를 my-map으로 변경
+            if (!mapContainer) {
+              return;
+            }
 
-          const map = new kakao.maps.Map(mapContainer, mapOption);
-          const geocoder = new kakao.maps.services.Geocoder();
+            const mapOption = {
+              center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울을 기본 중심으로 설정
+              level: 10, // 지도의 줌 레벨
+            };
 
-          // 모든 가게 주소를 반복하여 마커로 표시
-          stores.forEach((store) => {
-            const fullAddress = `${store.address1} ${store.address2}`;
+            const map = new kakao.maps.Map(mapContainer, mapOption);
+            const geocoder = new kakao.maps.services.Geocoder();
 
-            geocoder.addressSearch(fullAddress, function (result, status) {
-              if (status === kakao.maps.services.Status.OK) {
-                const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+            // 모든 가게 주소를 반복하여 마커로 표시
+            stores.forEach((store) => {
+              const fullAddress = `${store.address1} ${store.address2}`;
+
+              geocoder.addressSearch(fullAddress, function (result, status) {
+                let coords;
+
+                // 주소 검색 성공 시 좌표 설정
+                if (status === kakao.maps.services.Status.OK) {
+                  coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                } else {
+                  // 주소 검색 실패 시 기본 좌표 설정 (서울)
+                  coords = new kakao.maps.LatLng(37.5665, 126.9780); // 서울 기본 좌표
+                }
 
                 // 지도에 마커를 생성
                 const marker = new kakao.maps.Marker({
@@ -82,22 +92,21 @@ function Mymaps() {
                 kakao.maps.event.addListener(marker, 'click', function () {
                   infowindow.open(map, marker);
                 });
-              } else {
-                console.error('주소 검색 실패:', fullAddress);
-              }
+              });
             });
           });
+        })
+        .catch((error) => {
+          console.error('Failed to load Kakao Map API:', error);
         });
-      });
     }
   }, [stores]);
 
   return (
     <div className="maps-page">
       <div className="mymaps-container">
-        <div id="my-map"></div> {/* id를 my-map으로 수정 */}
+        <div id="my-map" style={{ width: '100%', height: '600px' }}></div> {/* id를 my-map으로 수정 */}
       </div>
-      <Footer /> {/* Footer 고정 */}
     </div>
   );
 }
