@@ -5,8 +5,8 @@ import { useParams } from 'react-router-dom'
 import './StoreDetail.css' // CSS 파일 추가
 import ReserveModal from './ReserveButton/ReserveModal/ReserveModal'
 import ConfirmReserveModal from './ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveModal'
+import defaultImage from '../../img/store.png'
 import FinalConfirmReserveModal from './ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal'
-import defaultImage from '../../img/store.png';
 
 function StoreDetail() {
     const { storeId } = useParams() // storeId는 메뉴 요청에 사용
@@ -14,8 +14,9 @@ function StoreDetail() {
     const [menus, setMenus] = useState([])
     const [photos, setPhotos] = useState([]) // 사진 데이터를 관리하는 상태
     const [visibleMenus, setVisibleMenus] = useState(5) // 처음에 표시할 메뉴 개수
-    const [notice, setNotice] = useState(''); // 공지사항을 저장하는 상태
-
+    const [notice, setNotice] = useState('') // 공지사항을 저장하는 상태
+    const [reviews, setReviews] = useState([]) // 가게 리뷰 상태 관리
+    const [visibleReviews, setVisibleReviews] = useState(3) // 처음에 표시할 리뷰 개수
 
     // 모달 상태 관리
     const [isReserveModalOpen, setIsReserveModalOpen] = useState(false)
@@ -29,25 +30,23 @@ function StoreDetail() {
     useEffect(() => {
         const fetchNotice = async () => {
             try {
-                const response = await api.get(`/notice/store/${storeId}`);
+                const response = await api.get(`/notice/store/${storeId}`)
                 if (response.status === 200) {
-                    setNotice(response.data.content);
+                    setNotice(response.data.content)
                 } else {
-                    setNotice('공지사항이 없습니다.');
+                    setNotice('공지사항이 없습니다.')
                 }
             } catch (error) {
-                console.error('Error fetching notice:', error);
-                setNotice('공지사항을 가져오는 데 실패했습니다.');
+                console.error('Error fetching notice:', error)
+                setNotice('공지사항을 가져오는 데 실패했습니다.')
             }
-        };
+        }
 
         if (storeId) {
-            fetchNotice();
+            fetchNotice()
         }
-    }, [storeId]);
+    }, [storeId])
 
-
-    
     // 가게 상세 정보를 서버로부터 가져오는 함수
     useEffect(() => {
         const fetchStoreDetails = async () => {
@@ -77,6 +76,26 @@ function StoreDetail() {
 
         if (storeId) {
             fetchMenuDetails()
+        }
+    }, [storeId])
+
+    // 가게의 리뷰 데이터를 서버로부터 가져오는 함수
+    useEffect(() => {
+        const fetchReviews = async () => {
+            try {
+                const response = await api.get(`/reviews/store/${storeId}`)
+                if (response.status === 200) {
+                    setReviews(response.data.reviews)
+                } else {
+                    console.log('리뷰 데이터를 가져오는데 실패했습니다.')
+                }
+            } catch (error) {
+                console.error('Error fetching reviews:', error)
+            }
+        }
+
+        if (storeId) {
+            fetchReviews()
         }
     }, [storeId])
 
@@ -168,8 +187,13 @@ function StoreDetail() {
     }, [store])
 
     // "더보기" 버튼 클릭 시 더 많은 메뉴를 표시
-    const handleLoadMore = () => {
+    const handleLoadMoreMenus = () => {
         setVisibleMenus(prevVisibleMenus => prevVisibleMenus + 5) // 5개씩 더 로드
+    }
+
+    // "더보기" 버튼 클릭 시 더 많은 리뷰를 표시
+    const handleLoadMoreReviews = () => {
+        setVisibleReviews(prevVisibleReviews => prevVisibleReviews + 3) // 3개씩 더 로드
     }
 
     // 모달 관련 함수
@@ -203,7 +227,9 @@ function StoreDetail() {
                                 className="store-photo"
                                 style={{
                                     backgroundImage: `url(${
-                                        photo.imageUrl ? photo.imageUrl : defaultImage
+                                        photo.imageUrl
+                                            ? photo.imageUrl
+                                            : defaultImage
                                     })`, // 사진이 없는 경우 기본 이미지 표시
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
@@ -225,7 +251,6 @@ function StoreDetail() {
                         ></div>
                     )}
                 </div>
-
                 {/* 가게 이름과 주소를 출력하는 부분 */}
                 <h3>{store.name}</h3> {/* 가게 이름 출력 */}
                 <p>{store.description}</p>
@@ -271,16 +296,13 @@ function StoreDetail() {
                 />
             )}
 
-
             {/* 공지사항 영역 추가 */}
             <div className="notice-section">
                 <h3>공지사항</h3>
                 <p>{notice ? notice : '공지사항이 없습니다.'}</p>
             </div>
 
-
             <div className="menu-list">
-
                 <div className="menu-title-container">
                     <h3>메뉴</h3> {/* 메뉴 제목 */}
                     <div className="reserve-button-container">
@@ -294,18 +316,13 @@ function StoreDetail() {
                     {/* 예약 버튼 */}
                 </div>
 
-                
-                </div>
-
                 {menus.length > 0 ? (
                     <div>
                         {menus.slice(0, visibleMenus).map(menu => (
                             <div key={menu.menuSeq} className="menu-item">
                                 <strong>{menu.name}</strong>
                                 <div>
-                                    {menu.price
-                                        ? menu.price 
-                                        : '가격 정보 없음'}
+                                    {menu.price ? menu.price : '가격 정보 없음'}
                                 </div>
                                 {menu.description && <p>{menu.description}</p>}
                             </div>
@@ -313,7 +330,7 @@ function StoreDetail() {
                         {visibleMenus < menus.length && (
                             <button
                                 className="load-more"
-                                onClick={handleLoadMore}
+                                onClick={handleLoadMoreMenus}
                             >
                                 더보기
                             </button>
@@ -323,7 +340,53 @@ function StoreDetail() {
                     <p>메뉴가 없습니다.</p>
                 )}
             </div>
+
+            {/* 리뷰 섹션 */}
+            <div className="review-section">
+                <h1>리뷰</h1>
+                {reviews.length > 0 ? (
+                    <div className="reviews-list">
+                        {reviews.slice(0, visibleReviews).map(review => (
+                            <div key={review.reviewId} className="review-item">
+                                <div className="review-header">
+                                    <div className="review-rating">
+                                        {[...Array(review.rating)].map(
+                                            (_, i) => (
+                                                <span key={i} className="star">
+                                                    ★
+                                                </span>
+                                            )
+                                        )}
+                                    </div>
+                                    <span className="review-date">
+                                        {new Date(
+                                            review.createdAt
+                                        ).toLocaleDateString('ko-KR')}
+                                    </span>
+                                </div>
+                                <p className="review-text">
+                                    {review.reviewText}
+                                </p>
+                                <span className="review-user">
+                                    작성자: {review.userId}
+                                </span>
+                            </div>
+                        ))}
+                        {visibleReviews < reviews.length && (
+                            <button
+                                className="load-more-reviews"
+                                onClick={handleLoadMoreReviews}
+                            >
+                                더보기
+                            </button>
+                        )}
+                    </div>
+                ) : (
+                    <p>리뷰가 없습니다.</p>
+                )}
+            </div>
+        </div>
     )
 }
 
-export default StoreDetail;
+export default StoreDetail
