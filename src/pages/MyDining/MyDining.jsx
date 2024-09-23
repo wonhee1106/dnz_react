@@ -19,6 +19,8 @@ function MyDining() {
                 const response = await api.get('/reservation/user')
                 if (response.status === 200) {
                     setReservations(response.data.reservations)
+                    fetchReviewStatuses(response.data.reservations) // 리뷰 상태 불러오기
+                    fetchAllStoreInfo(response.data.reservations) // 가게 정보 불러오기
                 } else {
                     console.log('예약 데이터를 가져오는데 실패했습니다.')
                 }
@@ -30,54 +32,70 @@ function MyDining() {
         fetchReservations()
     }, [])
 
-    // 가게 정보를 가져오는 함수 (사진 포함)
-    useEffect(() => {
-        const fetchStoreInfo = async storeSeq => {
-            try {
-                const response = await api.get(`/store/${storeSeq}`)
-                const photoResponse = await api.get(`/store/${storeSeq}/photos`)
-                return {
-                    ...response.data,
-                    photos: photoResponse.data, // 가게 사진 데이터 포함
+    // 각 예약의 리뷰 상태를 서버에서 가져오는 함수
+    const fetchReviewStatuses = async reservations => {
+        const reviewsStatus = {}
+        await Promise.all(
+            reservations.map(async reservation => {
+                try {
+                    const response = await api.get(
+                        `/reviews/${reservation.reservationId}`
+                    )
+                    if (response.status === 200) {
+                        reviewsStatus[reservation.reservationId] = true
+                    } else {
+                        reviewsStatus[reservation.reservationId] = false
+                    }
+                } catch (error) {
+                    reviewsStatus[reservation.reservationId] = false
                 }
-            } catch (error) {
-                console.log(`가게 정보를 불러오는데 실패했습니다: ${storeSeq}`)
-                return null
+            })
+        )
+        setReviewsMap(reviewsStatus)
+    }
+
+    // 각 예약의 가게 정보를 서버에서 가져오는 함수 (사진 포함)
+    const fetchAllStoreInfo = async reservations => {
+        const storeInfoPromises = reservations.map(async reservation => {
+            if (!storeInfoMap[reservation.storeSeq]) {
+                const storeInfo = await fetchStoreInfo(reservation.storeSeq)
+                return { storeSeq: reservation.storeSeq, storeInfo }
             }
-        }
-
-        if (reservations.length > 0) {
-            const fetchAllStoreInfo = async () => {
-                const storeInfoPromises = reservations.map(
-                    async reservation => {
-                        if (!storeInfoMap[reservation.storeSeq]) {
-                            const storeInfo = await fetchStoreInfo(
-                                reservation.storeSeq
-                            )
-                            return { storeSeq: reservation.storeSeq, storeInfo }
-                        }
-                        return {
-                            storeSeq: reservation.storeSeq,
-                            storeInfo: storeInfoMap[reservation.storeSeq],
-                        }
-                    }
-                )
-
-                const storeInfos = await Promise.all(storeInfoPromises)
-                const updatedStoreInfoMap = { ...storeInfoMap }
-                storeInfos.forEach(({ storeSeq, storeInfo }) => {
-                    if (storeInfo) {
-                        updatedStoreInfoMap[storeSeq] = storeInfo
-                    }
-                })
-                setStoreInfoMap(updatedStoreInfoMap)
+            return {
+                storeSeq: reservation.storeSeq,
+                storeInfo: storeInfoMap[reservation.storeSeq],
             }
+        })
 
-            fetchAllStoreInfo()
+        const storeInfos = await Promise.all(storeInfoPromises)
+        const updatedStoreInfoMap = { ...storeInfoMap }
+        storeInfos.forEach(({ storeSeq, storeInfo }) => {
+            if (storeInfo) {
+                updatedStoreInfoMap[storeSeq] = storeInfo
+            }
+        })
+        setStoreInfoMap(updatedStoreInfoMap)
+    }
+
+    // 가게 정보와 사진을 불러오는 API 호출 함수
+    const fetchStoreInfo = async storeSeq => {
+        try {
+            const response = await api.get(`/store/${storeSeq}`)
+            const photoResponse = await api.get(`/store/${storeSeq}/photos`)
+            return {
+                ...response.data,
+                photos: photoResponse.data, // 가게 사진 데이터 포함
+            }
+        } catch (error) {
+            console.log(
+                `가게 정보를 불러오는데 실패했습니다: ${storeSeq}`,
+                error
+            )
+            return null
         }
-    }, [reservations])
+    }
 
-    // 리뷰 상태 업데이트
+    // 리뷰 상태 업데이트 (다른 페이지에서 돌아온 후)
     useEffect(() => {
         if (location.state?.updatedReservationId) {
             const updatedId = location.state.updatedReservationId
@@ -88,11 +106,7 @@ function MyDining() {
     }, [location.state])
 
     // 예약 취소 처리 함수
-    const handleCancelReservation = async (
-        reservationId,
-        reservationDate,
-        reservationTime
-    ) => {
+    const handleCancelReservation = async reservationId => {
         const confirmed = window.confirm('정말로 예약을 취소하시겠습니까?')
         if (!confirmed) return
 
