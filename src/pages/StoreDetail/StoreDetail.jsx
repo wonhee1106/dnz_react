@@ -267,7 +267,7 @@ function StoreDetail() {
                                 <strong>{menu.name}</strong>
                                 <div>
                                     {menu.price
-                                        ? menu.price + '원'
+                                        ? menu.price 
                                         : '가격 정보 없음'}
                                 </div>
                                 {menu.description && <p>{menu.description}</p>}
