@@ -190,7 +190,7 @@ const OwnnerSignup = () => {
                     />
                     <InputGroup
                         type="date" title="생년월일"
-                        keyUp={handleSignupChange}
+                        onChange={handleSignupChange}
                         name="userBirthDate"
                     />
                     <InputGroup
