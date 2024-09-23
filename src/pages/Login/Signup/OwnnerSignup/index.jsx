@@ -12,15 +12,19 @@ import {
 import { validateSignupInputs } from '../../../../utils/validation'; // 입력값 검증 함수
 import { api } from '../../../../config/config'; // API 설정
 import { useNavigate } from 'react-router-dom'; // 페이지 네비게이션을 위한 훅
+import { useEffect } from "react";
 
 const OwnnerSignup = () => {
+
+
+
     const [signup, setSignup] = useState({
         userId: '',
         userPw: '',
         userPwConfirm: '',
         userName: '',
         userBirthDate: '',
-        userGender: '',
+        userGender: 'M',
         userPhoneNumber: '',
         userEmail: '',
     });
@@ -44,6 +48,15 @@ const OwnnerSignup = () => {
             [name]: value
         }));
     };
+
+    // const handleSignupChange = ({ name, value }) => {
+    //     setSignup(prev => {
+    //         const newState = { ...prev, [name]: value };
+    //         console.log("Updated signup state:", newState); // 추가
+    //         return newState;
+    //     });
+    // };
+
 
     const handleStoreDataChange = ({ name, value }) => {
         setStoreData(prev => ({
@@ -189,10 +202,15 @@ const OwnnerSignup = () => {
 
                     />
                     <InputGroup
-                        type="date" title="생년월일"
-                        keyUp={handleSignupChange}
+                        type="text"
+                        title="생년월일"
+                        keyUp={({ name, value }) => handleSignupChange({ name, value })}
                         name="userBirthDate"
+                        maxLength={8} // 최대 8자 입력 가능
                     />
+
+
+
                     <InputGroup
                         type="gender" title="성별"
                         genderValue={(value) => setSignup(prev => ({ ...prev, userGender: value }))}
@@ -230,16 +248,14 @@ const OwnnerSignup = () => {
                         click={requestEmailVerificationHandler}
                         name="userEmail"
                     />
-                   <InputGroup
-    type="text"
-    title="인증코드"
-    btnComment="확인"
-    placeholder="인증코드를 입력해 주세요"
-    keyUp={({ value }) => setVerificationCode(value)} // 여전히 keyUp 사용
-    click={verifyCodeHandler}
-/>
-
-
+                    <InputGroup
+                        type="text"
+                        title="인증코드"
+                        btnComment="확인"
+                        placeholder="인증코드를 입력해 주세요"
+                        keyUp={({ value }) => setVerificationCode(value)} // 여전히 keyUp 사용
+                        click={verifyCodeHandler}
+                    />
 
                     <button className={styles.signupButton} onClick={handleSignupOwner}>회원가입</button>
                     <button onClick={() => navigate("/SignType")}>뒤로가기</button>

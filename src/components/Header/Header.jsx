@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from 'utils/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faBookmark, faUser } from '@fortawesome/free-regular-svg-icons';
+import { api } from '../../config/config'; // API 요청을 위한 Axios 설정 불러오기
 
 const Header = () => {
   const navigate = useNavigate();
@@ -14,41 +15,65 @@ const Header = () => {
   const [popupMessages, setPopupMessages] = useState([]); // 팝업 알림 메시지 저장용 상태 추가
   const [searchQuery, setSearchQuery] = useState(''); // 검색 입력값 상태
   const serverUrl = process.env.REACT_APP_SERVER_URL; // 환경 변수에서 서버 URL 가져오기
-
   const [ws, setWs] = useState(null); // WebSocket 상태 관리
 
+  // 페이지 로드 시 읽지 않은 알림을 서버에서 가져오는 useEffect
   useEffect(() => {
-    let socket; // WebSocket 변수
-    const jwtToken = sessionStorage.getItem('token'); // sessionStorage에서 JWT 토큰 가져오기
+    const jwtToken = sessionStorage.getItem('token');
+    if (isAuth && jwtToken) {
+      api.get(`${serverUrl}/api/activities/unread`, {
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      })
+        .then((response) => {
+          const unreadActivities = response.data;
+          setNotificationCount(unreadActivities.length); // 실제 읽지 않은 알림 갯수 설정
+          setUnreadNotifications(unreadActivities.length > 0); // 읽지 않은 알림 여부 설정
+        })
+        .catch((error) => {
+          console.error('알림을 불러오는 중 오류 발생:', error);
+        });
+    }
+  }, [isAuth, serverUrl]);
 
-    if (isAuth && jwtToken && serverUrl) {
-      console.log("WebSocket을 연결 중...");
+  // WebSocket 연결 및 알림 수신 로직
+  useEffect(() => {
+    const jwtToken = sessionStorage.getItem('token');
 
-      // WebSocket 연결
-      socket = new WebSocket(`${serverUrl}/alarm?token=${encodeURIComponent(jwtToken)}`);
+    if (isAuth && jwtToken && serverUrl && !ws) {
+      // WebSocket이 이미 연결되지 않은 경우에만 연결
+      const socket = new WebSocket(`${serverUrl}/alarm?token=${encodeURIComponent(jwtToken)}`);
 
       socket.onopen = () => {
-        console.log("WebSocket 연결 성공");
+        console.log('WebSocket 연결 성공');
       };
 
       socket.onmessage = (event) => {
         try {
-          const message = JSON.parse(event.data); // 수신된 메시지를 JSON으로 변환
-          console.log("수신된 알림 메시지 (JSON):", message);
+          const message = JSON.parse(event.data);
+          console.log('수신된 알림 메시지 (JSON):', message);
 
-          // 공지사항 등록 및 수정 알림 처리
-          setNotificationCount((prevCount) => prevCount + 1); // 알림 카운트 증가
-          setUnreadNotifications(true); // 읽지 않은 알림 표시
+          // 수신 후 서버에서 실제 읽지 않은 알림 갯수 다시 가져오기
+          api.get(`${serverUrl}/api/activities/unread`, {
+            headers: { Authorization: `Bearer ${jwtToken}` },
+          })
+            .then((response) => {
+              const unreadActivities = response.data;
+              setNotificationCount(unreadActivities.length); // 읽지 않은 알림 갯수 업데이트
+              setUnreadNotifications(unreadActivities.length > 0); // 읽지 않은 알림 상태 업데이트
+            })
+            .catch((error) => {
+              console.error('알림을 불러오는 중 오류 발생:', error);
+            });
 
           // 팝업 알림 추가
           setPopupMessages((prevMessages) => [...prevMessages, message.content]);
 
           // 3초 후 팝업 알림 자동 삭제
           setTimeout(() => {
-            setPopupMessages((prevMessages) => prevMessages.slice(1)); // 첫 번째 메시지 삭제
+            setPopupMessages((prevMessages) => prevMessages.slice(1));
           }, 3000);
         } catch (error) {
-          console.log("수신된 알림 메시지 (텍스트):", event.data);
+          // 메시지가 JSON 형식이 아닌 경우
           setNotificationCount((prevCount) => prevCount + 1); // 알림 카운트 증가
           setUnreadNotifications(true);
 
@@ -57,29 +82,32 @@ const Header = () => {
 
           // 3초 후 팝업 알림 자동 삭제
           setTimeout(() => {
-            setPopupMessages((prevMessages) => prevMessages.slice(1)); // 첫 번째 메시지 삭제
+            setPopupMessages((prevMessages) => prevMessages.slice(1));
           }, 3000);
         }
       };
 
       socket.onclose = () => {
-        console.log("WebSocket 연결이 닫혔습니다.");
+        console.log('WebSocket 연결이 닫혔습니다.');
+        setWs(null); // WebSocket 연결이 닫히면 상태 초기화
       };
 
       socket.onerror = (error) => {
-        console.error("WebSocket 오류:", error);
-        alert("서버와의 연결에 실패했습니다.");
+        console.error('WebSocket 오류:', error);
+        alert('서버와의 연결에 실패했습니다.');
       };
 
-      setWs(socket); // WebSocket 상태 저장
+      setWs(socket); // WebSocket 상태 업데이트
     }
 
+    // 컴포넌트가 언마운트될 때 WebSocket 연결 해제
     return () => {
-      if (socket) {
-        socket.close(); // 컴포넌트가 언마운트될 때 WebSocket 연결 해제
+      if (ws) {
+        ws.close();
+        setWs(null);
       }
     };
-  }, [isAuth, serverUrl]);
+  }, [isAuth, serverUrl, ws]); // WebSocket 연결 중복 방지를 위해 ws를 의존성에 추가
 
   // 로고 클릭 시 메인 페이지로 이동하는 함수 정의
   const handleLogoClick = () => {
@@ -102,7 +130,7 @@ const Header = () => {
   const handleLogout = () => {
     if (ws) {
       ws.close(); // 로그아웃 시 WebSocket 연결 해제
-      console.log("WebSocket 연결 해제");
+      console.log('WebSocket 연결 해제');
     }
 
     setNotificationCount(0); // 알림 상태 초기화

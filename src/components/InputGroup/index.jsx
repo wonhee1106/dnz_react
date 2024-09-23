@@ -1,7 +1,7 @@
 import styles from "./index.module.css";
 import { useState } from 'react';
 
-const InputGroup = ({ type, title, description, placeholder = "", btnComment, click, keyUp, genderValue, name }) => {
+const InputGroup = ({ type, title, description, placeholder = "", btnComment, click, keyUp, genderValue, name ,maxLength }) => {
     const [gender, setGender] = useState('M');
 
     const handleKeyUp = (e) => {
@@ -22,7 +22,13 @@ const InputGroup = ({ type, title, description, placeholder = "", btnComment, cl
             </div>
             <div className={styles.Content}>
                 {type !== "gender" ? 
-                    <input type={type} placeholder={placeholder} onKeyUp={handleKeyUp} name={name} />
+                    <input 
+                    type={type} 
+                    placeholder={placeholder} 
+                    onKeyUp={handleKeyUp} 
+                    name={name} 
+                    maxLength={maxLength} // maxLength 속성 추가
+                />
                     :
                     <>
                         <label htmlFor="genderM" id={gender === "M" && styles.genderM} onClick={() => { setGender("M"); genderValue("M"); }} className={styles.gender}>남</label>
