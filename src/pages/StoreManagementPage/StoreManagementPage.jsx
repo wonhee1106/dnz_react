@@ -168,7 +168,7 @@ const StoreManagementPage = () => {
         } else {
             fetchReservations(currentStatus); // 예약 상태에 따라 필터링
         }
-    }, [currentStatus, reviews]);
+    }, [currentStatus]);
 
     const handleMenuClick = (status) => {
         setCurrentStatus(status); // 메뉴 클릭 시 상태 변경
@@ -228,6 +228,7 @@ const StoreManagementPage = () => {
                 }));
     
                 alert("답글을 다는데 성공했습니다.");
+                fetchReviews();
             }
         } catch (error) {
             if (error.response && error.response.status === 409) {
