@@ -12,6 +12,8 @@ import {
   faChevronLeft,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
+import {api} from '../../../config/config'
+import { useAuthStore } from '../../../utils/store';
 import defaultImage from '../../../img/store.png';
 
 const PopularRestaurants = () => {
@@ -27,6 +29,12 @@ const PopularRestaurants = () => {
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
   const navigate = useNavigate();
+//   const [bookmark ,setbookmark] =useState({
+//     userId:'',
+//     storeSeq:'',
+//     photoId:'',
+//     storeSeq:''
+// });
 
   const fetchRestaurantPhotos = (storeSeq) => {
     return fetch(`${serverURL}/photos/store/${storeSeq}`, {
@@ -103,15 +111,37 @@ const PopularRestaurants = () => {
     navigate(`/store/${storeSeq}`);
   };
 
-  const toggleBookmark = (e, restaurantId, setRestaurants, restaurants) => {
+  const toggleBookmark = async (e, restaurantId, setRestaurants, restaurants) => {
     e.stopPropagation();
-    const updatedRestaurants = restaurants.map((restaurant) =>
-      restaurant.storeSeq === restaurantId
-        ? { ...restaurant, isBookmarked: !restaurant.isBookmarked }
-        : restaurant
-    );
-    setRestaurants(updatedRestaurants);
+    const { userId } = useAuthStore.getState();
+  
+    // 북마크 추가/삭제를 위한 bookmark 객체 생성
+    const bookmark = {
+      userId,
+      storeSeq: restaurantId,
+    };
+  
+    try {
+      // API 호출: 북마크 추가/삭제
+      const response = await api.post(`/bookmark/add`, bookmark);
+  
+      if (response.status === 200) {
+        // 성공적으로 북마크 상태가 변경된 경우
+        const updatedRestaurants = restaurants.map((restaurant) =>
+          restaurant.storeSeq === restaurantId
+            ? { ...restaurant, isBookmarked: !restaurant.isBookmarked }
+            : restaurant
+        );
+        setRestaurants(updatedRestaurants);
+      } else {
+        console.error('Failed to toggle bookmark:', response.status);
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+    }
   };
+  
+  
 
   const renderRestaurantCard = (restaurant, restaurants, setRestaurants) => (
     <div
@@ -214,7 +244,7 @@ const PopularRestaurants = () => {
       <div id="western" className="popular-restaurants container gutter-sm">
         <div className="section-header-wrap">
           <h2 className="section-header">카페</h2>
-          <button className="btn-more" onClick={() => handleMoreClick('카페,디저트,양식')}>
+          <button className="btn-more" onClick={() => handleMoreClick('카페,디저트')}>
             더보기
           </button>
         </div>
