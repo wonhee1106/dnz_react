@@ -469,7 +469,15 @@ const StoreManagementPage = () => {
         <div className={styles.container}>
             {/* 좌측 메뉴 */}
             <div className={styles.sidebar}>
-                <h2 className={styles.sidebarTitle}>가게 관리</h2>
+                <div className={styles.sidebarHeader}>
+                    <h2 className={styles.sidebarTitle}>가게 관리</h2>
+                    <div 
+                        className={styles.mainMenuItem}
+                        onClick={() => window.location.href = '/'} // 메인 화면으로 이동
+                    >
+                        <i className="fas fa-home"></i>
+                    </div>
+                </div>
                 <div 
                     className={`${styles.menuItem} ${currentStatus === 'pending' ? styles.selectedMenu : ''}`} 
                     onClick={() => handleMenuClick('pending')}

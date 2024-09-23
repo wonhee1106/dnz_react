@@ -19,7 +19,7 @@
 
 .sidebarTitle {
     font-size: 24px;
-    margin-bottom: 30px;
+    /* margin-bottom: 12px; */
     font-weight: bold;
     color: #ffffff;
 }
@@ -487,4 +487,23 @@
 .addButton:hover {
     background-color: #229954;
     transform: translateY(-2px);
+}
+
+/* 사이드바 헤더 스타일 */
+.sidebarHeader {
+    display: flex;
+    justify-content: space-between; /* 좌우로 요소를 배치 */
+    align-items: center; /* 세로로 중앙 정렬 */
+    margin-bottom: 20px; /* 아래 여백 */
+}
+
+.mainMenuItem {
+    cursor: pointer;
+    color: white; /* 아이콘 색상을 다른 메뉴와 일치시킴 */
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+
+.mainMenuItem:hover {
+    color: #b3c4d3; /* 호버 시 색상 변경 */
 }

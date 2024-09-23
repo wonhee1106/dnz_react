@@ -1,3 +1,5 @@
+/* common.module.css */
+
 * {
     box-sizing: border-box;
 }
@@ -7,52 +9,83 @@ body {
     font-family: Arial, sans-serif;
 }
 
-/* common.module.css */
 .container {
-    height: auto;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; 
+    min-height: 100vh;
+    background-color: #f9f9f9; /* 배경색 추가 */
 }
 
-
-/* Common box styles */
 .box {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 400px;
-    height: 40vh;
-    padding: 10px;
-    border: 1px solid #ddd;
+    padding: 20px; /* 패딩 추가 */
     border-radius: 5px;
-    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff; /* 박스 배경색 */
 }
 
-/* Common input styles */
 .input {
     width: 100%;
     padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ddd;
+    margin: 10px 0;
+    border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
 }
 
+.input:focus {
+    border-color: #007bff;
+    outline: none;
+}
 
 .toggleButton {
     flex-direction: row;
     font-size: 15px;
     padding: 10px 20px;
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    background-color: white;
+    background-color: #007bff; /* 버튼 배경색 통일 */
+    color: white; /* 버튼 텍스트 색상 */
+    border-radius: 5px; /* 버튼 테두리 반경 */
+    cursor: pointer; /* 커서 스타일 */
+    transition: background-color 0.3s; /* 호버 효과 */
+}
+
+.toggleButton:hover {
+    background-color: #0056b3; /* 호버 시 색상 변화 */
 }
 
 .btns {
-    position: relative;
-    gap: 5px;
     display: flex;
+    gap: 10px; /* 버튼 간격 조정 */
+}
+
+.loginContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto; /* 높이 조정 */
+}
+
+.loginBtn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff; /* 버튼 배경색 통일 */
+    color: white; /* 버튼 텍스트 색상 */
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* 호버 효과 */
+}
+
+.loginBtn:hover {
+    background-color: #0056b3; /* 호버 시 색상 변화 */
 }
