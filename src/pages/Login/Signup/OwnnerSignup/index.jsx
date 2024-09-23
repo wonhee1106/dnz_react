@@ -204,6 +204,7 @@ const OwnnerSignup = () => {
                     <InputGroup
                         type="text"
                         title="생년월일"
+                        placeholder="YYYYMMDD를 입력해 주세요"
                         keyUp={({ name, value }) => handleSignupChange({ name, value })}
                         name="userBirthDate"
                         maxLength={8} // 최대 8자 입력 가능
@@ -218,6 +219,7 @@ const OwnnerSignup = () => {
                     />
                     <InputGroup
                         type="text" title="사업자 번호"
+                        placeholder="사업자 번호를 입력하여 주세요"
                         keyUp={handleStoreDataChange}
                         name="businessNumber"
 
@@ -226,19 +228,29 @@ const OwnnerSignup = () => {
                     />
                     <InputGroup
                         type="text" title="가게 주소"
+                        placeholder="가게주소를 등록해 주세요"
                         keyUp={handleStoreDataChange}
                         name="storeAddress"
 
                     />
                     <InputGroup
                         type="text" title="대표 성함"
+                        placeholder="매장 점주님의 성함을 입력해 주세요"
                         keyUp={handleStoreDataChange}
                         name="representativeName"
                     />
                     <InputGroup
-                        type="text" title="업종"
+                        type="select" title="업종"
+                        // placeholder="매장 업종을 선택해주세요"
                         keyUp={handleStoreDataChange}
                         name="businessType"
+                        options={[
+                            { value: '', label: '업종을 선택하세요' }, // 기본 선택 옵션
+                            { value: '일식', label: '일식' },
+                            { value: '양식', label: '양식' },
+                            { value: '중식', label: '중식' },
+                            { value: '디저트', label: '디저트' },
+                        ]}
                     />
                     <InputGroup
                         type="email" title="이메일"
