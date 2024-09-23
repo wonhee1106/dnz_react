@@ -12,7 +12,8 @@ import {
   faChevronLeft,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
-
+import {api} from '../../../config/config'
+import { useAuthStore } from '../../../utils/store';
 const PopularRestaurants = () => {
   const [koreanRestaurants, setKoreanRestaurants] = useState([]);
   const [chineseRestaurants, setChineseRestaurants] = useState([]);
@@ -26,6 +27,12 @@ const PopularRestaurants = () => {
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
   const navigate = useNavigate();
+//   const [bookmark ,setbookmark] =useState({
+//     userId:'',
+//     storeSeq:'',
+//     photoId:'',
+//     storeSeq:''
+// });
 
   const fetchRestaurantPhotos = (storeSeq) => {
     return fetch(`${serverURL}/photos/store/${storeSeq}`, {
@@ -102,15 +109,37 @@ const PopularRestaurants = () => {
     navigate(`/store/${storeSeq}`);
   };
 
-  const toggleBookmark = (e, restaurantId, setRestaurants, restaurants) => {
+  const toggleBookmark = async (e, restaurantId, setRestaurants, restaurants) => {
     e.stopPropagation();
-    const updatedRestaurants = restaurants.map((restaurant) =>
-      restaurant.storeSeq === restaurantId
-        ? { ...restaurant, isBookmarked: !restaurant.isBookmarked }
-        : restaurant
-    );
-    setRestaurants(updatedRestaurants);
+    const { userId } = useAuthStore.getState();
+  
+    // 북마크 추가/삭제를 위한 bookmark 객체 생성
+    const bookmark = {
+      userId,
+      storeSeq: restaurantId,
+    };
+  
+    try {
+      // API 호출: 북마크 추가/삭제
+      const response = await api.post(`/bookmark/add`, bookmark);
+  
+      if (response.status === 200) {
+        // 성공적으로 북마크 상태가 변경된 경우
+        const updatedRestaurants = restaurants.map((restaurant) =>
+          restaurant.storeSeq === restaurantId
+            ? { ...restaurant, isBookmarked: !restaurant.isBookmarked }
+            : restaurant
+        );
+        setRestaurants(updatedRestaurants);
+      } else {
+        console.error('Failed to toggle bookmark:', response.status);
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+    }
   };
+  
+  
 
   const renderRestaurantCard = (restaurant, restaurants, setRestaurants) => (
     <div

@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'; // useRef 추가
-import './Alam.css'; // 스타일 파일
+import './Alam.css' ; // 스타일 파일
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faEnvelope, faEnvelopeOpen } from '@fortawesome/free-regular-svg-icons'; // 필요한 아이콘 추가
+import { faTimes } from '@fortawesome/free-solid-svg-icons'; // X 표시 아이콘 추가
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode'; // jwtDecode import 수정 (default import 사용)
+import jwtDecode from 'jwt-decode'; // jwtDecode import 수정 (default import 사용)
 import Pagination from '@mui/material/Pagination'; // Material-UI Pagination 가져오기
 import { Editor } from '@toast-ui/react-editor'; // Toast UI Editor 임포트
 import '@toast-ui/editor/dist/toastui-editor.css'; // Toast UI Editor 스타일 임포트
 import Modal from 'react-modal'; // react-modal 가져오기
+import { useAuthStore } from '../../store/store'; // Zustand 스토어에서 공지사항 상태 가져오기
+import DOMPurify from 'dompurify'; // DOMPurify 추가 (XSS 방지)
+import { marked } from 'marked'; // 추가: 마크다운을 HTML로 변환하기 위한 라이브러리
 
 // 모달 스타일 설정
 Modal.setAppElement('#root');
@@ -22,13 +26,16 @@ const customStyles = {
         transform: 'translate(-50%, -50%)',
         width: '50%',  // 모달 너비 설정
         maxWidth: '800px',
-        height: 'auto', // 높이는 자동으로 설정
-        padding: '20px',  // 패딩 설정
-        borderRadius: '10px', // 둥근 모서리
+        padding: '20px',
+        borderRadius: '10px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        maxHeight: '80vh', // 모달의 최대 높이를 화면의 80%로 설정
+        overflowY: 'auto', // 스크롤이 가능하도록 설정
+        zIndex: 2000, // z-index를 2000으로 설정하여 고정 탭보다 위에 오도록 설정
     },
     overlay: {
         backgroundColor: 'rgba(0, 0, 0, 0.75)',  // 어두운 배경
+        zIndex: 1500,  // 오버레이의 z-index도 적절히 조정
     },
 };
 
@@ -51,36 +58,62 @@ const Alam = () => {
     const [editorContent, setEditorContent] = useState(''); // 에디터 내용
     const [title, setTitle] = useState(''); // 제목 상태 추가
     const [category, setCategory] = useState('공지'); // 카테고리 상태 추가
-    const [notices, setNotices] = useState([]); // 공지사항을 상태로 관리
     const editorRef = useRef(); // editorRef 추가
 
     const [selectedPost, setSelectedPost] = useState(null); // 선택된 게시물의 세부 정보를 저장할 상태 추가
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); // 세부 모달 상태
     const [isEditMode, setIsEditMode] = useState(false); // 수정 모드 상태
 
+    const { notices, setNotices } = useAuthStore(); // Zustand에서 공지사항 상태와 setter 가져오기
+
     const serverUrl = process.env.REACT_APP_SERVER_URL; // 서버 URL 가져오기
     const jwtToken = sessionStorage.getItem('token'); // 세션에서 JWT 토큰 가져오기
+
+    // (추가) WebSocket 연결 상태
+    const [socket, setSocket] = useState(null); // WebSocket 인스턴스 상태 추가
+
+    // GCS 이미지 업로드를 위한 상태
+    const [imageFile, setImageFile] = useState(null); // 이미지 파일 상태
+    const [uploadedImageUrl, setUploadedImageUrl] = useState(''); // 업로드된 이미지 URL 상태
 
     // JWT 토큰이 없으면 로그인 페이지로 리다이렉트
     useEffect(() => {
         if (!jwtToken) {
-            window.location.href = '/login';
+            window.location.href = '/login'; // (기존 주석 유지)
         }
+
+        // (추가) WebSocket 연결 설정
+        const ws = new WebSocket(`ws://localhost:8080/alarm?token=${jwtToken}`);
+        
+        ws.onmessage = (event) => {
+            const data = event.data;
+            console.log("실시간 알림 수신: ", data);
+
+            // (추가) 알림을 activities에 추가
+            setActivities(prevActivities => [...prevActivities, { activityDescription: data, isRead: 0, activityDate: new Date().toISOString() }]);
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket 연결 종료');
+        };
+
+        setSocket(ws);
+
+        return () => {
+            if (ws) ws.close();
+        };
     }, [jwtToken]);
 
-    const decodedToken = jwtDecode(jwtToken); // JWT 토큰을 디코딩하여 사용자 정보 가져오기
-    const userSeq = decodedToken.userSeq; // 사용자 시퀀스 추출
-
-    // 공지사항을 DB에서 불러오는 함수 추가
+    // 공지사항을 DB에서 불러오는 함수
     const fetchNotices = useCallback(async () => {
         setLoading(true); // 로딩 상태 시작
         try {
             const response = await axios.get(`${serverUrl}/api/posts`, {
                 headers: {
-                    Authorization: `Bearer ${jwtToken}`
+                    Authorization: `Bearer ${jwtToken}` // JWT 토큰 Bearer로 전송 (기존 주석 유지)
                 }
             });
-            setNotices(response.data); // 받아온 공지사항 데이터를 상태로 저장
+            setNotices(response.data); // Zustand 상태로 공지사항 저장
             setTotalNoticePages(Math.ceil(response.data.length / ITEMS_PER_PAGE)); // 페이지 수 계산
         } catch (err) {
             console.error("Error fetching notices:", err.response ? err.response.data : err.message);
@@ -88,7 +121,48 @@ const Alam = () => {
         } finally {
             setLoading(false); // 로딩 상태 종료
         }
-    }, [serverUrl, jwtToken]);
+    }, [serverUrl, jwtToken, setNotices]);
+
+    // GCS 이미지 업로드 핸들러 추가
+    const handleImageUpload = async (file) => {
+        const formData = new FormData();
+        formData.append('file', file); // FormData로 파일을 추가
+        
+        try {
+            const response = await axios.post(`${serverUrl}/api/posts/upload`, formData, {
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`, // 인증 헤더 추가
+                    'Content-Type': 'multipart/form-data' // 파일 업로드의 Content-Type 설정
+                }
+            });
+
+            // 업로드된 이미지의 URL 반환
+            return response.data.url;
+        } catch (error) {
+            console.error("이미지 업로드 중 오류 발생:", error);
+            return null; // 실패 시 null 반환
+        }
+    };
+
+    // 에디터에서 이미지가 추가될 때 실행되는 함수
+    const handleImageUploadInEditor = async (blob, callback) => {
+        const formData = new FormData();
+        formData.append('file', blob);  // Blob을 FormData로 추가
+
+        try {
+            const response = await axios.post(`${serverUrl}/api/posts/upload`, formData, {
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            const imageUrl = response.data;
+            console.log("Uploaded Image URL:", imageUrl);
+            callback(imageUrl);  // 에디터에 이미지 URL을 삽입
+        } catch (error) {
+            console.error('이미지 업로드 중 오류 발생:', error);
+        }
+    };
 
     // 활동 데이터를 가져오는 함수
     const fetchActivities = useCallback(async () => {
@@ -96,7 +170,7 @@ const Alam = () => {
         try {
             const response = await axios.get(`${serverUrl}/api/activities/user`, {
                 headers: {
-                    Authorization: `Bearer ${jwtToken}`
+                    Authorization: `Bearer ${jwtToken}` // JWT 토큰 포함
                 }
             });
             setActivities(response.data);
@@ -117,7 +191,7 @@ const Alam = () => {
     // 페이지가 로드될 때 활동 데이터를 가져옴
     useEffect(() => {
         if (activeTab === '활동') {
-            fetchActivities();
+            fetchActivities(); // 기존 주석 유지
         }
         setTotalNoticePages(Math.ceil(notices.length / ITEMS_PER_PAGE)); // 전체 공지 페이지 수 계산
     }, [activeTab, fetchActivities, notices]);
@@ -152,14 +226,26 @@ const Alam = () => {
         setCurrentReadPage(newPage);
     };
 
-    // 날짜와 시간을 포맷하는 함수
+    // 날짜와 시간을 포맷하는 함수 수정
     const formatDateTime = (dateString) => {
+        if (!dateString) return '날짜 정보 없음'; // Null이나 Undefined 처리
+
         const date = new Date(dateString);
+
+        // 유효하지 않은 날짜 처리
+        if (isNaN(date.getTime())) {  
+            return 'Invalid Date';
+        }
+        
         const options = {
-            year: 'numeric', month: 'long', day: 'numeric',
-            hour: '2-digit', minute: '2-digit', second: '2-digit'
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
         };
-        return date.toLocaleDateString(undefined, options);
+        return date.toLocaleString(undefined, options);
     };
 
     // 게시물 클릭 시 세부내용 모달 열기
@@ -168,13 +254,25 @@ const Alam = () => {
         setSelectedPost(notice);  // 클릭한 게시물 데이터를 상태에 저장
         setIsDetailModalOpen(true); // 모달 열기
     };
-
+    
     // 세부내용 모달 닫기
     const closeDetailModal = () => {
         setIsDetailModalOpen(false);
         setSelectedPost(null); // 선택된 게시물 초기화
     };
 
+    // Markdown을 HTML로 변환하고 이미지 렌더링
+    const getSanitizedContent = (content) => {
+        const rawHtml = marked(content || "내용이 없습니다.", {
+            renderer: new marked.Renderer()
+        });
+    
+        // 이미지에 인라인 스타일을 추가하여 크기 조정
+        const sanitizedHtml = rawHtml.replace(/<img/g, '<img style="max-width:100%;height:auto;display:block;margin:0 auto;"');
+        
+        return { __html: DOMPurify.sanitize(sanitizedHtml) };
+    };
+    
     // 현재 공지 페이지에 표시할 데이터
     const currentNotices = notices.slice(
         (currentNoticePage - 1) * ITEMS_PER_PAGE,
@@ -207,7 +305,7 @@ const Alam = () => {
         try {
             const response = await axios.post(`${serverUrl}/api/activities/markAsRead/${activityId}`, null, {
                 headers: {
-                    Authorization: `Bearer ${jwtToken}`,
+                    Authorization: `Bearer ${jwtToken}`,  // JWT 토큰을 Bearer로 포함
                     'Content-Type': 'application/json',
                 },
             });
@@ -243,6 +341,8 @@ const Alam = () => {
         setTitle(''); // 제목 초기화
         setEditorContent(''); // 에디터 내용 초기화
         editorRef.current?.getInstance().setMarkdown(''); // 에디터 내용 초기화
+        setImageFile(null); // 이미지 파일 초기화
+        setUploadedImageUrl(''); // 업로드된 이미지 URL 초기화
     };
 
     // 제목 입력 핸들러
@@ -261,37 +361,32 @@ const Alam = () => {
     const handleSubmit = async () => {
         try {
             const formattedTitle = `[ ${category || '공지'} ] ${title}`;
-            const postData = {
+            
+            const formData = new FormData();
+            formData.append('post', new Blob([JSON.stringify({
                 title: formattedTitle,
-                content: editorContent, // 에디터에서 가져온 내용을 저장
-                category: category || '공지'  // category가 undefined일 경우 기본값을 '공지'로 설정
-            };
-
+                content: editorContent,  // 게시물 텍스트만 content에 들어감
+                category: category || '공지',
+            })], { type: 'application/json' }));
+    
             if (isEditMode && selectedPost) {
                 // 수정인 경우
-                await axios.put(`${serverUrl}/api/posts/${selectedPost.postId}`, postData, {
+                await axios.put(`${serverUrl}/api/posts/${selectedPost.postId}`, formData, {
                     headers: {
                         Authorization: `Bearer ${jwtToken}`,
-                        'Content-Type': 'application/json'
                     }
                 });
-                console.log("수정된 제목:", formattedTitle);
             } else {
                 // 새 게시물 작성인 경우
-                await axios.post(`${serverUrl}/api/posts`, postData, {
+                await axios.post(`${serverUrl}/api/posts`, formData, {
                     headers: {
                         Authorization: `Bearer ${jwtToken}`,
-                        'Content-Type': 'application/json'
                     }
                 });
-                console.log("제출된 제목:", formattedTitle);
             }
-
-            // 공지사항 리스트를 다시 불러옴
-            await fetchNotices();
-
-            // 모달 닫기 및 상태 초기화
-            closeModal(); // 모달 닫기 및 내용 초기화 호출
+    
+            await fetchNotices();  // 공지사항 갱신
+            closeModal();  // 모달 닫기
         } catch (error) {
             console.error("게시물 처리 중 오류 발생:", error);
         }
@@ -302,8 +397,15 @@ const Alam = () => {
         setModalIsOpen(true); // 수정 모달 열기 (글쓰기 모달 재사용)
         setIsEditMode(true); // 수정 모드 활성화
         setTitle(selectedPost.title.replace(/\[.*?\]/, '').trim()); // 제목에서 카테고리 부분 제거
-        editorRef.current?.getInstance().setMarkdown(selectedPost.content); // 수정할 내용 설정
         setCategory(selectedPost.category); // 카테고리 설정
+
+        // 에디터에 선택된 게시물의 content 설정
+        setTimeout(() => {
+            if (editorRef.current) {
+                editorRef.current.getInstance().setMarkdown(selectedPost.content); // 에디터 내용 설정
+            }
+        }, 100); // 약간의 딜레이를 추가하여 에디터가 렌더링된 후에 설정
+
         setIsDetailModalOpen(false); // 상세 모달 닫기
     };
 
@@ -356,7 +458,7 @@ const Alam = () => {
                                         onClick={() => handleNoticeClick(notice)} // 클릭 시 세부내용 모달 열기
                                     >
                                         <div className="notice-title">{notice.title}</div> {/* title에 이미 카테고리가 포함됨 */}
-                                        <div className="notice-date">{notice.date || notice.created_at}</div> {/* 작성일 필드 수정 */}
+                                        <div className="notice-date">{notice.updatedAt ? formatDateTime(notice.updatedAt) : '날짜 정보 없음'}</div> {/* 수정된 날짜만 표시 */}
                                     </li>
                                 ))}
                             </ul>
@@ -487,11 +589,15 @@ const Alam = () => {
                     <Editor
                         ref={editorRef} // editorRef 추가
                         previewStyle="vertical"
-                        height="400px"
+                        height="300px"
                         initialEditType="wysiwyg"
                         useCommandShortcut={false}
                         onChange={handleEditorChange}
+                        hooks={{
+                            addImageBlobHook: handleImageUploadInEditor, // 에디터에서 이미지 업로드 시 실행
+                        }}
                     />
+
                     <div className="modal-buttons">
                         <button className="submit-button" onClick={handleSubmit}>{isEditMode ? '수정 완료' : '글쓰기 완료'}</button>
                         <button className="close-button" onClick={closeModal}>닫기</button>
@@ -505,27 +611,31 @@ const Alam = () => {
                     style={customStyles}
                     contentLabel="게시물 세부내용"
                 >
-                    {selectedPost && ( // 선택된 게시물이 있으면 렌더링
+                    {selectedPost && (
                         <div>
                             <h2>{selectedPost.title}</h2>
-                            <p>{selectedPost.content || "내용이 없습니다."}</p> {/* 본문 내용이 없을 경우 대비 */}
-                            
-                            {/* 작성일 추가 */}
+
+                            {/* DOMPurify로 XSS 방지 처리 후, 마크다운을 HTML로 변환하여 렌더링 */}
+                            <div
+                                dangerouslySetInnerHTML={getSanitizedContent(selectedPost.content)}
+                            />
+
                             <div style={{ marginTop: '10px', color: '#999', fontSize: '14px' }}>
-                                <p><strong>작성일:</strong> {formatDateTime(selectedPost.created_at) || "작성일 정보 없음"}</p> {/* 작성일 표시 */}
-                                <p><strong>수정일:</strong> {formatDateTime(selectedPost.updated_at) || "수정일 정보 없음"}</p> {/* 수정일 표시 */}
+                                <p><strong>작성일:</strong> {formatDateTime(selectedPost.createdAt)}</p>
+                                <p><strong>수정일:</strong> {formatDateTime(selectedPost.updatedAt)}</p>
+                            </div>
+
+                            <div className="bottom-buttons">
+                                <button className="action-button edit" onClick={handleEditClick}>수정</button>
+                                <button className="action-button delete" onClick={handleDeleteClick}>삭제</button>
                             </div>
                         </div>
                     )}
-                    
-                    <div className="modal-buttons">
-                        <button className="edit-button" onClick={handleEditClick}>수정</button>
-                        <button className="delete-button" onClick={handleDeleteClick}>삭제</button>
-                    </div>
-                    
-                    <button onClick={closeDetailModal} className="close-button">닫기</button>
+                    <button onClick={closeDetailModal} className="close-icon-button">
+                        <FontAwesomeIcon icon={faTimes} className="close-icon" />
+                    </button>
                 </Modal>
-            </div>
+            </div>  
         </div>
     );
 };
