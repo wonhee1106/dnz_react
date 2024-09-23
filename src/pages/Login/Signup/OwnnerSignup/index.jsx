@@ -120,91 +120,91 @@
                 });
         };
 
-        // const requestEmailVerificationHandler = () => {
-        //     const validationError = validateSignupInputs(signup);
-        //     if (validationError) {
-        //         alert(validationError);
-        //         return;
-        //     }
+        const requestEmailVerificationHandler = () => {
+            const validationError = validateSignupInputs(signup);
+            if (validationError) {
+                alert(validationError);
+                return;
+            }
 
-        //     if (!signup.userEmail) {
-        //         alert('이메일을 입력해 주세요');
-        //         return;
-        //     }
+            if (!signup.userEmail) {
+                alert('이메일을 입력해 주세요');
+                return;
+            }
 
-        //     requestEmailVerification(signup.userEmail)
-        //         .then(() => {
-        //             alert('이메일이 전송되었습니다. 이메일을 확인해주세요.');
-        //             setIsVerificationRequestSent(true);
-        //         })
-        //         .catch(() => alert('이메일 전송 실패, 다시 시도하여 주세요'));
-        // };
+            requestEmailVerification(signup.userEmail)
+                .then(() => {
+                    alert('이메일이 전송되었습니다. 이메일을 확인해주세요.');
+                    setIsVerificationRequestSent(true);
+                })
+                .catch(() => alert('이메일 전송 실패, 다시 시도하여 주세요'));
+        };
 
-        // const verifyCodeHandler = () => {
-        //     if (!verificationCode) {
-        //         alert('인증 코드를 입력해 주세요.');
-        //         return;
-        //     }
+        const verifyCodeHandler = () => {
+            if (!verificationCode) {
+                alert('인증 코드를 입력해 주세요.');
+                return;
+            }
 
-        //     verifyEmailCode(signup.userEmail, verificationCode)
-        //         .then(resp => {
-        //             if (resp.data === 'verified') {
-        //                 setIsEmailVerified(true);
-        //                 alert('이메일 인증 완료');
-        //             } else {
-        //                 alert('인증 코드가 올바르지 않습니다.');
-        //             }
-        //         })
-        //         .catch(() => alert('인증 실패'));
-        // };
+            verifyEmailCode(signup.userEmail, verificationCode)
+                .then(resp => {
+                    if (resp.data === 'verified') {
+                        setIsEmailVerified(true);
+                        alert('이메일 인증 완료');
+                    } else {
+                        alert('인증 코드가 올바르지 않습니다.');
+                    }
+                })
+                .catch(() => alert('인증 실패'));
+        };
 
-        // const checkIdExistHandler = id => {
-        //     checkIdExist(id)
-        //         .then(() => {
-        //             userIdRef.current.style.backgroundColor = '#e7ffef';
-        //             userIdRef.current.style.borderColor = 'rgb(124 213 119)';
-        //         })
-        //         .catch(() => {
-        //             userIdRef.current.style.backgroundColor = '#ffe1ca';
-        //             userIdRef.current.style.borderColor = '#ffeedf';
-        //         });
-        // };
+        const checkIdExistHandler = id => {
+            checkIdExist(id)
+                .then(() => {
+                    userIdRef.current.style.backgroundColor = '#e7ffef';
+                    userIdRef.current.style.borderColor = 'rgb(124 213 119)';
+                })
+                .catch(() => {
+                    userIdRef.current.style.backgroundColor = '#ffe1ca';
+                    userIdRef.current.style.borderColor = '#ffeedf';
+                });
+        };
 
-        // const checkNameExistHandler = name => {
-        //     checkNameExist(name)
-        //         .then(() => {
-        //             userNameRef.current.style.backgroundColor = '#e7ffef';
-        //             userNameRef.current.style.borderColor = 'rgb(124 213 119)';
-        //         })
-        //         .catch(() => {
-        //             userNameRef.current.style.backgroundColor = '#ffe1ca';
-        //             userNameRef.current.style.borderColor = '#ffeedf';
-        //         });
-        // };
+        const checkNameExistHandler = name => {
+            checkNameExist(name)
+                .then(() => {
+                    userNameRef.current.style.backgroundColor = '#e7ffef';
+                    userNameRef.current.style.borderColor = 'rgb(124 213 119)';
+                })
+                .catch(() => {
+                    userNameRef.current.style.backgroundColor = '#ffe1ca';
+                    userNameRef.current.style.borderColor = '#ffeedf';
+                });
+        };
 
-        // const checkEmailExistHandler = email => {
-        //     checkEmailExist(email)
-        //         .then(() => {
-        //             userEmailRef.current.style.backgroundColor = '#e7ffef';
-        //             userEmailRef.current.style.borderColor = 'rgb(124 213 119)';
-        //         })
-        //         .catch(() => {
-        //             userEmailRef.current.style.backgroundColor = '#ffe1ca';
-        //             userEmailRef.current.style.borderColor = '#ffeedf';
-        //         });
-        // };
+        const checkEmailExistHandler = email => {
+            checkEmailExist(email)
+                .then(() => {
+                    userEmailRef.current.style.backgroundColor = '#e7ffef';
+                    userEmailRef.current.style.borderColor = 'rgb(124 213 119)';
+                })
+                .catch(() => {
+                    userEmailRef.current.style.backgroundColor = '#ffe1ca';
+                    userEmailRef.current.style.borderColor = '#ffeedf';
+                });
+        };
 
-        // const checkPhoneExistHandler = phone => {
-        //     checkPhoneExist(phone)
-        //         .then(() => {
-        //             userPhoneRef.current.style.backgroundColor = '#e7ffef';
-        //             userPhoneRef.current.style.borderColor = 'rgb(124 213 119)';
-        //         })
-        //         .catch(() => {
-        //             userPhoneRef.current.style.backgroundColor = '#ffe1ca';
-        //             userPhoneRef.current.style.borderColor = '#ffeedf';
-        //         });
-        // };
+        const checkPhoneExistHandler = phone => {
+            checkPhoneExist(phone)
+                .then(() => {
+                    userPhoneRef.current.style.backgroundColor = '#e7ffef';
+                    userPhoneRef.current.style.borderColor = 'rgb(124 213 119)';
+                })
+                .catch(() => {
+                    userPhoneRef.current.style.backgroundColor = '#ffe1ca';
+                    userPhoneRef.current.style.borderColor = '#ffeedf';
+                });
+        };
 
         return (
             <div className={styles.OwnnerSignupContainer}>
