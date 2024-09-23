@@ -40,6 +40,15 @@
     flex: 1 0 auto;
 }
 
+.Content select {
+    padding: 8px 12px;
+    border-radius: 16px;
+    border: none;
+    outline: none;
+    min-width : 280px;
+    flex: 1 0 auto;
+}
+
 .Content button {
     padding : 8px 12px;
     border : none;
@@ -64,10 +73,3 @@
     color : white;
 }
 
-select {
-    width: 100%; 
-    padding: 0.5rem; 
-    border: 1px solid #ccc; 
-    border-radius: 4px; 
-    font-size: 1rem; 
-}

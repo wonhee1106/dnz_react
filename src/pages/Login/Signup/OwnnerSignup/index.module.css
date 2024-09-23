@@ -22,7 +22,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
+    flex-direction: column; 
     gap: 8px;
 }
 
@@ -51,10 +51,24 @@
     gap : 4px;
 }
 
-select {
-    width: 100%; 
-    padding: 0.5rem; 
-    border: 1px solid #ccc; 
-    border-radius: 4px; 
-    font-size: 1rem; 
+/* .my-popup {
+    border-radius: 10px;
 }
+
+.my-title {
+    font-size: 18px;
+    color: #333; 
+}
+
+.my-confirm-button {
+    background-color: #4CAF50; 
+    color: white;
+    border-radius: 5px; /
+}
+
+.my-cancel-button {
+    background-color: #f44336; 
+    color: white;
+    border-radius: 5px; 
+} */
+
