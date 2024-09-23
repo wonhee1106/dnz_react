@@ -3,13 +3,13 @@ import 'react-calendar/dist/Calendar.css'
 import { useState, useEffect } from 'react'
 import styles from './ReserveModal.module.css'
 
-function ReserveModal({ storeSeq, name, onClose, onNext }) {
+function ReserveModal({ storeSeq, name, seatStatus, seatCapacity, onClose, onNext }) {
     // 날짜 선택
     const [reserveDate, setReserveDate] = useState(new Date())
     // 현재 보이는 달의 시작 날짜 (activeStartDate)
     const [activeStartDate, setActiveStartDate] = useState(new Date())
     // 인원 선택 (기본값을 2명으로 설정)
-    const [numberOfGuests, setNumberOfGuests] = useState(2)
+    const [numberOfGuests, setNumberOfGuests] = useState(null)
     // 시간 선택
     const [reserveTime, setReserveTime] = useState('')
 
@@ -19,16 +19,31 @@ function ReserveModal({ storeSeq, name, onClose, onNext }) {
     const guestsPerPage = 5 // 한 페이지에 표시할 인원 버튼 수
     const timesPerPage = 4 // 한 페이지에 표시할 시간 버튼 수
 
+    // 남은 좌석 계산
+    const remainingSeats = seatCapacity - seatStatus;
+
     const handleDateChange = date => {
         setReserveDate(date)
     }
 
     const handleGuestClick = guests => {
-        setNumberOfGuests(guests)
+        if (guests > remainingSeats) {
+            alert('선택한 인원이 남은 좌석 수를 초과합니다.')
+        } else {
+            setNumberOfGuests(guests)
+        }
     }
 
-    const handleTimeClick = time => {
-        setReserveTime(time)
+    const handleTimeClick = (time) => {
+        // 필수 항목들 전부 선택하지 않으면 다음 모달로 이동하지 못 하도록 제어
+        if (!reserveDate || !time || numberOfGuests === null) {
+            alert('모든 필수 항목(날짜, 인원, 시간)을 선택해 주세요.')
+            return;
+        }
+    
+        // 상태 업데이트
+        setReserveTime(time);
+    
         // 시간 선택 시 부모 컴포넌트에서 다음 모달로 이동하도록 onNext 호출
         onNext({
             storeSeq,
@@ -36,8 +51,9 @@ function ReserveModal({ storeSeq, name, onClose, onNext }) {
             guests: numberOfGuests,
             date: reserveDate,
             name,
-        })
+        });
     }
+    
 
     // 오늘 버튼 클릭 시 오늘 날짜로 이동하고 캘린더도 오늘의 달로 전환
     const handleTodayClick = () => {
@@ -133,6 +149,10 @@ function ReserveModal({ storeSeq, name, onClose, onNext }) {
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.reserveModalContainer}>
+                {/* 남은 좌석 수 표시 */}
+                <div className={styles.remainingSeats}>
+                    남은 좌석: {remainingSeats}
+                </div>
                 {/* 캘린더와 오늘 버튼을 함께 표시 */}
                 <div className={styles.calendarContainer}>
                     <button

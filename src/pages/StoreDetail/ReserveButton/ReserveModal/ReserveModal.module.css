@@ -213,3 +213,8 @@
     background: none !important;
     /* 배경 제거 */
 }
+
+.remainingSeats {
+    font-weight: bold;
+    margin-bottom: 10px;
+}

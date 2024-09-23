@@ -16,6 +16,8 @@ function StoreDetail() {
     const [visibleMenus, setVisibleMenus] = useState(5) // 처음에 표시할 메뉴 개수
     const [notice, setNotice] = useState(''); // 공지사항을 저장하는 상태
 
+    // 강제 리렌더링을 위한 상태
+    const [refresh, setRefresh] = useState(0);
 
     // 모달 상태 관리
     const [isReserveModalOpen, setIsReserveModalOpen] = useState(false)
@@ -54,6 +56,7 @@ function StoreDetail() {
             try {
                 const response = await api.get(`/store/${storeId}`)
                 setStore(response.data)
+                console.log(response.data)
             } catch (error) {
                 console.error('Error fetching store details:', error)
             }
@@ -62,7 +65,7 @@ function StoreDetail() {
         if (storeId) {
             fetchStoreDetails()
         }
-    }, [storeId])
+    }, [storeId, refresh])
 
     // 가게의 메뉴 데이터를 서버로부터 가져오는 함수 (storeId 사용)
     useEffect(() => {
@@ -187,6 +190,11 @@ function StoreDetail() {
         setIsFinalConfirmModalOpen(true)
     }
 
+    const handleFinalConfirm = () => {
+        setIsFinalConfirmModalOpen(false);
+        setRefresh(prev => prev + 1); // 리렌더링 트리거
+    };
+
     // 가게 정보가 없을 경우 로딩 메시지 표시
     if (!store)
         return <div className="loading">가게 정보를 불러오는 중입니다...</div>
@@ -241,6 +249,8 @@ function StoreDetail() {
                 <ReserveModal
                     storeSeq={storeId}
                     name={store.name}
+                    seatStatus={store.seatStatus}
+                    seatCapacity={store.seatCapacity}
                     onClose={closeReserveModal}
                     onNext={handleNextToConfirmModal}
                 />
@@ -267,7 +277,7 @@ function StoreDetail() {
                     guests={reserveDetails?.guests}
                     storeSeq={storeId}
                     name={store.name}
-                    onClose={() => setIsFinalConfirmModalOpen(false)}
+                    onClose={handleFinalConfirm}
                 />
             )}
 
