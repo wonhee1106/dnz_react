@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; // useNavigate 추가
-import './StoreList.css'
+import './StoreList.css';
 
 const StoreList = () => {
   const { category } = useParams(); // URL에서 카테고리를 가져옴
@@ -82,7 +82,7 @@ const StoreList = () => {
             key={store.storeSeq} // storeSeq를 고유 key로 사용하여 중복 방지
             className="saved-restaurant-list-item"
             onClick={() => navigateToStoreDetail(store.storeSeq)}  // 클릭 시 /store/{storeSeq}로 이동
-            style={{ marginBottom: '20px', padding: '0px 20px 20px', borderBottom: '1px solid rgb(249, 249, 249)', cursor: 'pointer' }} // 커서 포인터 스타일 추가
+            style={{ padding: '0px 20px 20px', cursor: 'pointer' }} // 커서 포인터 스타일 추가
           >
             <div className="restaurant-info __a-center mb-0">
               <div className="tb __lg">
@@ -95,14 +95,16 @@ const StoreList = () => {
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     borderRadius: '8px',
+                    marginTop: '20px' // 이 부분을 camelCase로 수정
                   }}
                 ></div>
               </div>
               <div className="detail">
                 <div className="detail-header">
+                  <h4 className="name __sm">{store.name}</h4> {/* 가게 이름 */}
                   <div className="txt">
-                    <p className="__meta">{store.category}</p>
-                    <h4 className="name __sm">{store.name}</h4>
+                    <p className="__meta">{store.category}</p> {/* 카테고리 */}
+                    <p className="__desc">{store.description}</p> {/* 가게 설명 */}
                   </div>
                 </div>
               </div>
