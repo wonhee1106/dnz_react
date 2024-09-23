@@ -1,8 +1,9 @@
-import { faList, faLock, faPen, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faList, faLock, faPen, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import styles from './Mypage.module.css';
 import MyPageItem from 'components/MyPage';
-import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { faBookmark, faUser } from '@fortawesome/free-regular-svg-icons';
 import Profile from './Profile/Profile'
+import Bookmark from './Bookmark/Bookmark';
 
 function Mypage() {
     return (
@@ -20,7 +21,9 @@ function Mypage() {
                 <MyPageItem icon={faList} title={"예약내역"} element={
                     <div>asdfsdf</div>
                 } />
-
+                   <MyPageItem icon={faBookmark} title={"북마크 "} element={
+                    <div><Bookmark/></div>
+                } />
                 <MyPageItem icon={faQuestion} title={"지원 및 도움"} element={
                     <div>asdfsdf</div>
                 } />
@@ -28,6 +31,7 @@ function Mypage() {
                 <MyPageItem icon={faLock} title={"보안 관리"} element={
                     <div>asdfsdf</div>
                 } />
+              
             </div>
         </div>
     );
