@@ -1,0 +1,33 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* 버튼 사이 간격 */
+    width: 100%; /* 버튼들이 한 줄 전체를 차지하도록 설정 */
+}
+
+.storeButton {
+    padding: 15px 20px;
+    background-color: white;
+    color: black;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px; /* 텍스트 크기 확대 */
+    font-weight: bold; /* 텍스트를 굵게 설정 */
+    text-align: left; /* 텍스트를 좌측 정렬 */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    width: 100%; /* 버튼이 한 줄 전체를 차지하도록 설정 */
+}
+
+.storeButton:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}

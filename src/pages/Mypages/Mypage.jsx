@@ -4,6 +4,8 @@ import MyPageItem from 'components/MyPage';
 import { faBookmark, faUser } from '@fortawesome/free-regular-svg-icons';
 import Profile from './Profile/Profile'
 import Bookmark from './Bookmark/Bookmark';
+import StoreManagement from './StoreManagement/StoreManagement';
+import { faStore } from '@fortawesome/free-solid-svg-icons';
 
 function Mypage() {
     return (
@@ -23,6 +25,9 @@ function Mypage() {
                 } />
                    <MyPageItem icon={faBookmark} title={"북마크 "} element={
                     <div><Bookmark/></div>
+                } />
+                <MyPageItem icon={faStore} title={"가게 관리"} element={ // 가게 관리 추가
+                    <div><StoreManagement/></div>
                 } />
                 <MyPageItem icon={faQuestion} title={"지원 및 도움"} element={
                     <div>asdfsdf</div>

@@ -6,6 +6,7 @@ import './StoreDetail.css' // CSS 파일 추가
 import ReserveModal from './ReserveButton/ReserveModal/ReserveModal'
 import ConfirmReserveModal from './ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveModal'
 import FinalConfirmReserveModal from './ReserveButton/ReserveModal/ConfirmReserveModal/ConfirmReserveButton/FinalConfirmReserveModal/FinalConfirmReserveModal'
+import defaultImage from '../../img/store.png';
 
 function StoreDetail() {
     const { storeId } = useParams() // storeId는 메뉴 요청에 사용
@@ -13,6 +14,8 @@ function StoreDetail() {
     const [menus, setMenus] = useState([])
     const [photos, setPhotos] = useState([]) // 사진 데이터를 관리하는 상태
     const [visibleMenus, setVisibleMenus] = useState(5) // 처음에 표시할 메뉴 개수
+    const [notice, setNotice] = useState(''); // 공지사항을 저장하는 상태
+
 
     // 모달 상태 관리
     const [isReserveModalOpen, setIsReserveModalOpen] = useState(false)
@@ -22,6 +25,29 @@ function StoreDetail() {
         useState(false)
     const [reserveDetails, setReserveDetails] = useState(null) // 예약 정보를 저장하는 상태
 
+    // 가게 공지사항을 가져오는 함수
+    useEffect(() => {
+        const fetchNotice = async () => {
+            try {
+                const response = await api.get(`/notice/store/${storeId}`);
+                if (response.status === 200) {
+                    setNotice(response.data.content);
+                } else {
+                    setNotice('공지사항이 없습니다.');
+                }
+            } catch (error) {
+                console.error('Error fetching notice:', error);
+                setNotice('공지사항을 가져오는 데 실패했습니다.');
+            }
+        };
+
+        if (storeId) {
+            fetchNotice();
+        }
+    }, [storeId]);
+
+
+    
     // 가게 상세 정보를 서버로부터 가져오는 함수
     useEffect(() => {
         const fetchStoreDetails = async () => {
@@ -177,7 +203,7 @@ function StoreDetail() {
                                 className="store-photo"
                                 style={{
                                     backgroundImage: `url(${
-                                        photo.imageUrl || 'defaultImageUrl.jpg'
+                                        photo.imageUrl ? photo.imageUrl : defaultImage
                                     })`, // 사진이 없는 경우 기본 이미지 표시
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
@@ -187,9 +213,19 @@ function StoreDetail() {
                             ></div>
                         ))
                     ) : (
-                        <p>사진이 없습니다.</p>
+                        <div
+                            className="store-photo"
+                            style={{
+                                backgroundImage: `url(${defaultImage})`, // 기본 이미지 표시
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                width: '600px', // 사진 크기 지정
+                                height: '400px',
+                            }}
+                        ></div>
                     )}
                 </div>
+
                 {/* 가게 이름과 주소를 출력하는 부분 */}
                 <h3>{store.name}</h3> {/* 가게 이름 출력 */}
                 <p>{store.description}</p>
@@ -239,8 +275,9 @@ function StoreDetail() {
             {/* 공지사항 영역 추가 */}
             <div className="notice-section">
                 <h3>공지사항</h3>
-                <p>여기에는 공지사항이 들어갈 수 있습니다.</p>
+                <p>{notice ? notice : '공지사항이 없습니다.'}</p>
             </div>
+
 
             <div className="menu-list">
 
