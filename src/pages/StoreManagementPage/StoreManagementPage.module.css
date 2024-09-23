@@ -147,9 +147,11 @@
 /* 예약 목록 스타일 */
 .reservationList {
     width: 50%;
+    min-height: 300px;
     padding: 20px;
     background-color: #ecf0f1;
     border-right: 1px solid #ddd;
+    overflow-y: auto;
 }
 
 .reservationTitle {
@@ -423,8 +425,8 @@
     color: #444;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 200px; /* 원하는 너비로 설정하세요 */
+    /* text-overflow: ellipsis; */
+    /* max-width: 200px; */
 }
 
 .menuActions {

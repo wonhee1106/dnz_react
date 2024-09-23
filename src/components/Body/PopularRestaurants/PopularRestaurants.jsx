@@ -12,6 +12,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
+import defaultImage from '../../../img/store.png';
 
 const PopularRestaurants = () => {
   const [koreanRestaurants, setKoreanRestaurants] = useState([]);
@@ -128,7 +129,7 @@ const PopularRestaurants = () => {
         <div
           className="img"
           style={{
-            backgroundImage: `url(${restaurant.photos && restaurant.photos.length > 0 ? restaurant.photos[0].imageUrl : 'defaultImageUrl'})`,
+            backgroundImage: `url(${restaurant.photos && restaurant.photos.length > 0 ? restaurant.photos[0].imageUrl : defaultImage})`,
           }}
         ></div>
       </div>

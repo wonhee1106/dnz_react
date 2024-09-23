@@ -168,7 +168,7 @@ const StoreManagementPage = () => {
         } else {
             fetchReservations(currentStatus); // 예약 상태에 따라 필터링
         }
-    }, [currentStatus]);
+    }, [currentStatus, reviews]);
 
     const handleMenuClick = (status) => {
         setCurrentStatus(status); // 메뉴 클릭 시 상태 변경
@@ -468,7 +468,7 @@ const StoreManagementPage = () => {
         <div className={styles.container}>
             {/* 좌측 메뉴 */}
             <div className={styles.sidebar}>
-                <h2 className={styles.sidebarTitle}>예약 관리</h2>
+                <h2 className={styles.sidebarTitle}>가게 관리</h2>
                 <div 
                     className={`${styles.menuItem} ${currentStatus === 'pending' ? styles.selectedMenu : ''}`} 
                     onClick={() => handleMenuClick('pending')}
