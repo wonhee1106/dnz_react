@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import React, { useState } from 'react';
 import { api } from '../../../config/config';
 import styles from './Find.module.css';
@@ -8,13 +9,30 @@ const FindPassword = ({ closeModal }) => {
 
     const handlePasswordRetrieval = () => {
         if (!findUserId || !findEmail) {
-            alert("이메일과 아이디를 모두 입력해 주세요.");
+            Swal.fire({
+                icon: 'warning',
+                title: '입력 오류',
+                text: '이메일과 아이디를 모두 입력해 주세요.',
+            });
             return;
         }
 
         api.post(`/auth/findPassword`, { userId: findUserId, userEmail: findEmail })
-            .then(() => alert("비밀번호 찾기 요청이 완료되었습니다."))
-            .catch(() => alert("사용자를 찾을 수 없습니다."));
+            .then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: '성공',
+                    text: '비밀번호 찾기 요청이 완료되었습니다.',
+                });
+                closeModal();
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: '찾기 실패',
+                    text: '사용자를 찾을 수 없습니다.',
+                });
+            });
     };
 
     return (
@@ -38,13 +56,7 @@ const FindPassword = ({ closeModal }) => {
                     onClick={handlePasswordRetrieval} 
                     className={styles.findIdBtn}
                 >
-                    비밀번호 찾기
-                </button>
-                <button 
-                    onClick={closeModal} 
-                    className={styles.toggleButton}
-                >
-                    뒤로가기
+                    비밀번호 재설정
                 </button>
             </div>
         </div>
