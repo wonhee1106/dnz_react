@@ -1,0 +1,125 @@
+/* 모달 전체 배경 오버레이 */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    /* 어두운 반투명 배경 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* 모달 컨텐츠 스타일 */
+.modalContent {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    /* 둥근 모서리 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    /* 그림자 효과 */
+    width: 100%;
+    max-width: 500px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 모달 제목 */
+.modalContent h2 {
+    font-size: 24px;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+/* 가게 정보 텍스트 */
+.modalContent p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 0.75rem;
+}
+
+/* 평점 별 스타일 */
+.ratingContainer {
+    margin-bottom: 1.5rem;
+}
+
+.star {
+    font-size: 24px;
+    margin-right: 5px;
+    transition: color 0.3s;
+}
+
+.star:hover {
+    color: #ffcc00;
+}
+
+/* 리뷰 텍스트 입력 */
+.reviewText {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 1rem;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+    outline: none;
+    transition: border 0.3s;
+}
+
+.reviewText:focus {
+    border-color: #ff6b00;
+}
+
+/* 제출 버튼 스타일 */
+.submitButton {
+    background-color: #ff6b00;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+}
+
+.submitButton:hover {
+    background-color: #ff6b00;
+}
+
+.submitButton:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+}
+
+/* 닫기 버튼 스타일 */
+.closeButton {
+    background-color: #ddd;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.closeButton:hover {
+    background-color: #bbb;
+}
+
+/* 모달 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

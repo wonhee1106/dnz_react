@@ -48,6 +48,7 @@
     flex-direction: column;
     justify-content: center;
     flex-grow: 1;
+    margin-left: 36px;
 }
 
 .restaurantName {
@@ -117,4 +118,9 @@
 
 .loadMoreButton:hover {
     background-color: #ff5722;
+}
+
+.storeImage {
+    width: 100px;
+    height: 100px;
 }

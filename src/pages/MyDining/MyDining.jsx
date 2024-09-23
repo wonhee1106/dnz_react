@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import styles from './MyDining.module.css'
 import { api } from '../../config/config'
+import ReviewModal from './ReviewModal/ReviewModal'
+import ReviewDetailModal from './ReviewDetailModal/ReviewDetaiModall'
 
 function MyDining() {
     const [reservations, setReservations] = useState([])
@@ -9,18 +11,39 @@ function MyDining() {
     const [currentPage, setCurrentPage] = useState(1)
     const [storeInfoMap, setStoreInfoMap] = useState({})
     const reservationsPerPage = 5
+    const [showReviewModal, setShowReviewModal] = useState(false) // 리뷰 작성 모달 상태
+    const [showReviewDetailModal, setShowReviewDetailModal] = useState(false) // 리뷰 상세 모달 상태
+    const [selectedReservation, setSelectedReservation] = useState(null) // 선택된 예약
+    const [selectedReservationId, setSelectedReservationId] = useState(null) // 선택된 리뷰의 예약 ID
     const navigate = useNavigate()
-    const location = useLocation()
 
-    // 예약 데이터를 가져오는 함수
+    // '구'나 '동' '시' 단위로 자르기
+    const extractGuDong = address => {
+        if (!address) return '지역 정보 없음'
+        const guIndex = address.indexOf('구')
+        const dongIndex = address.indexOf('동')
+        const siIndex = address.indexOf('시')
+
+        if (guIndex !== -1) {
+            return address.substring(0, guIndex + 1) // '구'까지 포함
+        } else if (dongIndex !== -1) {
+            return address.substring(0, dongIndex + 1) // '동'까지 포함
+        } else if (siIndex !== -1) {
+            return address.substring(0, siIndex + 1) // '시'까지 포함
+        }
+
+        return address // '구'나 '동', '시' 없으면 전체 출력
+    }
+
+    // 예약 데이터 가져오기
     useEffect(() => {
         const fetchReservations = async () => {
             try {
                 const response = await api.get('/reservation/user')
                 if (response.status === 200) {
                     setReservations(response.data.reservations)
-                    fetchReviewStatuses(response.data.reservations) // 리뷰 상태 불러오기
-                    fetchAllStoreInfo(response.data.reservations) // 가게 정보 불러오기
+                    fetchReviewStatuses(response.data.reservations)
+                    fetchAllStoreInfo(response.data.reservations)
                 } else {
                     console.log('예약 데이터를 가져오는데 실패했습니다.')
                 }
@@ -28,11 +51,10 @@ function MyDining() {
                 console.log('예약 데이터 로딩 중 오류 발생:', error)
             }
         }
-
         fetchReservations()
     }, [])
 
-    // 각 예약의 리뷰 상태를 서버에서 가져오는 함수
+    // 리뷰 상태 가져오기
     const fetchReviewStatuses = async reservations => {
         const reviewsStatus = {}
         await Promise.all(
@@ -41,11 +63,8 @@ function MyDining() {
                     const response = await api.get(
                         `/reviews/${reservation.reservationId}`
                     )
-                    if (response.status === 200) {
-                        reviewsStatus[reservation.reservationId] = true
-                    } else {
-                        reviewsStatus[reservation.reservationId] = false
-                    }
+                    reviewsStatus[reservation.reservationId] =
+                        response.status === 200
                 } catch (error) {
                     reviewsStatus[reservation.reservationId] = false
                 }
@@ -54,7 +73,7 @@ function MyDining() {
         setReviewsMap(reviewsStatus)
     }
 
-    // 각 예약의 가게 정보를 서버에서 가져오는 함수 (사진 포함)
+    // 가게 정보 가져오기
     const fetchAllStoreInfo = async reservations => {
         const storeInfoPromises = reservations.map(async reservation => {
             if (!storeInfoMap[reservation.storeSeq]) {
@@ -77,14 +96,14 @@ function MyDining() {
         setStoreInfoMap(updatedStoreInfoMap)
     }
 
-    // 가게 정보와 사진을 불러오는 API 호출 함수
+    // 가게 정보 및 사진 가져오기
     const fetchStoreInfo = async storeSeq => {
         try {
             const response = await api.get(`/store/${storeSeq}`)
             const photoResponse = await api.get(`/store/${storeSeq}/photos`)
             return {
                 ...response.data,
-                photos: photoResponse.data, // 가게 사진 데이터 포함
+                photos: photoResponse.data,
             }
         } catch (error) {
             console.log(
@@ -95,17 +114,7 @@ function MyDining() {
         }
     }
 
-    // 리뷰 상태 업데이트 (다른 페이지에서 돌아온 후)
-    useEffect(() => {
-        if (location.state?.updatedReservationId) {
-            const updatedId = location.state.updatedReservationId
-            const newReviewsMap = { ...reviewsMap }
-            newReviewsMap[updatedId] = true
-            setReviewsMap(newReviewsMap)
-        }
-    }, [location.state])
-
-    // 예약 취소 처리 함수
+    // 예약 취소 처리
     const handleCancelReservation = async reservationId => {
         const confirmed = window.confirm('정말로 예약을 취소하시겠습니까?')
         if (!confirmed) return
@@ -128,14 +137,28 @@ function MyDining() {
         }
     }
 
-    // 리뷰 작성 페이지로 이동
-    const handleGoToReview = reservation => {
-        navigate('/review', { state: { reservation } })
+    // 리뷰 작성 모달 열기
+    const openReviewModal = reservation => {
+        setSelectedReservation(reservation)
+        setShowReviewModal(true)
     }
 
-    // 리뷰 상세 보기 페이지로 이동
-    const handleGoToViewReview = reservationId => {
-        navigate(`/reviewDetail/${reservationId}`)
+    // 리뷰 작성 모달 닫기
+    const closeReviewModal = () => {
+        setSelectedReservation(null)
+        setShowReviewModal(false)
+    }
+
+    // 리뷰 상세 모달 열기
+    const openReviewDetailModal = reservationId => {
+        setSelectedReservationId(reservationId)
+        setShowReviewDetailModal(true)
+    }
+
+    // 리뷰 상세 모달 닫기
+    const closeReviewDetailModal = () => {
+        setSelectedReservationId(null)
+        setShowReviewDetailModal(false)
     }
 
     // 더보기 버튼 클릭 시 페이지 증가
@@ -158,8 +181,8 @@ function MyDining() {
                             storeInfoMap[reservation.storeSeq] || {}
                         const photoUrl =
                             storeInfo.photos && storeInfo.photos.length > 0
-                                ? storeInfo.photos[0] // 첫 번째 가게 사진 사용
-                                : null // 사진이 없을 경우
+                                ? storeInfo.photos[0].imageUrl
+                                : null
 
                         return (
                             <div
@@ -173,6 +196,10 @@ function MyDining() {
                                                 src={photoUrl}
                                                 alt="가게 이미지"
                                                 className={styles.storeImage}
+                                                onError={e => {
+                                                    e.target.src =
+                                                        'default-image-url'
+                                                }}
                                             />
                                         ) : (
                                             '이미지 없음'
@@ -183,8 +210,7 @@ function MyDining() {
                                             {reservation.storeName}
                                         </p>
                                         <p className={styles.additionalInfo}>
-                                            {storeInfo.address1 ||
-                                                '지역 정보 없음'}{' '}
+                                            {extractGuDong(storeInfo.address1)}{' '}
                                             ·{' '}
                                             {storeInfo.category ||
                                                 '음식종류 정보 없음'}
@@ -208,7 +234,7 @@ function MyDining() {
                                                     styles.viewReviewButton
                                                 }
                                                 onClick={() =>
-                                                    handleGoToViewReview(
+                                                    openReviewDetailModal(
                                                         reservation.reservationId
                                                     )
                                                 }
@@ -219,9 +245,7 @@ function MyDining() {
                                             <button
                                                 className={styles.goToReview}
                                                 onClick={() =>
-                                                    handleGoToReview(
-                                                        reservation
-                                                    )
+                                                    openReviewModal(reservation)
                                                 }
                                             >
                                                 리뷰 작성
@@ -254,6 +278,22 @@ function MyDining() {
                 </>
             ) : (
                 <p className={styles.noReservation}>예약 내역이 없습니다.</p>
+            )}
+
+            {/* 리뷰 작성 모달 */}
+            {showReviewModal && (
+                <ReviewModal
+                    reservation={selectedReservation}
+                    onClose={closeReviewModal} // 모달 닫기 함수 전달
+                />
+            )}
+
+            {/* 리뷰 상세 모달 */}
+            {showReviewDetailModal && (
+                <ReviewDetailModal
+                    reservationId={selectedReservationId}
+                    onClose={closeReviewDetailModal} // 모달 닫기 함수 전달
+                />
             )}
         </div>
     )
