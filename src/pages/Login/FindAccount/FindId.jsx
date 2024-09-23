@@ -1,20 +1,38 @@
+import Swal from 'sweetalert2';
 import React, { useState } from 'react';
 import { api } from 'config/config';
 import styles from './Find.module.css';
 
-const FindId = ({ closeModal }) => {  // Add closeModal prop
+const FindId = ({ closeModal }) => {
     const [findEmail, setFindEmail] = useState('');
     const [findPhoneNumber, setFindPhoneNumber] = useState('');
 
     const handleFindId = () => {
         if (!findEmail || !findPhoneNumber) {
-            alert("이메일과 핸드폰번호 모두 입력해주세요.");
+            Swal.fire({
+                icon: 'warning',
+                title: '입력 오류',
+                text: '이메일과 핸드폰번호 모두 입력해주세요.',
+            });
             return;
         }
 
         api.post(`/auth/findId`, { userEmail: findEmail, userPhoneNumber: findPhoneNumber })
-            .then(() => alert("사용자 ID가 이메일로 전송되었습니다."))
-            .catch(error => alert("사용자를 찾을 수 없습니다."));
+            .then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: '성공',
+                    text: '사용자 ID가 이메일로 전송되었습니다.',
+                });
+                closeModal();
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: '찾기 실패',
+                    text: '사용자를 찾을 수 없습니다.',
+                });
+            });
     };
 
     return (
@@ -40,13 +58,7 @@ const FindId = ({ closeModal }) => {  // Add closeModal prop
                 >
                     아이디 찾기
                 </button>
-                <button 
-                    onClick={closeModal}  // Add closeModal button
-                    className={styles.toggleButton}
-                >
-                    뒤로가기
-                </button>
-          </div>
+            </div>
         </div>
     );
 };
