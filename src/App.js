@@ -24,6 +24,8 @@ import Mymaps from 'pages/My_Maps/Mymaps.jsx'
 import Review from 'pages/MyDining/Review/Review'
 import ReviewDetail from 'pages/MyDining/ReviewDetail/ReviewDetail'
 import Signup from './pages/Login/Signup/Signup.jsx'
+import RegisterType from 'pages/Login/Signup/RegisterType'
+import OwnnerSignup from 'pages/Login/Signup/OwnnerSignup/index.jsx'
 
 // 뭐징 17:06
 
@@ -38,8 +40,11 @@ const AppContent = () => {
             {!isStoreManagementPage && <Header />}
             <Routes>
                 <Route path="/" element={<Body />} />
+                <Route path="/SignType" element={<RegisterType />} />
+                <Route path="/OwnnerSignUp" element={<OwnnerSignup />} />
                 <Route path="/login" element={<Login />} />
                 <Route path='/mypage' element={<Mypage />} />
+                <Route path='/signup' element={<Signup />} />
                 <Route path="/maps" element={<Mymaps />} />
                 <Route path="/store/:storeId" element={<StoreDetail />} />
                 <Route path="/alarm" element={<Alam />} />

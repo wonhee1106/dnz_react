@@ -14,7 +14,7 @@ const Header = () => {
     const [notificationCount, setNotificationCount] = useState(0)
     const [unreadNotifications, setUnreadNotifications] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
-    // 살려주시라요
+    // 살려주시라요 시발
     const serverUrl = process.env.REACT_APP_SERVER_URL
 
     useEffect(() => {
@@ -23,7 +23,7 @@ const Header = () => {
 
         if (isAuth && jwtToken && serverUrl) {
             ws = new WebSocket(
-                `ws://172.30.1.87/alarm?token=${encodeURIComponent(jwtToken)}`
+                `ws://192.168.1.19/alarm?token=${encodeURIComponent(jwtToken)}`
             )
 
             ws.onopen = () => {
@@ -62,8 +62,11 @@ const Header = () => {
     }
 
     const handleLoginClick = () => {
-        navigate('/login')
+        navigate('/login');
+
     }
+
+
 
     const handleAlarmClick = () => {
         setUnreadNotifications(false)
@@ -172,6 +175,7 @@ const Header = () => {
                 ) : (
                     <>
                         <button onClick={handleLoginClick}>로그인</button>
+                        <button onClick={() =>navigate("/SignType")}>회원가입</button>
                     </>
                 )}
             </div>

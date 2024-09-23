@@ -81,6 +81,7 @@ function ReserveModal({ storeSeq, name, onClose, onNext }) {
 
     // 시간 목록
     const availableTimes = [
+        '03:25',
         '12:00',
         '12:30',
         '13:00',
@@ -102,6 +103,7 @@ function ReserveModal({ storeSeq, name, onClose, onNext }) {
         '21:00',
         '21:30',
         '22:00',
+        '23:59',
     ]
 
     // 오늘 날짜인지 확인
