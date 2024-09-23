@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'; // useRef 추가
-import './Alam.css' ; // 스타일 파일
+import './Alam.css'; // 스타일 파일
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faEnvelope, faEnvelopeOpen } from '@fortawesome/free-regular-svg-icons'; // 필요한 아이콘 추가
 import { faTimes } from '@fortawesome/free-solid-svg-icons'; // X 표시 아이콘 추가
@@ -81,6 +81,9 @@ const Alam = () => {
         if (!jwtToken) {
             window.location.href = '/login'; // (기존 주석 유지)
         }
+
+        // 페이지가 처음 로드될 때 공지사항을 불러옴
+        fetchNotices();
 
         // (추가) WebSocket 연결 설정
         const ws = new WebSocket(`ws://localhost:8080/alarm?token=${jwtToken}`);
@@ -173,11 +176,15 @@ const Alam = () => {
                     Authorization: `Bearer ${jwtToken}` // JWT 토큰 포함
                 }
             });
-            setActivities(response.data);
+
+            // 활동 데이터를 최신순으로 정렬
+            const sortedActivities = response.data.sort((a, b) => new Date(b.activityDate) - new Date(a.activityDate));
+            
+            setActivities(sortedActivities);
 
             // 읽지 않은 활동과 읽은 활동에 대한 전체 페이지 수를 계산
-            const unreadActivities = response.data.filter(activity => !activity.isRead);
-            const readActivities = response.data.filter(activity => activity.isRead);
+            const unreadActivities = sortedActivities.filter(activity => !activity.isRead);
+            const readActivities = sortedActivities.filter(activity => activity.isRead);
             setTotalUnreadPages(Math.ceil(unreadActivities.length / ITEMS_PER_PAGE));
             setTotalReadPages(Math.ceil(readActivities.length / ITEMS_PER_PAGE));
         } catch (err) {
@@ -187,6 +194,7 @@ const Alam = () => {
             setLoading(false);
         }
     }, [serverUrl, jwtToken]);
+
 
     // 페이지가 로드될 때 활동 데이터를 가져옴
     useEffect(() => {
