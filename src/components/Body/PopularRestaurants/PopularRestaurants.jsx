@@ -14,6 +14,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {api} from '../../../config/config'
 import { useAuthStore } from '../../../utils/store';
+import defaultImage from '../../../img/store.png';
+
 const PopularRestaurants = () => {
   const [koreanRestaurants, setKoreanRestaurants] = useState([]);
   const [chineseRestaurants, setChineseRestaurants] = useState([]);
@@ -157,7 +159,7 @@ const PopularRestaurants = () => {
         <div
           className="img"
           style={{
-            backgroundImage: `url(${restaurant.photos && restaurant.photos.length > 0 ? restaurant.photos[0].imageUrl : 'defaultImageUrl'})`,
+            backgroundImage: `url(${restaurant.photos && restaurant.photos.length > 0 ? restaurant.photos[0].imageUrl : defaultImage})`,
           }}
         ></div>
       </div>

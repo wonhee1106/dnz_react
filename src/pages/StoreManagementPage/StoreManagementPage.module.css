@@ -91,6 +91,24 @@
     color: #888; /* 흐린 글씨 */
 }
 
+/* 사장 답글 스타일 */
+.replyItem {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #004a77ff;
+    border-radius: 5px;
+}
+
+.replyTime {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+    display: block;
+}
+
+
+
 /* 답글 입력 섹션 */
 .replySection {
     margin-top: 15px;
@@ -126,14 +144,14 @@
     background-color: #229954;
 }
 
-
-
 /* 예약 목록 스타일 */
 .reservationList {
     width: 50%;
+    min-height: 300px;
     padding: 20px;
     background-color: #ecf0f1;
     border-right: 1px solid #ddd;
+    overflow-y: auto;
 }
 
 .reservationTitle {
@@ -264,4 +282,209 @@
     border-radius: 5px;
 }
 
-/* 다른 CSS는 그대로 유지 */
+/* 설정 화면 스타일 */
+.settingsContainer {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: white;
+    border-left: 1px solid #ddd;
+    overflow-y: auto;
+}
+
+.settingTabs {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.settingTab {
+    margin-right: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.settingTab:hover,
+.selectedSettingTab {
+    color: #004a77ff;
+    border-bottom: 2px solid #004a77ff;
+}
+
+.settingContent {
+    margin-top: 20px;
+}
+
+/* 모달의 전체 배경을 어둡게 처리 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명한 검은색 배경 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* 다른 요소들 위에 위치하도록 */
+}
+
+/* 모달 콘텐츠 스타일 */
+.modalContent {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px; /* 최대 너비 제한 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* 필드 스타일링 */
+.field {
+    margin-bottom: 15px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* 모달 버튼 스타일 */
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.saveButton, .cancelButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.saveButton {
+    background-color: #3498db; /* 파란색 배경 */
+    color: white;
+    margin-right: 10px; /* 버튼 간 간격 */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.saveButton:hover {
+    background-color: #2980b9; /* 호버 시 어두운 파란색 */
+    transform: translateY(-2px); /* 클릭 시 살짝 올라가는 효과 */
+}
+
+.cancelButton {
+    background-color: #e74c3c; /* 빨간색 배경 */
+    color: white;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cancelButton:hover {
+    background-color: #c0392b; /* 호버 시 어두운 빨간색 */
+    transform: translateY(-2px); /* 클릭 시 살짝 올라가는 효과 */
+}
+
+
+/* 서버에서 불러온 메뉴 리스트 아이템 스타일 */
+.menuListItem {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.menuListItem:hover {
+    background-color: #f4f4f4;
+    transform: scale(1.02);
+}
+
+.menuDetails p {
+    font-size: 16px;
+    margin: 0;
+    color: #444;
+    white-space: nowrap;
+    overflow: hidden;
+    /* text-overflow: ellipsis; */
+    /* max-width: 200px; */
+}
+
+.menuActions {
+    display: flex;
+    gap: 10px;
+}
+
+/* 기존 메뉴 항목의 수정 버튼 */
+.editMenuButton {
+    background-color: #3498db;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.editMenuButton:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* 기존 메뉴 항목의 삭제 버튼 */
+.deleteMenuButton {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.deleteMenuButton:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+.addButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #004a77ff;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 18px;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    z-index: 1000; /* 다른 요소들 위에 위치하도록 */
+}
+
+.addButton:hover {
+    background-color: #229954;
+    transform: translateY(-2px);
+}
