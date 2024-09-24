@@ -262,10 +262,10 @@
     background-color: #ff6600;
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 15px;
 }
 
 .write-button:hover {
@@ -310,10 +310,10 @@
     background-color:  #ff6600; /* 기본 배경색 */
     color: white; /* 글자색 */
     border: none;
-    padding: 5px 10px; /* 패딩 조정 */
+    padding: 10px 20px; /* 패딩 조정 */
     border-radius: 4px;
     cursor: pointer;
-    font-size: 10px; /* 버튼 글씨 크기 */
+    font-size: 13px; /* 버튼 글씨 크기 */
     transition: background-color 0.3s ease; /* 호버 시 부드럽게 색상 변경 */
     margin-right: 10px; /* 버튼 간 간격 */
 }
