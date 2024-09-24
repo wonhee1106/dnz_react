@@ -1,0 +1,23 @@
+.activityItem {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+}
+
+.unread .activityIcon {
+    color: #007bff;
+}
+
+.read .activityIcon {
+    color: #aaa;
+}
+
+.activityIcon {
+    margin-right: 10px;
+}
+
+.activityDescription {
+    font-size: 14px;
+}

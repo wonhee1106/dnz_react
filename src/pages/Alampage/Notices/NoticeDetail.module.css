@@ -1,0 +1,109 @@
+.closeIconButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.closeIcon {
+    font-size: 1.5rem;
+    color: #999;
+}
+
+.closeIconButton:hover .closeIcon {
+    color: #ff4d4f;
+}
+
+.noticeContent {
+    margin-top: 20px;
+}
+
+.noticeDates {
+    margin-top: 10px;
+    color: #999;
+    font-size: 14px;
+}
+
+.bottomButtons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.actionButton {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.3s ease;
+}
+
+.actionButton:hover {
+    background-color: #ff8533;
+}
+
+.categorySelect {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.titleInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 18px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.titleInput:focus {
+    outline: none;
+    border-color: #1890ff;
+    box-shadow: 0 0 5px rgba(24, 144, 255, 0.5);
+}
+
+.modalButtons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.submitButton {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-right: 10px;
+}
+
+.submitButton:hover {
+    background-color: #ff8533;
+}
+
+.closeButton {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.closeButton:hover {
+    background-color: #ff8533;
+}

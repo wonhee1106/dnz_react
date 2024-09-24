@@ -1,0 +1,89 @@
+.activitiesContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.activityTabs {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.activityTab {
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    color: #666;
+    transition: color 0.3s, border-bottom 0.3s;
+}
+
+.activityTab.active {
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+}
+
+.activityTab:hover {
+    color: #007bff;
+}
+
+.activityContent {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.activityList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.activityItem {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+}
+
+.unread .activityIcon {
+    color: #007bff;
+}
+
+.read .activityIcon {
+    color: #aaa;
+}
+
+.activityIcon {
+    margin-right: 10px;
+}
+
+.activityDescription {
+    font-size: 14px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.emptyActivities {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #666;
+    font-size: 14px;
+}
+
+.emptyActivities .activityIcon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
