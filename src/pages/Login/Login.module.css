@@ -1,58 +1,97 @@
-/* Reset box-sizing */
 * {
     box-sizing: border-box;
 }
 
-/* Reset default margin and padding */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* 배경색 추가 */
 }
 
-/* Center the login box container */
-.LoginContainer {
+.container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
-    background-color: #f5f5f5; /* Optional: Add a background color */
 }
 
-/* Style the login box */
-.LoginBox {
+.box {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 350px;
-    padding: 30px;
+    width: 400px;
+    padding: 40px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: #fff; /* Background color for the login box */
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
 }
 
-.LoginBox input {
+.loginContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.loginContainer input {
     width: 100%;
     padding: 10px;
     margin: 5px 0;
     border: 1px solid #ddd;
     border-radius: 5px;
+    transition: border-color 0.3s; /* 경계선 색상 변화 애니메이션 */
 }
 
-.LoginBox .loginBtn {
+.loginContainer input:focus {
+    border-color: #ff6600; /* 포커스 시 경계선 색상 변경 */
+}
+
+.loginBtn {
     width: 80%;
     padding: 10px;
     margin: 3px 0;
     border: none;
     border-radius: 5px;
     font-size: 16px;
+    background: linear-gradient(90deg, #ff6600, #ff9933); /* 그라데이션 추가 */
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s; /* 부드러운 애니메이션 추가 */
 }
 
-.LoginBox .btn {
-    padding: 5px;
-    margin: 5px 0;
+.loginBtn:hover {
+    background: linear-gradient(90deg, #ff9933, #ff6600); /* 호버 시 그라데이션 반전 */
+}
+
+.loginBtn:active {
+    transform: scale(0.98); /* 클릭 시 작아지는 효과 */
+}
+
+.notification {
+    margin-top: 10px;
+    color: #ff0000; /* 알림 색상 */
+}
+
+.btns {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.toggleButton {
+    padding: 8px;
+    margin: 8px 0;
     border-radius: 5px;
     font-size: 16px;
+    border: none; 
+    cursor: pointer;
+    background-color: white;
+    transition: background-color 0.3s, color 0.3s; /* 부드러운 애니메이션 추가 */
 }
 
+.toggleButton:hover {
+    color: white;
+    background-color: #ff6600; /* 호버 시 색상 변경 */
+}

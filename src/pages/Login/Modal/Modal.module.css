@@ -1,35 +1,33 @@
-/* Modal.module.css */
 .modalOverlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     background-color: rgba(0, 0, 0, 0.7);
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 10000;
+    justify-content: center;
+    z-index: 1000; /* Ensure modal overlay is on top */
 }
 
 .modalContent {
     background-color: white;
-    padding: 20px; 
+    padding: 20px;
     border-radius: 8px;
-    width: 400px; /* 기존보다 넓게 설정 */
-    max-width: 90%; /* 화면의 90%까지 확장 가능하게 설정 */
-    height: auto; 
-    max-height: 70vh; /* 최대 높이를 70%로 설정 */
-    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative; /* Ensure the close button is positioned relative to the modal content */
+    z-index: 1001; /* Ensure modal content is on top of the overlay */
 }
 
-
 .closeButton {
-    position: absolute;
-    top: 10px;
-    right: 10px;
     background: none;
     border: none;
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
+    position: absolute;
+    top: 10px; /* Adjust the position as needed */
+    right: 10px; /* Adjust the position as needed */
+    color: black; /* Ensure button color is visible */
+    z-index: 1002; /* Ensure the close button is above other elements */
 }
