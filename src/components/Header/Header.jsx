@@ -216,23 +216,26 @@ const Header = () => {
 
       <div className="header-section icon">
         {isAuth && (
-          <FontAwesomeIcon
-            icon={faUser}
-            className="faUser"
-            onClick={() => navigate('/mypage')} // 유저 아이콘 클릭 이벤트
-          />
-        )}
+          <>
+            {/* 유저 아이콘 */}
+            <FontAwesomeIcon
+              icon={faUser}
+              className="faUser"
+              onClick={() => navigate('/mypage')}
+            />
 
-        <FontAwesomeIcon icon={faBookmark} className="faBookmark" />
-        <div className="notification-wrapper" onClick={handleAlarmClick}>
-          <FontAwesomeIcon
-            icon={faBell}
-            className={`faBell ${unreadNotifications ? 'active' : ''}`}
-          />
-          {notificationCount > 0 && (
-            <span className="notification-count">{notificationCount}</span>
-          )}
-        </div>
+            {/* 알림 아이콘 */}
+            <div className="notification-wrapper" onClick={handleAlarmClick}>
+              <FontAwesomeIcon
+                icon={faBell}
+                className={`faBell ${unreadNotifications ? 'active' : ''}`}
+              />
+              {notificationCount > 0 && (
+                <span className="notification-count">{notificationCount}</span>
+              )}
+            </div>
+          </>
+        )}
       </div>
       <div className="header-section login-buttons">
         {isAuth ? (

@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // useNavigate 추가
+import { useParams, useNavigate } from 'react-router-dom';
 import './StoreList.css';
 
 const StoreList = () => {
   const { category } = useParams(); // URL에서 카테고리를 가져옴
-  const [stores, setStores] = useState([]);
-  const [page, setPage] = useState(1);
+  const [stores, setStores] = useState([]); // 전체 데이터를 저장할 state
+  const [displayedStores, setDisplayedStores] = useState([]); // 화면에 표시되는 가게 데이터
+  const [showAll, setShowAll] = useState(false); // "더보기" 버튼 상태
   const navigate = useNavigate(); // useNavigate 훅 사용
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
+  const initialStoreCount = 5; // 처음에 표시할 가게 수
 
   // 중복된 가게를 필터링하는 함수
   const removeDuplicateStores = (newStores, existingStores) => {
@@ -34,8 +36,8 @@ const StoreList = () => {
   };
 
   // 카테고리별로 데이터를 가져오는 함수
-  const fetchStores = (category, page) => {
-    fetch(`${serverURL}/store/category/${category}?page=${page}`, {
+  const fetchStores = (category) => {
+    fetch(`${serverURL}/store/category/${category}`, {
       method: 'GET',
     })
       .then((response) => response.json())
@@ -50,7 +52,7 @@ const StoreList = () => {
         // 기존 stores와 새로운 stores 간 중복 제거
         const uniqueStores = removeDuplicateStores(updatedStores, stores);
 
-        // 새로운 stores만 추가
+        // 새로운 stores 추가
         setStores((prevStores) => {
           const combinedStores = [...prevStores, ...uniqueStores];
           return Array.from(new Set(combinedStores.map(store => store.storeSeq))) // storeSeq 기준으로 중복 제거
@@ -60,12 +62,23 @@ const StoreList = () => {
       .catch((error) => console.error(`Error fetching ${category}:`, error));
   };
 
+  // 컴포넌트가 로드되면 카테고리별 데이터를 가져옴
   useEffect(() => {
-    fetchStores(category, page); // 컴포넌트가 로드되면 카테고리와 페이지를 기준으로 데이터를 가져옴
-  }, [category, page]);
+    fetchStores(category);
+  }, [category]);
 
-  const handleLoadMore = () => {
-    setPage(prevPage => prevPage + 1); // 페이지 번호 증가
+  // 처음에 5개의 가게만 표시
+  useEffect(() => {
+    if (!showAll) {
+      setDisplayedStores(stores.slice(0, initialStoreCount));
+    } else {
+      setDisplayedStores(stores); // "더보기" 클릭 시 전체 가게 표시
+    }
+  }, [stores, showAll]);
+
+  // 더보기 버튼 클릭 시 나머지 가게들을 모두 표시
+  const handleShowAll = () => {
+    setShowAll(true);
   };
 
   // 가게 클릭 시 store 경로로 이동하는 함수
@@ -77,7 +90,7 @@ const StoreList = () => {
     <div className="store-list-page">
       <h2>{category} 가게 리스트</h2>
       <div className="store-list">
-        {stores.map((store) => (
+        {displayedStores.map((store) => (
           <article
             key={store.storeSeq} // storeSeq를 고유 key로 사용하여 중복 방지
             className="saved-restaurant-list-item"
@@ -95,7 +108,7 @@ const StoreList = () => {
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     borderRadius: '8px',
-                    marginTop: '20px' // 이 부분을 camelCase로 수정
+                    marginTop: '20px'
                   }}
                 ></div>
               </div>
@@ -112,7 +125,13 @@ const StoreList = () => {
           </article>
         ))}
       </div>
-      <button onClick={handleLoadMore}>더보기</button>
+
+      {/* 더보기 버튼을 처음 5개만 보여줄 때 출력하고, 모든 항목이 출력된 후에는 숨김 */}
+      {!showAll && stores.length > initialStoreCount && (
+        <button className="load-more-button" onClick={handleShowAll}>
+          더보기
+        </button>
+      )}
     </div>
   );
 };
