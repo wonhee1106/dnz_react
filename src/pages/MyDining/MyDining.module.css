@@ -34,12 +34,12 @@
 .imagePlaceholder {
     width: 80px;
     height: 80px;
-    background-color: #e0e0e0;
+    background-color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 14px;
-    color: #9e9e9e;
+    color: #ffffff;
     margin-right: 20px;
 }
 
