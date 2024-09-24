@@ -4,6 +4,7 @@ import styles from './MyDining.module.css'
 import { api } from '../../config/config'
 import ReviewDetailModal from './ReviewDetailModal/ReviewDetaiModall'
 import ReviewModal from './ReviewModal/ReviewModal'
+import defaultImage from '../../img/store.png' // 기본 이미지 경로 추가
 
 function MyDining() {
     const [reservations, setReservations] = useState([])
@@ -11,10 +12,10 @@ function MyDining() {
     const [currentPage, setCurrentPage] = useState(1)
     const [storeInfoMap, setStoreInfoMap] = useState({})
     const reservationsPerPage = 5
-    const [showReviewModal, setShowReviewModal] = useState(false) // 리뷰 작성 모달 상태
-    const [showReviewDetailModal, setShowReviewDetailModal] = useState(false) // 리뷰 상세 모달 상태
-    const [selectedReservation, setSelectedReservation] = useState(null) // 선택된 예약
-    const [selectedReservationId, setSelectedReservationId] = useState(null) // 선택된 리뷰의 예약 ID
+    const [showReviewModal, setShowReviewModal] = useState(false)
+    const [showReviewDetailModal, setShowReviewDetailModal] = useState(false)
+    const [selectedReservation, setSelectedReservation] = useState(null)
+    const [selectedReservationId, setSelectedReservationId] = useState(null)
     const navigate = useNavigate()
 
     const extractGuDong = address => {
@@ -95,10 +96,23 @@ function MyDining() {
     const fetchStoreInfo = async storeSeq => {
         try {
             const response = await api.get(`/store/${storeSeq}`)
-            const photoResponse = await api.get(`/store/${storeSeq}/photos`)
+            let photos = []
+
+            try {
+                const photoResponse = await api.get(`/store/${storeSeq}/photos`)
+                photos = photoResponse.data
+            } catch (photoError) {
+                console.log(
+                    `이미지를 불러오지 못했습니다: ${storeSeq}`,
+                    photoError
+                )
+                // photos를 빈 배열로 설정하여 에러를 무시하고 넘어갑니다.
+                photos = []
+            }
+
             return {
                 ...response.data,
-                photos: photoResponse.data,
+                photos,
             }
         } catch (error) {
             console.log(
@@ -178,28 +192,6 @@ function MyDining() {
         }
     }
 
-    // 예약 등록 시 3분 제한 확인
-    const handleReservationRegistration = async newReservation => {
-        try {
-            const checkResponse = await api.get('/reservation/canReserve')
-            if (!checkResponse.data.canReserve) {
-                alert('최근 취소로 인해 3분 동안 예약이 제한됩니다.')
-                return // 제한 시간이 지나지 않았으므로 예약 등록을 중단
-            }
-
-            // 예약 등록 처리
-            const response = await api.post('/reservation', newReservation)
-            if (response.status === 200) {
-                alert('예약이 성공적으로 등록되었습니다.')
-            } else {
-                alert('예약 등록 실패')
-            }
-        } catch (error) {
-            console.log('예약 등록 중 오류 발생:', error)
-            alert('예약 등록 중 오류 발생')
-        }
-    }
-
     const openReviewModal = reservation => {
         setSelectedReservation(reservation)
         setShowReviewModal(true)
@@ -247,7 +239,7 @@ function MyDining() {
                         const photoUrl =
                             storeInfo.photos && storeInfo.photos.length > 0
                                 ? storeInfo.photos[0].imageUrl
-                                : null
+                                : defaultImage // 사진이 없으면 기본 이미지로 처리
 
                         return (
                             <div
@@ -256,29 +248,29 @@ function MyDining() {
                             >
                                 <div className={styles.reservationInfoRow}>
                                     <div className={styles.imagePlaceholder}>
-                                        {photoUrl ? (
-                                            <img
-                                                src={photoUrl}
-                                                alt="가게 이미지"
-                                                className={styles.storeImage}
-                                                onError={e => {
-                                                    e.target.src =
-                                                        'default-image-url'
-                                                }}
-                                            />
-                                        ) : (
-                                            '이미지 없음'
-                                        )}
+                                        <img
+                                            src={photoUrl}
+                                            alt="가게 이미지"
+                                            className={styles.storeImage}
+                                            onError={e => {
+                                                e.target.src = defaultImage
+                                            }}
+                                        />
                                     </div>
                                     <div className={styles.textInfo}>
                                         <p className={styles.restaurantName}>
                                             {reservation.storeName}
                                         </p>
                                         <p className={styles.additionalInfo}>
-                                            {extractGuDong(storeInfo.address1)}{' '}
+                                            {storeInfo.address1
+                                                ? extractGuDong(
+                                                      storeInfo.address1
+                                                  )
+                                                : '지역 정보 없음'}{' '}
                                             ·{' '}
-                                            {storeInfo.category ||
-                                                '음식종류 정보 없음'}
+                                            {storeInfo.category
+                                                ? storeInfo.category
+                                                : '음식종류 정보 없음'}
                                         </p>
                                         <p className={styles.dateInfo}>
                                             {new Date(

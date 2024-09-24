@@ -119,7 +119,6 @@ function ReserveModal({ storeSeq, name, seatStatus, seatCapacity, onClose, onNex
         '21:00',
         '21:30',
         '22:00',
-        '23:59',
     ]
 
     // 오늘 날짜인지 확인

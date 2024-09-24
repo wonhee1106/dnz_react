@@ -35,7 +35,6 @@
 }
 
 .scrollButton {
-    background-color: transparent;
     border: none;
     font-size: 20px;
     cursor: pointer;
@@ -66,11 +65,11 @@
 }
 
 .guestButtons {
-    margin-left: 6px;
+    margin-left: 17px;
 }
 
 .timeButtons {
-    margin-left: 1px;
+    margin-left: 9px;
 }
 
 .guestButton,
@@ -78,14 +77,13 @@
     height: 60px;
     border-radius: 50%;
     text-align: center;
-    padding-top: 8px;
+    padding-top: 10px;
     font-size: 13px;
     font-weight: bold;
-    border: 1px solid #ff3d00;
+    border: 2px solid #ff3d00;
     background-color: #ffffff;
     cursor: pointer;
-    padding-top: 9px;
-    cursor: all
+    transition: background-color 0.3s ease, border 0.3s ease;
 }
 
 .guestButton {
@@ -149,19 +147,51 @@
 }
 
 /* 캘린더와 오늘 버튼 간의 여백을 최소화 */
-.react-calendar {
-    margin-bottom: 0;
+:global(.react-calendar) {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
-/* 캘린더 관련 스타일 */
+@media (max-width: 768px) {
+    .react-calendar {
+        max-width: 90vw;
+        /* 화면이 768px 이하일 때 캘린더를 화면의 90% 너비로 설정 */
+    }
+}
+
+@media (max-width: 480px) {
+    .react-calendar {
+        max-width: 80vw;
+        /* 화면이 480px 이하일 때 캘린더를 화면의 80% 너비로 설정 */
+    }
+}
+
 :global(.react-calendar__tile--now) {
     background: #ff3d00;
     border-radius: 50px;
 }
 
+:global(.react-calendar__tile--now:not(.react-calendar__tile--active)) {
+    background: none !important;
+    color: inherit !important;
+    border-radius: 0 !important;
+}
+
 :global(.react-calendar__tile:hover) {
     background: #ff3d00;
     border-radius: 50px;
+}
+
+:global(.react-calendar__tile--active) {
+    background: #ff3d00 !important;
+    border-radius: 50px !important;
+    color: white;
+}
+
+:global(.react-calendar__tile--active:hover) {
+    background: #ff3d00 !important;
+    border-radius: 50px !important;
 }
 
 :global(.react-calendar__month-view__weekdays__weekday abbr) {
@@ -177,7 +207,7 @@
 :global(.react-calendar__navigation) {
     display: flex;
     height: 44px;
-    margin-left: 91px;
+    margin-left: 122px;
     margin-bottom: 1em;
 }
 
@@ -203,15 +233,12 @@
 :global(.react-calendar__navigation__next-button:hover),
 :global(.react-calendar__navigation__label:hover) {
     background: none !important;
-    /* 배경 제거 */
     transition: filter 0.3s ease;
-    /* 부드러운 효과 전환 */
 }
 
 :global(.react-calendar__navigation__prev-button),
 :global(.react-calendar__navigation__next-button) {
     background: none !important;
-    /* 배경 제거 */
 }
 
 .remainingSeats {
