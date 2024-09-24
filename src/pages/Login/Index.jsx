@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from 'utils/store';
 import { api } from 'config/config';
 import { jwtDecode } from 'jwt-decode';
+import Swal from 'sweetalert2';
 import Signup from './Signup/Signup';
 import FindId from './FindAccount/FindId';
 import FindPassword from './FindAccount/FindPassword';
@@ -34,14 +35,30 @@ const Index = () => {
                     sessionStorage.setItem('token', token);
                     login(token, userId);
                     navigate("/");
+
                     fetchNotifications(token);
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: '로그인 성공!',
+                        text: '환영합니다!',
+                    });
                 } else {
-                    alert("로그인 실패: 서버로부터 올바른 응답을 받지 못했습니다.");
+                    Swal.fire({
+                        icon: 'error',
+                        title: '로그인 실패',
+                        text: '서버로부터 올바른 응답을 받지 못했습니다.',
+                    });
                 }
             })
             .catch((error) => {
                 console.log("로그인 실패:", error);
-                alert("로그인 실패: 사용자 정보가 올바르지 않습니다.");
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: '로그인 실패',
+                    text: '사용자 정보가 올바르지 않습니다.',
+                });
             });
     };
 
@@ -57,7 +74,11 @@ const Index = () => {
         })
         .catch((error) => {
             console.error("알림을 불러오는 중 오류 발생:", error);
-            alert("알림을 불러오는 중 문제가 발생했습니다.");
+            Swal.fire({
+                icon: 'error',
+                title: '알림 오류',
+                text: '알림을 불러오는 중 문제가 발생했습니다.',
+            });
         });
     };
 
@@ -70,9 +91,7 @@ const Index = () => {
     return (
         <div className={styles.container}>
             <div className={styles.box}>
-                <>
-            <h1>9900</h1>
-                </>
+                <h1>9900</h1>
                 {!isSignup ? (
                     <>
                         <div className={styles.loginContainer}>

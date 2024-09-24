@@ -26,7 +26,7 @@ function Mypage() {
                    <MyPageItem icon={faBookmark} title={"북마크 "} element={
                     <div><Bookmark/></div>
                 } />
-                <MyPageItem icon={faStore} title={"가게 관리"} element={ // 가게 관리 추가
+                <MyPageItem icon={faStore} title={"가게 관리"} element={ 
                     <div><StoreManagement/></div>
                 } />
                 <MyPageItem icon={faQuestion} title={"지원 및 도움"} element={

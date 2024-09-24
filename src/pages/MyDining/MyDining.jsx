@@ -17,7 +17,6 @@ function MyDining() {
     const [selectedReservationId, setSelectedReservationId] = useState(null) // 선택된 리뷰의 예약 ID
     const navigate = useNavigate()
 
-    // '구'나 '동' '시' 단위로 자르기
     const extractGuDong = address => {
         if (!address) return '지역 정보 없음'
         const guIndex = address.indexOf('구')
@@ -25,17 +24,16 @@ function MyDining() {
         const siIndex = address.indexOf('시')
 
         if (guIndex !== -1) {
-            return address.substring(0, guIndex + 1) // '구'까지 포함
+            return address.substring(0, guIndex + 1)
         } else if (dongIndex !== -1) {
-            return address.substring(0, dongIndex + 1) // '동'까지 포함
+            return address.substring(0, dongIndex + 1)
         } else if (siIndex !== -1) {
-            return address.substring(0, siIndex + 1) // '시'까지 포함
+            return address.substring(0, siIndex + 1)
         }
 
-        return address // '구'나 '동', '시' 없으면 전체 출력
+        return address
     }
 
-    // 예약 데이터 가져오기
     useEffect(() => {
         const fetchReservations = async () => {
             try {
@@ -54,7 +52,6 @@ function MyDining() {
         fetchReservations()
     }, [])
 
-    // 리뷰 상태 가져오기
     const fetchReviewStatuses = async reservations => {
         const reviewsStatus = {}
         await Promise.all(
@@ -73,7 +70,6 @@ function MyDining() {
         setReviewsMap(reviewsStatus)
     }
 
-    // 가게 정보 가져오기
     const fetchAllStoreInfo = async reservations => {
         const storeInfoPromises = reservations.map(async reservation => {
             if (!storeInfoMap[reservation.storeSeq]) {
@@ -96,7 +92,6 @@ function MyDining() {
         setStoreInfoMap(updatedStoreInfoMap)
     }
 
-    // 가게 정보 및 사진 가져오기
     const fetchStoreInfo = async storeSeq => {
         try {
             const response = await api.get(`/store/${storeSeq}`)
@@ -114,54 +109,117 @@ function MyDining() {
         }
     }
 
-    // 예약 취소 처리
-    const handleCancelReservation = async reservationId => {
-        const confirmed = window.confirm('정말로 예약을 취소하시겠습니까?')
-        if (!confirmed) return
+    const handleCancelReservation = async reservation => {
+        const currentDate = new Date()
+        const reservationDate = new Date(reservation.reservationDate)
 
-        try {
-            const response = await api.delete(`/reservation/${reservationId}`)
-            if (response.status === 200) {
-                alert('예약이 성공적으로 취소되었습니다.')
-                setReservations(
-                    reservations.filter(
-                        res => res.reservationId !== reservationId
-                    )
+        const isSameDay =
+            currentDate.getFullYear() === reservationDate.getFullYear() &&
+            currentDate.getMonth() === reservationDate.getMonth() &&
+            currentDate.getDate() === reservationDate.getDate()
+
+        if (isSameDay) {
+            const confirmed = window.confirm(
+                '당일 예약 취소 또는 노쇼일 경우 3분 동안 예약 등록이 제한됩니다. 정말로 취소하시겠습니까?'
+            )
+            if (!confirmed) return
+
+            // 취소 처리
+            try {
+                const response = await api.delete(
+                    `/reservation/${reservation.reservationId}`
                 )
-            } else {
-                alert('예약 취소 실패')
+                if (response.status === 200) {
+                    alert('예약이 성공적으로 취소되었습니다.')
+
+                    // 예약 취소 후 3분 제한 체크 로직 추가
+                    const cancelTime = new Date() // 취소 시간 기록
+                    sessionStorage.setItem(
+                        'lastCancellationTime',
+                        cancelTime.toISOString()
+                    ) // 취소 시간을 저장
+
+                    setReservations(
+                        reservations.filter(
+                            res =>
+                                res.reservationId !== reservation.reservationId
+                        )
+                    )
+                } else {
+                    alert('예약 취소 실패')
+                }
+            } catch (error) {
+                console.log('예약 취소 중 오류 발생:', error)
+                alert('예약 취소 중 오류 발생')
             }
-        } catch (error) {
-            console.log('예약 취소 중 오류 발생:', error)
-            alert('예약 취소 중 오류 발생')
+        } else {
+            const confirmed = window.confirm('정말로 예약을 취소하시겠습니까?')
+            if (!confirmed) return
+
+            try {
+                const response = await api.delete(
+                    `/reservation/${reservation.reservationId}`
+                )
+                if (response.status === 200) {
+                    alert('예약이 성공적으로 취소되었습니다.')
+                    setReservations(
+                        reservations.filter(
+                            res =>
+                                res.reservationId !== reservation.reservationId
+                        )
+                    )
+                } else {
+                    alert('예약 취소 실패')
+                }
+            } catch (error) {
+                console.log('예약 취소 중 오류 발생:', error)
+                alert('예약 취소 중 오류 발생')
+            }
         }
     }
 
-    // 리뷰 작성 모달 열기
+    // 예약 등록 시 3분 제한 확인
+    const handleReservationRegistration = async newReservation => {
+        try {
+            const checkResponse = await api.get('/reservation/canReserve')
+            if (!checkResponse.data.canReserve) {
+                alert('최근 취소로 인해 3분 동안 예약이 제한됩니다.')
+                return // 제한 시간이 지나지 않았으므로 예약 등록을 중단
+            }
+
+            // 예약 등록 처리
+            const response = await api.post('/reservation', newReservation)
+            if (response.status === 200) {
+                alert('예약이 성공적으로 등록되었습니다.')
+            } else {
+                alert('예약 등록 실패')
+            }
+        } catch (error) {
+            console.log('예약 등록 중 오류 발생:', error)
+            alert('예약 등록 중 오류 발생')
+        }
+    }
+
     const openReviewModal = reservation => {
         setSelectedReservation(reservation)
         setShowReviewModal(true)
     }
 
-    // 리뷰 작성 모달 닫기
     const closeReviewModal = () => {
         setSelectedReservation(null)
         setShowReviewModal(false)
     }
 
-    // 리뷰 상세 모달 열기
     const openReviewDetailModal = reservationId => {
         setSelectedReservationId(reservationId)
         setShowReviewDetailModal(true)
     }
 
-    // 리뷰 상세 모달 닫기
     const closeReviewDetailModal = () => {
         setSelectedReservationId(null)
         setShowReviewDetailModal(false)
     }
 
-    // 리뷰 제출 후 상태 업데이트
     const handleReviewSubmitted = reservationId => {
         setReviewsMap(prevMap => ({
             ...prevMap,
@@ -169,7 +227,6 @@ function MyDining() {
         }))
     }
 
-    // 더보기 버튼 클릭 시 페이지 증가
     const loadMoreReservations = () => {
         setCurrentPage(prevPage => prevPage + 1)
     }
@@ -264,7 +321,7 @@ function MyDining() {
                                             className={styles.cancelButton}
                                             onClick={() =>
                                                 handleCancelReservation(
-                                                    reservation.reservationId
+                                                    reservation
                                                 )
                                             }
                                         >
@@ -288,22 +345,20 @@ function MyDining() {
                 <p className={styles.noReservation}>예약 내역이 없습니다.</p>
             )}
 
-            {/* 리뷰 작성 모달 */}
             {showReviewModal && (
                 <ReviewModal
                     reservation={selectedReservation}
-                    onClose={closeReviewModal} // 모달 닫기 함수 전달
+                    onClose={closeReviewModal}
                     onReviewSubmitted={() =>
                         handleReviewSubmitted(selectedReservation.reservationId)
                     }
                 />
             )}
 
-            {/* 리뷰 상세 모달 */}
             {showReviewDetailModal && (
                 <ReviewDetailModal
                     reservationId={selectedReservationId}
-                    onClose={closeReviewDetailModal} // 모달 닫기 함수 전달
+                    onClose={closeReviewDetailModal}
                 />
             )}
         </div>
