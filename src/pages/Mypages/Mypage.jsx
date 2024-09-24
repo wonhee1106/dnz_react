@@ -13,20 +13,22 @@ import Bookmark from './Bookmark/Bookmark'
 import StoreManagement from './StoreManagement/StoreManagement'
 import { faStore } from '@fortawesome/free-solid-svg-icons'
 import MyDining from 'pages/MyDining/MyDining'
+import Withdrawal from './Withdrawal/Withdrawal'
+import { useAuthStore } from 'utils/store' // Assume you have user information here
 
 function Mypage() {
+    // Assume we get userProfile from the authentication store
+    const userProfile = useAuthStore((state) => state.userProfile);
+
     return (
         <div className={styles.container}>
             <div className={styles.mypageBox}>
-                <p>마이페이지</p>
+                <h3>마이페이지</h3>
+
                 <MyPageItem
                     icon={faUser}
                     title={'프로필'}
-                    element={
-                        <div>
-                            <Profile />
-                        </div>
-                    }
+                    element={<Profile />}
                 />
 
                 <MyPageItem
@@ -38,36 +40,27 @@ function Mypage() {
                 <MyPageItem
                     icon={faList}
                     title={'예약내역'}
-                    element={
-                        <div>
-                            <MyDining />
-                        </div>
-                    }
+                    element={<MyDining />}
                 />
+
                 <MyPageItem
                     icon={faBookmark}
                     title={'북마크 '}
-                    element={
-                        <div>
-                            <Bookmark />
-                        </div>
-                    }
+                    element={<Bookmark />}
                 />
+
                 <MyPageItem
                     icon={faStore}
                     title={'가게 관리'}
-                    element={
-                        // 가게 관리 추가
-                        <div>
-                            <StoreManagement />
-                        </div>
-                    }
+                    element={<StoreManagement />}
                 />
+
                 <MyPageItem
                     icon={faQuestion}
-                    title={'지원 및 도움'}
-                    element={<div>asdfsdf</div>}
+                    title={'회원탈퇴'}
+                    element={<Withdrawal userProfile={userProfile} />}
                 />
+
 
                 <MyPageItem
                     icon={faLock}
@@ -79,4 +72,4 @@ function Mypage() {
     )
 }
 
-export default Mypage
+export default Mypage;

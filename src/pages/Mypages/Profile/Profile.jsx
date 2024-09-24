@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';  // 'jwt-decode' 기본 수입
+import {jwtDecode} from 'jwt-decode'; // jwtDecode import 수정
+import Swal from 'sweetalert2'; // SweetAlert2 import
 import styles from './Profile.module.css';
-import img from '../../../img/img2.png';  // 기본 이미지
+import img from '../../../img/defaultImages.png';
 import { api } from '../../../config/config';
 import { useAuthStore } from 'utils/store';
 
@@ -12,23 +13,22 @@ const Profile = () => {
         token: state.token,
     }));
 
-    // 서버의 기본 URL (이미지 경로 앞에 추가)
-    const serverBaseUrl = "http://192.168.1.11";  // 서버 주소
+    const serverBaseUrl = "http://192.168.1.10";
 
-    const [profileImage, setProfileImage] = useState(img);  // 기본 이미지를 초기값으로 설정
+    const [profileImage, setProfileImage] = useState(img);
     const [userProfile, setUserProfile] = useState({
         userId: '',
         userName: '',
         userPassword: '',
         userBirthDate: '',
         userPhoneNumber: '',
-        userEmail: ''
+        userEmail: '',
+        userSeq: ''
     });
 
-    const [modifiedFields, setModifiedFields] = useState({});  // 변경된 필드 상태
-    const [isEditable, setIsEditable] = useState(false);  // 입력 필드 수정 가능 상태
-
-    const fileInputRef = useRef(null);  // 파일 입력 참조
+    const [modifiedFields, setModifiedFields] = useState({});
+    const [isEditable, setIsEditable] = useState(false);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (!token) {
@@ -52,11 +52,10 @@ const Profile = () => {
         })
         .then(resp => {
             setUserProfile(resp.data); 
-            // 이미지 경로가 있을 경우, 서버 주소와 합쳐서 표시
             if (resp.data.imageUrl) {
                 setProfileImage(`${serverBaseUrl}${resp.data.imageUrl}`);
             } else {
-                setProfileImage(img);  // 기본 이미지 세팅
+                setProfileImage(img);
             }
         })
         .catch(error => {
@@ -67,8 +66,6 @@ const Profile = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setUserProfile((prev) => ({ ...prev, [name]: value }));
-
-        // 변경된 필드 추적
         setModifiedFields((prev) => ({
             ...prev,
             [name]: value
@@ -77,7 +74,11 @@ const Profile = () => {
 
     const handleProfileUpdate = () => {
         if (Object.keys(modifiedFields).length === 0) {
-            alert('변경된 값이 없습니다.');
+            Swal.fire({
+                icon: 'warning',
+                title: '변경된 값이 없습니다.',
+                text: '수정 후 저장을 시도해주세요!',
+            });
             return;
         }
 
@@ -87,10 +88,19 @@ const Profile = () => {
             }
         })
         .then(() => {
-            alert("Profile updated successfully!");
-            setIsEditable(false);  // 수정 완료 후 입력 필드 비활성화
+            Swal.fire({
+                icon: 'success',
+                title: '프로필 업데이트 완료!',
+                text: '프로필이 성공적으로 업데이트되었습니다.',
+            });
+            setIsEditable(false);
         })
         .catch((error) => {
+            Swal.fire({
+                icon: 'error',
+                title: '업데이트 오류',
+                text: '프로필 업데이트 중 오류가 발생했습니다. 다시 시도해주세요.',
+            });
             console.error('Error updating profile:', error);
         });
     };
@@ -101,7 +111,6 @@ const Profile = () => {
             const formData = new FormData();
             formData.append('profileImage', file);
 
-            // API 요청으로 파일을 서버로 전송
             api.post('/members/updateProfileImage', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -109,11 +118,19 @@ const Profile = () => {
                 },
             })
             .then((response) => {
-                // 서버에서 반환한 이미지 URL을 저장하고, 프로필 이미지를 업데이트
-                setProfileImage(`${serverBaseUrl}${response.data}`);  // 이미지 경로에 서버 URL 추가
-                alert('프로필 이미지가 성공적으로 업데이트되었습니다.');
+                setProfileImage(`${serverBaseUrl}${response.data}`);
+                Swal.fire({
+                    icon: 'success',
+                    title: '이미지 업데이트 완료!',
+                    text: '프로필 이미지가 성공적으로 업데이트되었습니다.',
+                });
             })
             .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: '이미지 업로드 오류',
+                    text: '프로필 이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.',
+                });
                 console.error('Error uploading profile image:', error);
             });
         }
@@ -126,7 +143,7 @@ const Profile = () => {
     return (
         <div className={styles.container}>
             <div className={styles.imageContainer} onClick={() => fileInputRef.current.click()}>
-                <img src={profileImage} alt="Profile" />  {/* 프로필 이미지 출력 */}
+                <img src={profileImage} alt="Profile" />
                 <input
                     type="file"
                     ref={fileInputRef}

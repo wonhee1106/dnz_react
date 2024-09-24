@@ -50,25 +50,22 @@
     flex-direction : column;
     gap : 4px;
 }
-
-/* .my-popup {
-    border-radius: 10px;
-}
-
-.my-title {
-    font-size: 18px;
-    color: #333; 
-}
-
-.my-confirm-button {
-    background-color: #4CAF50; 
+.signupButton {
+    background-color: #ff6600;
     color: white;
-    border-radius: 5px; /
+    font-size: 16px;
+    padding: 6px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-.my-cancel-button {
-    background-color: #f44336; 
+.backButton {
+    background-color: #ff6600;
     color: white;
-    border-radius: 5px; 
-} */
-
+    font-size: 16px;
+    padding: 6px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

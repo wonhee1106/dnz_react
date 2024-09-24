@@ -1,66 +1,94 @@
+/* Container Styles */
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 40px;
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
     margin: 0 auto;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Profile Image Styles */
 .imageContainer {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .imageContainer img {
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
     object-fit: cover;
+    border: 4px solid #007BFF;
+    transition: transform 0.3s ease;
 }
 
-.imageContainer input {
-    display: none;
+.imageContainer img:hover {
+    transform: scale(1.05);
 }
 
+/* Profile Details Styles */
 .profileDetails {
     width: 100%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
+/* Form Field Styles */
 .field {
-    margin-bottom: 15px;
-    font-size: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .field p {
-    margin: 0 0 5px 0;
+    margin-bottom: 8px;
     font-weight: bold;
+    color: #333;
 }
 
 .field input {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: border-color 0.2s, background-color 0.2s;
 }
 
-.updateButton {
-    margin-top: 20px;
+.field input:focus {
+    border-color: #ff6600;
+    background-color: #fff;
 }
 
-.updateButton button {
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
+button {
+    padding: 12px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    background-color: #ff6600;
+    color: white;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
 }
 
-.updateButton button:hover {
-    background-color: #0056b3;
+button:hover {
+    background-color: #ff6600;
+    opacity: 0.9;
+}
+
+button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
 }

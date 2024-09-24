@@ -55,23 +55,23 @@ body {
     border: none;
     border-radius: 5px;
     font-size: 16px;
-    background: linear-gradient(90deg, #ff6600, #ff9933); /* 그라데이션 추가 */
+    background: linear-gradient(90deg, #ff6600, #ff9933); 
     color: white;
     cursor: pointer;
-    transition: background 0.3s, transform 0.1s; /* 부드러운 애니메이션 추가 */
+    transition: background 0.3s, transform 0.1s; 
 }
 
 .loginBtn:hover {
-    background: linear-gradient(90deg, #ff9933, #ff6600); /* 호버 시 그라데이션 반전 */
+    background: linear-gradient(90deg, #ff9933, #ff6600); 
 }
 
 .loginBtn:active {
-    transform: scale(0.98); /* 클릭 시 작아지는 효과 */
+    transform: scale(0.98); 
 }
 
 .notification {
     margin-top: 10px;
-    color: #ff0000; /* 알림 색상 */
+    color: #ff0000;
 }
 
 .btns {
@@ -87,11 +87,12 @@ body {
     font-size: 16px;
     border: none; 
     cursor: pointer;
+    color: black;
     background-color: white;
-    transition: background-color 0.3s, color 0.3s; /* 부드러운 애니메이션 추가 */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .toggleButton:hover {
     color: white;
-    background-color: #ff6600; /* 호버 시 색상 변경 */
+    background-color: #ff6600; 
 }
