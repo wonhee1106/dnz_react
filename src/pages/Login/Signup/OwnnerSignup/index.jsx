@@ -13,6 +13,7 @@ import { validateSignupInputs } from '../../../../utils/validation'; // 입력�
 import { api } from '../../../../config/config'; // API 설정
 import { useNavigate } from 'react-router-dom'; // 페이지 네비게이션을 위한 훅
 import { useEffect } from "react";
+import Swal from 'sweetalert2';
 
 const OwnnerSignup = () => {
 
@@ -66,17 +67,25 @@ const OwnnerSignup = () => {
     };
 
 
-
-
     const handleSignupOwner = () => {
         if (!isEmailVerified) {
-            alert('이메일 인증이 완료되지 않았습니다.');
+            Swal.fire({
+                title: '이메일 인증 필요',
+                text: '이메일 인증이 완료되지 않았습니다.',
+                icon: 'warning',
+                confirmButtonText: '확인',
+            });
             return;
         }
 
         const validationError = validateSignupInputs({ ...signup, ...storeData });
         if (validationError) {
-            alert(validationError);
+            Swal.fire({
+                title: '입력 오류',
+                text: validationError,
+                icon: 'error',
+                confirmButtonText: '확인',
+            });
             return;
         }
 
@@ -87,55 +96,75 @@ const OwnnerSignup = () => {
 
         api.post(`/auth/registerOwner`, ownerSignupData)
             .then(() => {
-                alert('회원가입 완료');
-                setSignup({
-                    userId: '',
-                    userPw: '',
-                    userPwConfirm: '',
-                    userName: '',
-                    userBirthDate: '',
-                    userGender: '',
-                    userPhoneNumber: '',
-                    userEmail: '',
+                Swal.fire({
+                    title: '회원가입 완료',
+                    text: '환영합니다! 점주 회원가입이 완료되었습니다.',
+                    icon: 'success',
+                    confirmButtonText: '확인',
+                }).then(() => {
+                    navigate('/login');
                 });
-                setStoreData({
-                    businessNumber: '',
-                    storeAddress: '',
-                    representativeName: '',
-                    businessType: '',
-                });
-                setIsEmailVerified(false);
-                setIsVerificationRequestSent(false);
+                resetForm();
             })
             .catch(err => {
                 console.error(err);
-                alert('점주 회원가입 실패: ' + err.response.data.message);
+                Swal.fire({
+                    title: '회원가입 실패',
+                    text: '점주 회원가입 실패: ' + err.response.data.message,
+                    icon: 'error',
+                    confirmButtonText: '확인',
+                });
             });
     };
 
     const requestEmailVerificationHandler = () => {
         const validationError = validateSignupInputs(signup);
         if (validationError) {
-            alert(validationError);
+            Swal.fire({
+                title: '입력 오류',
+                text: validationError,
+                icon: 'error',
+                confirmButtonText: '확인',
+            });
             return;
         }
 
         if (!signup.userEmail) {
-            alert('이메일을 입력해 주세요');
+            Swal.fire({
+                title: '이메일 필요',
+                text: '이메일을 입력해 주세요.',
+                icon: 'warning',
+                confirmButtonText: '확인',
+            });
             return;
         }
 
         requestEmailVerification(signup.userEmail)
             .then(() => {
-                alert('이메일이 전송되었습니다. 이메일을 확인해주세요.');
+                Swal.fire({
+                    title: '이메일 전송 완료',
+                    text: '이메일이 전송되었습니다. 이메일을 확인해주세요.',
+                    icon: 'success',
+                    confirmButtonText: '확인',
+                });
                 setIsVerificationRequestSent(true);
             })
-            .catch(() => alert('이메일 전송 실패, 다시 시도하여 주세요'));
+            .catch(() => Swal.fire({
+                title: '전송 실패',
+                text: '이메일 전송 실패, 다시 시도하여 주세요.',
+                icon: 'error',
+                confirmButtonText: '확인',
+            }));
     };
 
     const verifyCodeHandler = () => {
         if (!verificationCode) {
-            alert('인증 코드를 입력해 주세요.');
+            Swal.fire({
+                title: '코드 필요',
+                text: '인증 코드를 입력해 주세요.',
+                icon: 'warning',
+                confirmButtonText: '확인',
+            });
             return;
         }
 
@@ -143,17 +172,54 @@ const OwnnerSignup = () => {
             .then(resp => {
                 if (resp.data === 'verified') {
                     setIsEmailVerified(true);
-                    alert('이메일 인증 완료');
+                    Swal.fire({
+                        title: '인증 완료',
+                        text: '이메일 인증이 완료되었습니다.',
+                        icon: 'success',
+                        confirmButtonText: '확인',
+                    });
                 } else {
-                    alert('인증 코드가 올바르지 않습니다. 다시 시도해 주세요.');
-                    // 여기에서 인증 코드 재전송 옵션을 제안할 수 있습니다.
+                    Swal.fire({
+                        title: '인증 실패',
+                        text: '인증 코드가 올바르지 않습니다. 다시 시도해 주세요.',
+                        icon: 'error',
+                        confirmButtonText: '확인',
+                    });
                 }
             })
             .catch(err => {
-                alert('인증 실패: ' + err.message);
+                Swal.fire({
+                    title: '인증 실패',
+                    text: '인증 실패: ' + err.message,
+                    icon: 'error',
+                    confirmButtonText: '확인',
+                });
             });
     };
 
+
+     // 폼 리셋 함수
+     const resetForm = () => {
+        setSignup({
+            userId: '',
+            userPw: '',
+            userPwConfirm: '',
+            userName: '',
+            userBirthDate: '',
+            userGender: 'M',
+            userPhoneNumber: '',
+            userEmail: '',
+        });
+        setStoreData({
+            businessNumber: '',
+            storeAddress: '',
+            representativeName: '',
+            businessType: '',
+        });
+        setIsEmailVerified(false);
+        setIsVerificationRequestSent(false);
+        setVerificationCode('');
+    };
 
     return (
         <div className={styles.OwnnerSignupContainer}>
@@ -168,7 +234,7 @@ const OwnnerSignup = () => {
                         type="text" title="아이디"
                         placeholder="6~20자리 아이디를 입력해 주세요"
                         keyUp={handleSignupChange}
-                        click={() => alert("중복확인")}
+                        click={() => Swal.fire("중복확인")}
                         name="userId"
                     />
                     <InputGroup
@@ -204,11 +270,11 @@ const OwnnerSignup = () => {
                     <InputGroup
                         type="text"
                         title="생년월일"
+                        placeholder="YYYYMMDD를 입력해 주세요"
                         keyUp={({ name, value }) => handleSignupChange({ name, value })}
                         name="userBirthDate"
                         maxLength={8} // 최대 8자 입력 가능
                     />
-
 
 
                     <InputGroup
@@ -218,6 +284,7 @@ const OwnnerSignup = () => {
                     />
                     <InputGroup
                         type="text" title="사업자 번호"
+                        placeholder="사업자 번호를 입력하여 주세요"
                         keyUp={handleStoreDataChange}
                         name="businessNumber"
 
@@ -226,19 +293,29 @@ const OwnnerSignup = () => {
                     />
                     <InputGroup
                         type="text" title="가게 주소"
+                        placeholder="가게주소를 등록해 주세요"
                         keyUp={handleStoreDataChange}
                         name="storeAddress"
 
                     />
                     <InputGroup
                         type="text" title="대표 성함"
+                        placeholder="매장 점주님의 성함을 입력해 주세요"
                         keyUp={handleStoreDataChange}
                         name="representativeName"
                     />
                     <InputGroup
-                        type="text" title="업종"
+                        type="select" title="업종"
+                        // placeholder="매장 업종을 선택해주세요"
                         keyUp={handleStoreDataChange}
                         name="businessType"
+                        options={[
+                            { value: '', label: '업종을 선택하세요' }, // 기본 선택 옵션
+                            { value: '일식', label: '일식' },
+                            { value: '양식', label: '양식' },
+                            { value: '중식', label: '중식' },
+                            { value: '디저트', label: '디저트' },
+                        ]}
                     />
                     <InputGroup
                         type="email" title="이메일"

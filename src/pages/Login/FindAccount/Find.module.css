@@ -35,6 +35,17 @@
     outline: none;
 }
 
+/* styles.css 또는 해당 CSS 파일에 추가 */
+.swal-button {
+    background-color: #ff6600; /* 원하는 색상 */
+    color: white;
+}
+
+.swal-button:hover {
+    background-color: #ff6600; /* 호버 색상 */
+}
+
+
 .findIdBtn {
     width: 100%;
     padding: 10px;

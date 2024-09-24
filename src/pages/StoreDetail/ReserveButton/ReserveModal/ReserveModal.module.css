@@ -240,3 +240,8 @@
 :global(.react-calendar__navigation__next-button) {
     background: none !important;
 }
+
+.remainingSeats {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
