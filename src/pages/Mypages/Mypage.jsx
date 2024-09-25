@@ -16,6 +16,7 @@ import MyDining from 'pages/MyDining/MyDining'
 import Withdrawal from './Withdrawal/Withdrawal'
 import { useAuthStore } from 'utils/store' // Assume you have user information here
 
+
 function Mypage() {
     // Assume we get userProfile from the authentication store
     const userProfile = useAuthStore((state) => state.userProfile);
@@ -56,18 +57,12 @@ function Mypage() {
                 />
 
                 <MyPageItem
-                    icon={faQuestion}
-                    title={'회원탈퇴'}
-                    element={<Withdrawal userProfile={userProfile} />}
-                />
-
-
-                <MyPageItem
                     icon={faLock}
                     title={'보안 관리'}
                     element={<div>asdfsdf</div>}
                 />
             </div>
+
         </div>
     )
 }

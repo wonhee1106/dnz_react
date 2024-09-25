@@ -37,15 +37,16 @@ const FindId = ({ closeModal }) => {
 
     return (
         <div className={styles.container}>
+            <h2 className={styles.title}>아이디 찾기</h2>
             <div className={styles.box}>
-                이메일 
+                <label>이메일</label>
                 <input 
                     type="text" 
                     value={findEmail} 
                     onChange={(e) => setFindEmail(e.target.value)} 
                     className={styles.input} 
                 />
-                핸드폰 
+                <label>핸드폰</label>
                 <input 
                     type="text" 
                     value={findPhoneNumber} 
