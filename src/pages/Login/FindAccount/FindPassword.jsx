@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 import React, { useState } from 'react';
-import { api } from '../../../config/config';
+import { api } from 'config/config';
 import styles from './Find.module.css';
 
 const FindPassword = ({ closeModal }) => {
@@ -12,7 +12,7 @@ const FindPassword = ({ closeModal }) => {
             Swal.fire({
                 icon: 'warning',
                 title: '입력 오류',
-                text: '이메일과 아이디를 모두 입력해 주세요.',
+                text: '아이디와 이메일을 모두 입력해주세요.',
             });
             return;
         }
@@ -22,7 +22,7 @@ const FindPassword = ({ closeModal }) => {
                 Swal.fire({
                     icon: 'success',
                     title: '성공',
-                    text: '비밀번호 찾기 요청이 완료되었습니다.',
+                    text: '비밀번호 재설정 링크가 이메일로 전송되었습니다.',
                 });
                 closeModal();
             })
@@ -37,15 +37,16 @@ const FindPassword = ({ closeModal }) => {
 
     return (
         <div className={styles.container}>
+            <h2 className={styles.title}>비밀번호 재설정</h2>
             <div className={styles.box}>
-                아이디 
+                <label>아이디</label>
                 <input 
                     type="text" 
                     value={findUserId} 
                     onChange={(e) => setFindUserId(e.target.value)} 
                     className={styles.input} 
                 />
-                이메일 
+                <label>이메일</label>
                 <input 
                     type="text" 
                     value={findEmail} 

@@ -283,8 +283,8 @@ const OwnnerSignup = () => {
                         name="userGender"
                     />
                     <InputGroup
-                        type="text" title="사업자 번호"
-                        placeholder="사업자 번호를 입력하여 주세요"
+                        type="text" title="상호 지점명"
+                        placeholder="예시) 스시코우지"
                         keyUp={handleStoreDataChange}
                         name="businessNumber"
 
@@ -292,8 +292,8 @@ const OwnnerSignup = () => {
 
                     />
                     <InputGroup
-                        type="text" title="가게 주소"
-                        placeholder="가게주소를 등록해 주세요"
+                        type="text" title="가게 지역"
+                        placeholder="가게지역을 입력해 주세요"
                         keyUp={handleStoreDataChange}
                         name="storeAddress"
 
@@ -335,11 +335,13 @@ const OwnnerSignup = () => {
                     />
 
                     <button className={styles.signupButton} onClick={handleSignupOwner}>회원가입</button>
-                    <button onClick={() => navigate("/SignType")}>뒤로가기</button>
+                    <button className={styles.backButton} onClick={() => navigate("/SignType")}>뒤로가기</button>
                 </div>
             </div>
         </div>
     );
 };
+
+//점주
 
 export default OwnnerSignup;

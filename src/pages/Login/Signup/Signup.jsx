@@ -247,7 +247,7 @@ const Signup = () => {
                         click={verifyCodeHandler}
                     />
                     <button className={styles.signupButton} onClick={handleSignupOwner}>회원가입</button>
-                    <button onClick={() => navigate("/SignType")}>뒤로가기</button>
+                    <button className={styles.backButton} onClick={() => navigate("/SignType")}>뒤로가기</button>
                 </div>
             </div>
         </div>

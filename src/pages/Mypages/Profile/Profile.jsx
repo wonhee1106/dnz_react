@@ -1,21 +1,26 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';  // 'jwt-decode' 기본 수입
+import { jwtDecode } from 'jwt-decode';
 import styles from './Profile.module.css';
-import img from '../../../img/img2.png';  // 기본 이미지
+import img from '../../../img/defaultImages.png';
 import { api } from '../../../config/config';
 import { useAuthStore } from 'utils/store';
+import Swal from 'sweetalert2';
 
 const Profile = () => {
     const navigate = useNavigate();
-    const { token } = useAuthStore((state) => ({
+    const { token, setToken } = useAuthStore((state) => ({
         token: state.token,
+        setToken: state.setToken,
     }));
 
-    // 서버의 기본 URL (이미지 경로 앞에 추가)
-    const serverBaseUrl = "http://192.168.1.11";  // 서버 주소
+    const handleBack = () => {
+        setIsEditable(false);
+    };
 
-    const [profileImage, setProfileImage] = useState(img);  // 기본 이미지를 초기값으로 설정
+    const serverBaseUrl = "http://192.168.1.10";
+
+    const [profileImage, setProfileImage] = useState(img);
     const [userProfile, setUserProfile] = useState({
         userId: '',
         userName: '',
@@ -25,17 +30,16 @@ const Profile = () => {
         userEmail: ''
     });
 
-    const [modifiedFields, setModifiedFields] = useState({});  // 변경된 필드 상태
-    const [isEditable, setIsEditable] = useState(false);  // 입력 필드 수정 가능 상태
-
-    const fileInputRef = useRef(null);  // 파일 입력 참조
+    const [modifiedFields, setModifiedFields] = useState({});
+    const [isEditable, setIsEditable] = useState(false);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (!token) {
-            navigate('/login'); 
+            navigate('/login');
         } else {
             const decodedToken = jwtDecode(token);
-            const userIdFromToken = decodedToken.sub; 
+            const userIdFromToken = decodedToken.sub;
             setUserProfile((prevState) => ({
                 ...prevState,
                 userId: userIdFromToken,
@@ -50,25 +54,27 @@ const Profile = () => {
                 Authorization: `Bearer ${token}`
             }
         })
-        .then(resp => {
-            setUserProfile(resp.data); 
-            // 이미지 경로가 있을 경우, 서버 주소와 합쳐서 표시
-            if (resp.data.imageUrl) {
-                setProfileImage(`${serverBaseUrl}${resp.data.imageUrl}`);
-            } else {
-                setProfileImage(img);  // 기본 이미지 세팅
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching user profile:', error);
-        });
+            .then(resp => {
+                setUserProfile(resp.data);
+                if (resp.data.imageUrl) {
+                    setProfileImage(`${serverBaseUrl}${resp.data.imageUrl}`);
+                } else {
+                    setProfileImage(img);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching user profile:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '오류 발생',
+                    text: '프로필 정보를 가져오는 데 실패했습니다.',
+                });
+            });
     };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setUserProfile((prev) => ({ ...prev, [name]: value }));
-
-        // 변경된 필드 추적
         setModifiedFields((prev) => ({
             ...prev,
             [name]: value
@@ -77,7 +83,11 @@ const Profile = () => {
 
     const handleProfileUpdate = () => {
         if (Object.keys(modifiedFields).length === 0) {
-            alert('변경된 값이 없습니다.');
+            Swal.fire({
+                icon: 'warning',
+                title: '변경된 값이 없습니다.',
+                text: '수정할 항목을 입력해주세요.',
+            });
             return;
         }
 
@@ -86,13 +96,22 @@ const Profile = () => {
                 Authorization: `Bearer ${token}`,
             }
         })
-        .then(() => {
-            alert("Profile updated successfully!");
-            setIsEditable(false);  // 수정 완료 후 입력 필드 비활성화
-        })
-        .catch((error) => {
-            console.error('Error updating profile:', error);
-        });
+            .then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: '프로필 변경 완료!',
+                    text: '프로필이 성공적으로 업데이트되었습니다.',
+                });
+                setIsEditable(false);
+            })
+            .catch((error) => {
+                console.error('Error updating profile:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '오류 발생',
+                    text: '프로필 업데이트 중 오류가 발생했습니다. 다시 시도해 주세요.',
+                });
+            });
     };
 
     const handleImageUpload = (e) => {
@@ -101,21 +120,28 @@ const Profile = () => {
             const formData = new FormData();
             formData.append('profileImage', file);
 
-            // API 요청으로 파일을 서버로 전송
             api.post('/members/updateProfileImage', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`,
                 },
             })
-            .then((response) => {
-                // 서버에서 반환한 이미지 URL을 저장하고, 프로필 이미지를 업데이트
-                setProfileImage(`${serverBaseUrl}${response.data}`);  // 이미지 경로에 서버 URL 추가
-                alert('프로필 이미지가 성공적으로 업데이트되었습니다.');
-            })
-            .catch((error) => {
-                console.error('Error uploading profile image:', error);
-            });
+                .then((response) => {
+                    setProfileImage(`${serverBaseUrl}${response.data}`);
+                    Swal.fire({
+                        icon: 'success',
+                        title: '업데이트 완료!',
+                        text: '프로필 이미지가 성공적으로 업데이트되었습니다.',
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error uploading profile image:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '오류 발생',
+                        text: '프로필 이미지를 업로드하는 데 실패했습니다.',
+                    });
+                });
         }
     };
 
@@ -123,10 +149,50 @@ const Profile = () => {
         setIsEditable((prev) => !prev);
     };
 
+    const handleAccountDeletion = () => {
+        const userId = userProfile.userId;
+        const userSeq = userProfile.userSeq;
+
+        Swal.fire({
+            title: '정말로 탈퇴하시겠습니까?',
+            text: '탈퇴하시면 모든 데이터가 삭제됩니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '예, 탈퇴합니다!',
+            cancelButtonText: '아니요, 취소합니다.'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                api.delete(`/members/delete/${userId}/${userSeq}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                    .then(() => {
+                        Swal.fire(
+                            '탈퇴 완료!',
+                            '회원 탈퇴가 완료되었습니다.',
+                            'success'
+                        );
+                        setToken(null);
+                        navigate('/login');
+                    })
+                    .catch((error) => {
+                        console.error('Error deleting account:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: '오류 발생',
+                            text: '회원 탈퇴 중 오류가 발생했습니다. 다시 시도해 주세요.',
+                        });
+                    });
+            }
+        });
+    };
     return (
         <div className={styles.container}>
             <div className={styles.imageContainer} onClick={() => fileInputRef.current.click()}>
-                <img src={profileImage} alt="Profile" />  {/* 프로필 이미지 출력 */}
+                <img src={profileImage} alt="Profile" />
                 <input
                     type="file"
                     ref={fileInputRef}
@@ -135,18 +201,23 @@ const Profile = () => {
                 />
             </div>
 
-            <ProfileForm 
+            <ProfileForm
                 userProfile={userProfile}
                 handleInputChange={handleInputChange}
                 handleProfileUpdate={handleProfileUpdate}
                 isEditable={isEditable}
                 handleEditToggle={handleEditToggle}
+                handleBack={handleBack} // 뒤로가기 함수 전달
             />
+
+            <button onClick={handleAccountDeletion} className={styles.deleteButton}>
+                회원 탈퇴
+            </button>
         </div>
     );
 };
 
-const ProfileForm = ({ userProfile, handleInputChange, handleProfileUpdate, isEditable, handleEditToggle }) => {
+const ProfileForm = ({ userProfile, handleInputChange, handleProfileUpdate, isEditable, handleEditToggle, handleBack }) => {
     return (
         <div className={styles.profileDetails}>
             <div className={styles.field}>
@@ -198,23 +269,33 @@ const ProfileForm = ({ userProfile, handleInputChange, handleProfileUpdate, isEd
                     disabled={!isEditable}
                 />
             </div>
-            <div className={styles.field}>
-                <p>비밀번호:</p>
-                <input
-                    type="password"
-                    name="userPassword"
-                    value={userProfile.userPassword}
-                    onChange={handleInputChange}
-                    disabled={!isEditable}
-                />
-            </div>
-            {isEditable ? (
-                <button onClick={handleProfileUpdate}>프로필 변경</button>
-            ) : (
-                <button onClick={handleEditToggle}>수정하기</button>
+
+            {/* 비밀번호는 수정할 때만 보이도록 설정 */}
+            {isEditable && (
+                <div className={styles.field}>
+                    <p>비밀번호:</p>
+                    <input
+                        type="password"
+                        name="userPassword"
+                        value={userProfile.userPassword}
+                        onChange={handleInputChange}
+                    />
+                </div>
             )}
+
+            <div className={styles.buttonContainer}>
+                {isEditable ? (
+                    <>
+                        <button className={styles.backButton} onClick={handleBack}>뒤로가기</button>
+                        <button className={styles.editButton} onClick={handleProfileUpdate}>프로필 변경</button>
+                    </>
+                ) : (
+                    <button className={styles.editButton} onClick={handleEditToggle}>수정하기</button>
+                )}
+            </div>
         </div>
     );
 };
+
 
 export default Profile;

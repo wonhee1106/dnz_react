@@ -81,6 +81,11 @@ const Index = () => {
             });
         });
     };
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    };
 
     const toggleSignup = () => setIsSignup(!isSignup);
     const openFindIdModal = () => setIsFindIdModalOpen(true);
@@ -106,6 +111,7 @@ const Index = () => {
                                 type="password" 
                                 name="userPw" 
                                 onChange={handleLoginChange} 
+                                onKeyDown={handleKeyDown} 
                                 placeholder="PW" 
                                 className={styles.input} 
                             />

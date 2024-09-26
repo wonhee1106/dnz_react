@@ -18,15 +18,27 @@
     align-items: center;
     padding: 10px;
     border-bottom: 1px solid #ddd;
+    transition: background-color 0.2s ease;
+}
+
+.bookmark-item:hover {
+    background-color: #f0f0f0; /* hover 시 배경색 변경 */
 }
 
 .bookmark-item:last-child {
     border-bottom: none;
 }
 
-.bookmark-item span {
+/* 가게 이름 스타일 */
+.storeName {
     font-size: 18px;
     color: #333;
+    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    transition: color 0.2s ease;
+}
+
+.storeName:hover {
+    color: #007BFF; /* hover 시 글자 색 변경 */
 }
 
 /* 삭제 버튼 스타일 */

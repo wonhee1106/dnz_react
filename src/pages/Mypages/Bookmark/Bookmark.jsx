@@ -112,14 +112,27 @@ const Bookmark = () => {
         }
     };
 
+    // 북마크된 레스토랑 클릭 시 해당 레스토랑 상세페이지로 이동
+    const handleRestaurantClick = (restaurantId) => {
+        navigate(`/store/${restaurantId}`); // 레스토랑 ID로 상세 페이지로 이동
+    };
+
     return (
         <div className={styles.bookmarkContainer}>
             <h2>북마크 목록</h2>
             <ul className={styles.bookmarkList}>
                 {bookmarkedRestaurants.length > 0 ? (
                     bookmarkedRestaurants.map((restaurant) => (
-                        <li key={restaurant.storeSeq} className={styles.bookmarkItem}>
-                            <span>{restaurant.storeName}</span> {/* storeName 출력 */}
+                        <li 
+                            key={restaurant.storeSeq} 
+                            className={styles.bookmarkItem} 
+                        >
+                            <span 
+                                className={styles.storeName} 
+                                onClick={() => handleRestaurantClick(restaurant.storeSeq)}
+                            >
+                                {restaurant.storeName}
+                            </span> {/* storeName 출력 */}
                             <button 
                                 onClick={(e) => toggleBookmark(e, restaurant.storeSeq)} 
                                 className={`${styles.bookmarkButton} ${styles.remove}`}

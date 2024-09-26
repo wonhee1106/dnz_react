@@ -50,3 +50,23 @@
     flex-direction : column;
     gap : 4px;
 }
+
+.signupButton {
+    background-color: #ff6600;
+    color: white;
+    font-size: 16px;
+    padding: 6px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.backButton {
+    background-color: #ff6600;
+    color: white;
+    font-size: 16px;
+    padding: 6px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
