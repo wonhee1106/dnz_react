@@ -134,7 +134,7 @@ function MyDining() {
 
         if (isSameDay) {
             const confirmed = window.confirm(
-                '당일 예약 취소 또는 노쇼일 경우 3분 동안 예약 등록이 제한됩니다. 정말로 취소하시겠습니까?'
+                '당일 예약 취소 또는 노쇼일 경우 24시간 동안 예약 등록이 제한됩니다. 정말로 취소하시겠습니까?'
             )
             if (!confirmed) return
 
